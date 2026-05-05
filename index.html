@@ -745,6 +745,271 @@
       }
       .sidebar.collapsed { display: none; }
     }
+
+    /* Dashboard — companies & engagements */
+    .company-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .company-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .company-summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      min-height: 56px;
+    }
+
+    .company-chevron {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      color: var(--muted);
+      transition: background 0.15s, transform 0.2s;
+    }
+
+    .company-chevron::before {
+      content: "›";
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1;
+      display: block;
+      transform: translateX(1px);
+    }
+
+    .company-chevron:hover {
+      background: #f3f4f6;
+      color: var(--text);
+    }
+
+    .company-card.open .company-chevron {
+      transform: rotate(90deg);
+    }
+
+    .company-main {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+    }
+
+    .company-main strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .company-main span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .company-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin-right: 4px;
+    }
+
+    .company-engagements {
+      display: none;
+      border-top: 1px solid var(--border);
+      background: #fafbfc;
+    }
+
+    .company-card.open .company-engagements {
+      display: block;
+    }
+
+    .eng-head {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 16px 8px 64px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (max-width: 640px) {
+      .eng-head { display: none; }
+    }
+
+    .eng-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 16px 12px 64px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      .eng-row {
+        grid-template-columns: 1fr;
+        padding-left: 16px;
+      }
+    }
+
+    .eng-row:last-child {
+      border-bottom: none;
+    }
+
+    .eng-info strong {
+      font-weight: 650;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .eng-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn-sm {
+      padding: 7px 12px;
+      font-size: 12px;
+    }
+
+    /* Settings drawer */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 100;
+    }
+
+    .drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(420px, 100vw);
+      height: 100%;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      box-shadow: -12px 0 40px rgba(15, 23, 42, 0.12);
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      z-index: 101;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer-backdrop.open .drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .drawer-header h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .drawer-header p {
+      margin: 6px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .drawer-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      font: inherit;
+      padding: 9px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .field textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    .drawer-footer {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      background: var(--surface-2);
+    }
+
+    .icon-btn.on-accent {
+      border-color: var(--brand);
+      color: var(--brand-hover);
+      background: var(--brand-faint);
+    }
   </style>
 </head>
 <body>
@@ -771,6 +1036,9 @@
         <button type="button" class="icon-btn" aria-label="Help">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 9a3 3 0 115 2c0 2-3 2-3 4M12 17h.01"/></svg>
         </button>
+        <button type="button" class="icon-btn on-accent" id="btnMasterSettings" aria-label="Master settings" title="Master settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        </button>
       </div>
     </header>
 
@@ -783,7 +1051,7 @@
           <button type="button" class="layer-pill locked" role="tab" aria-selected="false" disabled title="Engagement layer — created per audit">Engagement</button>
         </div>
       </div>
-      <p class="layer-hint">Master holds methodology, scales, and catalogues. Company inherits and tailors; Engagement executes tests and captures evidence.</p>
+      <p class="layer-hint">Master settings: top-right gear. Company &amp; engagement settings: from each row below. Open an engagement to work inside it.</p>
     </div>
 
     <nav class="sidebar" id="sidebar" aria-label="Master modules">
@@ -834,120 +1102,266 @@
     </nav>
 
     <main>
-      <!-- Dashboard -->
+      <!-- Dashboard — companies & engagements hub -->
       <section id="view-dashboard" class="view active" aria-labelledby="dash-title">
         <p class="crumb">Master / <strong>Dashboard</strong></p>
         <div class="page-head">
           <div>
-            <h1 id="dash-title">Methodology cockpit</h1>
-            <p>Health of master catalogues: what every company will inherit before engagements begin. Strong master data reduces rework and keeps assurance comparable.</p>
+            <h1 id="dash-title">Companies &amp; engagements</h1>
+            <p>Pick a company, expand to see its engagements, then <strong>Enter</strong> to open one. Use the <strong>gear</strong> for settings at master (top right), company (row), or engagement (row or inside engagement).</p>
           </div>
           <div class="page-actions">
-            <button type="button" class="btn btn-ghost">Export catalogue</button>
-            <button type="button" class="btn btn-primary">Open change request</button>
+            <button type="button" class="btn btn-ghost">Add company</button>
+            <button type="button" class="btn btn-primary" id="btnMasterSettingsAlt">Master settings</button>
           </div>
         </div>
 
-        <dl class="grid-kpi">
-          <div class="kpi">
-            <dt>Universe nodes</dt>
-            <dd>186</dd>
-            <div class="sub">Processes &amp; sub-processes in master tree</div>
+        <p class="note" style="margin-bottom: 16px;">This hub sits above methodology catalogues in the sidebar. Master catalogue work is unchanged; the gear in the header opens <strong>master-level</strong> configuration (methodology version, defaults, integrations).</p>
+
+        <div class="panel" style="margin-bottom: 0;">
+          <div class="panel-h">
+            <h2>Company directory</h2>
+            <a class="link" href="#" data-jump="risk">Risk framework</a>
           </div>
-          <div class="kpi">
-            <dt>Risk types</dt>
-            <dd>42</dd>
-            <div class="sub">Mapped to COSO &amp; ISO 31000 tags</div>
+          <div class="panel-body" style="padding: 16px;">
+            <div class="company-list" id="companyList">
+              <article class="company-card" data-company-id="co-northwind">
+                <div class="company-summary">
+                  <button type="button" class="company-chevron" aria-expanded="false" aria-controls="panel-northwind" title="Show engagements"></button>
+                  <button type="button" class="company-main" aria-expanded="false" aria-controls="panel-northwind">
+                    <strong>Northwind Logistics Ltd</strong>
+                    <span>EMEA · 4 active engagements · Fiscal Dec</span>
+                  </button>
+                  <div class="company-badges">
+                    <span class="tag tag-teal">Company</span>
+                  </div>
+                  <button type="button" class="icon-btn js-company-settings" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" aria-label="Company settings for Northwind Logistics Ltd" title="Company settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                  </button>
+                </div>
+                <div class="company-engagements" id="panel-northwind" role="region" aria-label="Engagements for Northwind Logistics Ltd">
+                  <div class="eng-head">
+                    <span>Engagement</span>
+                    <span>Phase</span>
+                    <span>Actions</span>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>SOX ITGC — identity &amp; access</strong>
+                      <span class="code">ENG-2026-014 · Lead: J. Okonkwo</span>
+                    </div>
+                    <div><span class="tag tag-blue">Fieldwork</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="SOX ITGC — identity &amp; access" data-eng-code="ENG-2026-014">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="SOX ITGC — identity &amp; access" data-eng-code="ENG-2026-014" aria-label="Engagement settings for ENG-2026-014" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>Operational resilience — scenarios</strong>
+                      <span class="code">ENG-2026-021 · Lead: N. Adeyemi</span>
+                    </div>
+                    <div><span class="tag tag-blue">Fieldwork</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="Operational resilience — scenarios" data-eng-code="ENG-2026-021">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="Operational resilience — scenarios" data-eng-code="ENG-2026-021" aria-label="Engagement settings for ENG-2026-021" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>Third-party risk management</strong>
+                      <span class="code">ENG-2026-009 · Lead: M. Rivera</span>
+                    </div>
+                    <div><span class="tag tag-warn">Reporting</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="Third-party risk management" data-eng-code="ENG-2026-009">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="Third-party risk management" data-eng-code="ENG-2026-009" aria-label="Engagement settings for ENG-2026-009" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>Treasury &amp; liquidity controls</strong>
+                      <span class="code">ENG-2026-011 · Lead: A. Patel</span>
+                    </div>
+                    <div><span class="tag tag-purple">Planning</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="Treasury &amp; liquidity controls" data-eng-code="ENG-2026-011">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Northwind Logistics Ltd" data-company-id="co-northwind" data-eng-title="Treasury &amp; liquidity controls" data-eng-code="ENG-2026-011" aria-label="Engagement settings for ENG-2026-011" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="company-card" data-company-id="co-contoso">
+                <div class="company-summary">
+                  <button type="button" class="company-chevron" aria-expanded="false" aria-controls="panel-contoso" title="Show engagements"></button>
+                  <button type="button" class="company-main" aria-expanded="false" aria-controls="panel-contoso">
+                    <strong>Contoso Financial Group</strong>
+                    <span>Americas · 3 active engagements · Fiscal Dec</span>
+                  </button>
+                  <div class="company-badges">
+                    <span class="tag tag-teal">Company</span>
+                  </div>
+                  <button type="button" class="icon-btn js-company-settings" data-company-name="Contoso Financial Group" data-company-id="co-contoso" aria-label="Company settings for Contoso Financial Group" title="Company settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                  </button>
+                </div>
+                <div class="company-engagements" id="panel-contoso" role="region" aria-label="Engagements for Contoso Financial Group">
+                  <div class="eng-head">
+                    <span>Engagement</span>
+                    <span>Phase</span>
+                    <span>Actions</span>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>Finance close — journal controls</strong>
+                      <span class="code">ENG-2026-017 · Lead: H. Matsumoto</span>
+                    </div>
+                    <div><span class="tag tag-warn">Reporting</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Contoso Financial Group" data-company-id="co-contoso" data-eng-title="Finance close — journal controls" data-eng-code="ENG-2026-017">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Contoso Financial Group" data-company-id="co-contoso" data-eng-title="Finance close — journal controls" data-eng-code="ENG-2026-017" aria-label="Engagement settings for ENG-2026-017" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>AML monitoring &amp; SAR governance</strong>
+                      <span class="code">ENG-2026-005 · Lead: K. Okafor</span>
+                    </div>
+                    <div><span class="tag tag-blue">Fieldwork</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Contoso Financial Group" data-company-id="co-contoso" data-eng-title="AML monitoring &amp; SAR governance" data-eng-code="ENG-2026-005">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Contoso Financial Group" data-company-id="co-contoso" data-eng-title="AML monitoring &amp; SAR governance" data-eng-code="ENG-2026-005" aria-label="Engagement settings for ENG-2026-005" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>Internal capital adequacy (ICAAP) review</strong>
+                      <span class="code">ENG-2025-041 · Lead: S. Brooks</span>
+                    </div>
+                    <div><span class="tag tag-ok">Closed</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Contoso Financial Group" data-company-id="co-contoso" data-eng-title="Internal capital adequacy (ICAAP) review" data-eng-code="ENG-2025-041">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Contoso Financial Group" data-company-id="co-contoso" data-eng-title="Internal capital adequacy (ICAAP) review" data-eng-code="ENG-2025-041" aria-label="Engagement settings for ENG-2025-041" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="company-card" data-company-id="co-fabrikam">
+                <div class="company-summary">
+                  <button type="button" class="company-chevron" aria-expanded="false" aria-controls="panel-fabrikam" title="Show engagements"></button>
+                  <button type="button" class="company-main" aria-expanded="false" aria-controls="panel-fabrikam">
+                    <strong>Fabrikam Retail Holdings</strong>
+                    <span>APAC · 2 active engagements · Fiscal Jun</span>
+                  </button>
+                  <div class="company-badges">
+                    <span class="tag tag-teal">Company</span>
+                  </div>
+                  <button type="button" class="icon-btn js-company-settings" data-company-name="Fabrikam Retail Holdings" data-company-id="co-fabrikam" aria-label="Company settings for Fabrikam Retail Holdings" title="Company settings">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                  </button>
+                </div>
+                <div class="company-engagements" id="panel-fabrikam" role="region" aria-label="Engagements for Fabrikam Retail Holdings">
+                  <div class="eng-head">
+                    <span>Engagement</span>
+                    <span>Phase</span>
+                    <span>Actions</span>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>Inventory shrink &amp; loss prevention</strong>
+                      <span class="code">ENG-2026-030 · Lead: T. Nguyen</span>
+                    </div>
+                    <div><span class="tag tag-blue">Fieldwork</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Fabrikam Retail Holdings" data-company-id="co-fabrikam" data-eng-title="Inventory shrink &amp; loss prevention" data-eng-code="ENG-2026-030">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Fabrikam Retail Holdings" data-company-id="co-fabrikam" data-eng-title="Inventory shrink &amp; loss prevention" data-eng-code="ENG-2026-030" aria-label="Engagement settings for ENG-2026-030" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="eng-row">
+                    <div class="eng-info">
+                      <strong>Privacy programme maturity</strong>
+                      <span class="code">ENG-2025-088 · Lead: L. Chen</span>
+                    </div>
+                    <div><span class="tag tag-purple">Planning</span></div>
+                    <div class="eng-actions">
+                      <button type="button" class="btn btn-primary btn-sm js-enter-engagement" data-company-name="Fabrikam Retail Holdings" data-company-id="co-fabrikam" data-eng-title="Privacy programme maturity" data-eng-code="ENG-2025-088">Enter</button>
+                      <button type="button" class="icon-btn js-engagement-settings" data-company-name="Fabrikam Retail Holdings" data-company-id="co-fabrikam" data-eng-title="Privacy programme maturity" data-eng-code="ENG-2025-088" aria-label="Engagement settings for ENG-2025-088" title="Engagement settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
           </div>
-          <div class="kpi">
-            <dt>Plan horizons</dt>
-            <dd>3</dd>
-            <div class="sub warn">Tactical template missing FY+3 weights</div>
+        </div>
+      </section>
+
+      <!-- Engagement workspace (entered from dashboard) -->
+      <section id="view-engagement" class="view" aria-labelledby="eng-work-title">
+        <p class="crumb">Master / <a href="#" class="link js-back-dashboard" style="font-weight: 600;">Dashboard</a> / <strong id="eng-crumb-company">Company</strong> / <strong id="eng-crumb-code">ENG</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="eng-work-title">Engagement</h1>
+            <p id="eng-work-sub">Workspace shell — fieldwork, workpapers, and findings would live here.</p>
           </div>
-          <div class="kpi">
-            <dt>Finding schema</dt>
-            <dd>v4</dd>
-            <div class="sub ok">Aligned to residual risk bands</div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost js-back-dashboard">← Back to dashboard</button>
+            <button type="button" class="icon-btn on-accent js-engagement-settings-header" id="btnEngSettingsHeader" aria-label="Engagement settings" title="Engagement settings">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </button>
           </div>
-        </dl>
+        </div>
 
         <div class="two-col">
           <div class="panel">
             <div class="panel-h">
-              <h2>What good IA software does at master layer</h2>
-              <a class="link" href="#">Methodology guide</a>
+              <h2>Engagement summary</h2>
+              <span class="tag tag-teal" id="eng-work-code-tag">ENG</span>
             </div>
             <div class="panel-body">
-              <ul class="note" style="list-style: disc; padding-left: 1.25rem; margin: 0;">
-                <li style="margin-bottom: 8px;"><strong>Single taxonomy</strong> — universe, risks, and findings share IDs so coverage and repeat findings trace across years.</li>
-                <li style="margin-bottom: 8px;"><strong>Explicit risk mechanics</strong> — inherent, control, and residual are defined mathematically and visually, not only as labels.</li>
-                <li style="margin-bottom: 8px;"><strong>Plan linkage</strong> — annual plan slots reference universe nodes and target residual posture, not just audit titles.</li>
-                <li><strong>Controlled evolution</strong> — master changes are versioned; companies inherit deltas intentionally.</li>
-              </ul>
+              <dl class="dl-inline">
+                <dt>Company</dt>
+                <dd id="eng-summary-company">—</dd>
+                <dt>Objectives</dt>
+                <dd>Evaluate design and operating effectiveness of controls; report residual risk vs. appetite.</dd>
+                <dt>Risk lens</dt>
+                <dd>Inherent → control testing → residual conclusion (methodology <span class="code">MA-2026.04</span>).</dd>
+              </dl>
             </div>
           </div>
           <div class="panel">
             <div class="panel-h">
-              <h2>Risk pipeline (conceptual)</h2>
-              <a class="link" href="#" data-jump="risk">Open framework</a>
+              <h2>Quick actions</h2>
             </div>
-            <div class="panel-body">
-              <div class="flow">
-                <span class="flow-step em">Inherent risk</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-step">Control risk</span>
-                <span class="flow-arr">→</span>
-                <span class="flow-step em">Residual risk</span>
-              </div>
-              <p class="note" style="margin-top: 14px;">Master defines scales and combination rules. Company assigns assessments to entities; engagement proves control effectiveness.</p>
+            <div class="panel-body" style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" class="btn btn-ghost">Scoping memo</button>
+              <button type="button" class="btn btn-ghost">RACM</button>
+              <button type="button" class="btn btn-ghost">Workpapers</button>
+              <button type="button" class="btn btn-primary">Issue log</button>
             </div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-h">
-            <h2>Catalogue completeness</h2>
-            <span class="tag tag-teal">Master scope only</span>
-          </div>
-          <div class="table-wrap">
-            <table class="data">
-              <thead>
-                <tr>
-                  <th scope="col">Artefact</th>
-                  <th scope="col">Records</th>
-                  <th scope="col">Quality gate</th>
-                  <th scope="col">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Process hierarchy</strong><span class="code">MH-PROC</span></td>
-                  <td>54 L2 · 132 L3</td>
-                  <td>Owner + steward sign-off</td>
-                  <td><span class="tag tag-ok">Approved</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Inherent risk statements</strong><span class="code">MH-IRS</span></td>
-                  <td>128 linked to universe</td>
-                  <td>Heat band calibration</td>
-                  <td><span class="tag tag-ok">Approved</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Control objectives library</strong><span class="code">MH-COBJ</span></td>
-                  <td>210 objectives</td>
-                  <td>Coverage vs. universe ≥ 92%</td>
-                  <td><span class="tag tag-warn">89% · gap review</span></td>
-                </tr>
-                <tr>
-                  <td><strong>Finding &amp; action taxonomy</strong><span class="code">MH-FIND</span></td>
-                  <td>Severity 4 · RCA 12 · themes 9</td>
-                  <td>Maps to residual bands</td>
-                  <td><span class="tag tag-ok">Approved</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <p class="note">Use the header <strong>gear</strong> for this engagement’s settings (team, period, methodology pack, sign-off chain). Company-level defaults still apply unless overridden here.</p>
       </section>
 
       <!-- Universe -->
@@ -1623,6 +2037,25 @@
     </main>
   </div>
 
+  <div class="drawer-backdrop" id="settingsDrawerBackdrop" aria-hidden="true">
+    <aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" id="settingsDrawer">
+      <div class="drawer-header">
+        <div>
+          <h2 id="drawerTitle">Settings</h2>
+          <p id="drawerSubtitle">Configure options for this scope.</p>
+        </div>
+        <button type="button" class="icon-btn" id="drawerClose" aria-label="Close settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="drawer-body" id="drawerBody"></div>
+      <div class="drawer-footer">
+        <button type="button" class="btn btn-ghost" id="drawerCancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="drawerSave">Save changes</button>
+      </div>
+    </aside>
+  </div>
+
   <script>
     (function () {
       var sidebar = document.getElementById("sidebar");
@@ -1638,8 +2071,9 @@
         document.querySelectorAll(".view").forEach(function (el) {
           el.classList.toggle("active", el.id === "view-" + id);
         });
+        var navHighlight = id === "engagement" ? "dashboard" : id;
         document.querySelectorAll(".nav-item").forEach(function (btn) {
-          btn.classList.toggle("active", btn.getAttribute("data-view") === id);
+          btn.classList.toggle("active", btn.getAttribute("data-view") === navHighlight);
         });
       }
 
@@ -1668,6 +2102,182 @@
           document.querySelectorAll(".tab-panel").forEach(function (p) {
             p.classList.toggle("active", p.id === "tab-" + key);
           });
+        });
+      });
+
+      /* Company accordion */
+      function setCompanyOpen(card, open) {
+        if (!card) return;
+        card.classList.toggle("open", open);
+        card.querySelectorAll(".company-chevron, .company-main").forEach(function (el) {
+          el.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+      }
+
+      var companyList = document.getElementById("companyList");
+      if (companyList) {
+        companyList.addEventListener("click", function (e) {
+          if (e.target.closest(".js-company-settings") || e.target.closest(".js-engagement-settings") || e.target.closest(".js-enter-engagement")) {
+            return;
+          }
+          var chev = e.target.closest(".company-chevron");
+          var main = e.target.closest(".company-main");
+          if (!chev && !main) return;
+          var card = e.target.closest(".company-card");
+          if (!card) return;
+          setCompanyOpen(card, !card.classList.contains("open"));
+        });
+      }
+
+      /* Settings drawer */
+      var backdrop = document.getElementById("settingsDrawerBackdrop");
+      var drawerTitle = document.getElementById("drawerTitle");
+      var drawerSubtitle = document.getElementById("drawerSubtitle");
+      var drawerBody = document.getElementById("drawerBody");
+      var drawerClose = document.getElementById("drawerClose");
+      var drawerCancel = document.getElementById("drawerCancel");
+      var drawerSave = document.getElementById("drawerSave");
+
+      function closeDrawer() {
+        if (!backdrop) return;
+        backdrop.classList.remove("open");
+        backdrop.setAttribute("aria-hidden", "true");
+      }
+
+      function field(label, id, type, placeholder) {
+        return (
+          '<div class="field"><label for="' + id + '">' + label + "</label>" +
+          '<input type="' + type + '" id="' + id + '" placeholder="' + placeholder + '" /></div>'
+        );
+      }
+
+      function openDrawer(tier, ctx) {
+        ctx = ctx || {};
+        if (!backdrop || !drawerTitle || !drawerSubtitle || !drawerBody) return;
+        var html = "";
+        if (tier === "master") {
+          drawerTitle.textContent = "Master settings";
+          drawerSubtitle.textContent = "Applies to all companies — methodology, defaults, and platform configuration.";
+          html +=
+            field("Methodology release", "f-ma-rel", "text", "MA-2026.04") +
+            field("Default inherent scale", "f-ma-scale", "text", "5×5 matrix MA-STD") +
+            '<div class="field"><label for="f-ma-notes">Steward notes</label><textarea id="f-ma-notes" placeholder="Change freeze, exceptions, rollout…"></textarea></div>' +
+            '<div class="field"><label for="f-ma-int">Integration webhook URL</label><input type="url" id="f-ma-int" placeholder="https://…" /></div>';
+        } else if (tier === "company") {
+          drawerTitle.textContent = "Company settings";
+          drawerSubtitle.textContent = ctx.companyName ? ctx.companyName + " · " + (ctx.companyId || "") : "Company";
+          html +=
+            field("Fiscal year end", "f-co-fye", "text", "e.g. 31 December") +
+            field("Reporting currency", "f-co-ccy", "text", "USD") +
+            field("Materiality template", "f-co-mat", "text", "Group TM-2026") +
+            '<div class="field"><label for="f-co-ap">Audit committee chair email</label><input type="email" id="f-co-ap" placeholder="chair@company.com" /></div>';
+        } else if (tier === "engagement") {
+          drawerTitle.textContent = "Engagement settings";
+          drawerSubtitle.textContent = (ctx.engCode || "") + (ctx.engTitle ? " · " + ctx.engTitle : "");
+          html +=
+            field("Period under review", "f-en-period", "text", "e.g. 1 Jan – 31 Dec 2026") +
+            field("Methodology pack", "f-en-pack", "text", "MP-OPS / MP-ITGC") +
+            field("Engagement manager", "f-en-mgr", "text", "Name") +
+            '<div class="field"><label for="f-en-sign">Sign-off chain</label><textarea id="f-en-sign" placeholder="Partner → EQA → issue…"></textarea></div>';
+        }
+        drawerBody.innerHTML = html;
+        backdrop.classList.add("open");
+        backdrop.setAttribute("aria-hidden", "false");
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener("click", function (e) {
+          if (e.target === backdrop) closeDrawer();
+        });
+      }
+      if (drawerClose) drawerClose.addEventListener("click", closeDrawer);
+      if (drawerCancel) drawerCancel.addEventListener("click", closeDrawer);
+      if (drawerSave) {
+        drawerSave.addEventListener("click", function () {
+          closeDrawer();
+        });
+      }
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && backdrop && backdrop.classList.contains("open")) {
+          closeDrawer();
+        }
+      });
+
+      var btnMaster = document.getElementById("btnMasterSettings");
+      var btnMasterAlt = document.getElementById("btnMasterSettingsAlt");
+      if (btnMaster) btnMaster.addEventListener("click", function () { openDrawer("master"); });
+      if (btnMasterAlt) btnMasterAlt.addEventListener("click", function () { openDrawer("master"); });
+
+      var engHeaderBtn = document.getElementById("btnEngSettingsHeader");
+
+      function enterEngagement(ctx) {
+        var titleEl = document.getElementById("eng-work-title");
+        var subEl = document.getElementById("eng-work-sub");
+        var crumbCo = document.getElementById("eng-crumb-company");
+        var crumbCode = document.getElementById("eng-crumb-code");
+        var sumCo = document.getElementById("eng-summary-company");
+        var tag = document.getElementById("eng-work-code-tag");
+        if (titleEl) titleEl.textContent = ctx.engTitle || "Engagement";
+        if (subEl) subEl.textContent = (ctx.engCode || "") + " — fieldwork, workpapers, and findings would be managed in this workspace.";
+        if (crumbCo) crumbCo.textContent = ctx.companyName || "Company";
+        if (crumbCode) crumbCode.textContent = ctx.engCode || "ENG";
+        if (sumCo) sumCo.textContent = ctx.companyName || "—";
+        if (tag) tag.textContent = ctx.engCode || "ENG";
+        if (engHeaderBtn) {
+          engHeaderBtn.setAttribute("data-company-name", ctx.companyName || "");
+          engHeaderBtn.setAttribute("data-company-id", ctx.companyId || "");
+          engHeaderBtn.setAttribute("data-eng-title", ctx.engTitle || "");
+          engHeaderBtn.setAttribute("data-eng-code", ctx.engCode || "");
+        }
+        showView("engagement");
+      }
+
+      if (engHeaderBtn) {
+        engHeaderBtn.addEventListener("click", function () {
+          openDrawer("engagement", {
+            companyName: engHeaderBtn.getAttribute("data-company-name"),
+            companyId: engHeaderBtn.getAttribute("data-company-id"),
+            engTitle: engHeaderBtn.getAttribute("data-eng-title"),
+            engCode: engHeaderBtn.getAttribute("data-eng-code")
+          });
+        });
+      }
+
+      document.body.addEventListener("click", function (e) {
+        var c = e.target.closest(".js-company-settings");
+        if (c) {
+          e.preventDefault();
+          openDrawer("company", { companyName: c.getAttribute("data-company-name"), companyId: c.getAttribute("data-company-id") });
+          return;
+        }
+        var g = e.target.closest(".js-engagement-settings");
+        if (g) {
+          e.preventDefault();
+          openDrawer("engagement", {
+            companyName: g.getAttribute("data-company-name"),
+            companyId: g.getAttribute("data-company-id"),
+            engTitle: g.getAttribute("data-eng-title"),
+            engCode: g.getAttribute("data-eng-code")
+          });
+          return;
+        }
+        var b = e.target.closest(".js-enter-engagement");
+        if (b) {
+          e.preventDefault();
+          enterEngagement({
+            companyName: b.getAttribute("data-company-name"),
+            companyId: b.getAttribute("data-company-id"),
+            engTitle: b.getAttribute("data-eng-title"),
+            engCode: b.getAttribute("data-eng-code")
+          });
+        }
+      });
+
+      document.querySelectorAll(".js-back-dashboard").forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          showView("dashboard");
         });
       });
     })();
