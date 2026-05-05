@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <title>Aura Audit · Master</title>
+  <title>Aura Audit · Internal audit workspace</title>
   <style>
     :root {
       --bg: #f6f7f9;
@@ -1012,6 +1012,300 @@
       flex: 1;
     }
 
+    /* Full-page settings shell (firm / client / engagement) */
+    .settings-page-intro {
+      max-width: 720px;
+      margin-bottom: 24px;
+    }
+
+    .settings-page-intro h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+    }
+
+    .settings-page-intro p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .settings-pattern-note {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--border-strong);
+      background: var(--surface-2);
+      margin-bottom: 22px;
+      max-width: 1160px;
+      line-height: 1.5;
+    }
+
+    .settings-layout {
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: 32px;
+      align-items: start;
+      max-width: 1160px;
+    }
+
+    .settings-rail-wrap {
+      position: sticky;
+      top: calc(var(--top-h) + var(--layer-h) + 16px);
+      align-self: start;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .settings-rail {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-right: 1px solid var(--border);
+      padding-right: 16px;
+    }
+
+    .settings-rail-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      padding: 14px 10px 6px;
+    }
+
+    .settings-rail-label:first-child {
+      padding-top: 0;
+    }
+
+    .settings-rail button {
+      width: 100%;
+      text-align: left;
+      padding: 9px 11px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: none;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      line-height: 1.35;
+    }
+
+    .settings-rail button:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .settings-rail button.active {
+      background: var(--brand-faint);
+      color: var(--brand-hover);
+    }
+
+    .settings-main {
+      min-width: 0;
+      padding-bottom: 48px;
+    }
+
+    .sett-section {
+      scroll-margin-top: 108px;
+      margin-bottom: 28px;
+    }
+
+    .sett-head {
+      margin-bottom: 14px;
+    }
+
+    .sett-head h2 {
+      margin: 0 0 6px;
+      font-size: 17px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .sett-head p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 68ch;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px 22px;
+    }
+
+    .form-grid-full {
+      grid-column: 1 / -1;
+    }
+
+    .field label .lbl-hint {
+      display: block;
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--muted-2);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    .settings-toolbar {
+      position: sticky;
+      bottom: 0;
+      z-index: 4;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 16px 0 8px;
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(246, 247, 249, 0) 0%, var(--bg) 28%);
+    }
+
+    .settings-toolbar .muted {
+      font-size: 12px;
+      color: var(--muted);
+      margin-right: auto;
+    }
+
+    .split-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 720px) {
+      .split-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mini-matrix {
+      overflow-x: auto;
+      font-size: 12px;
+    }
+
+    .mini-matrix table {
+      border-collapse: collapse;
+      min-width: 100%;
+    }
+
+    .mini-matrix th,
+    .mini-matrix td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .mini-matrix th:first-child,
+    .mini-matrix td:first-child {
+      text-align: left;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .mini-matrix td.chk {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    .log-stream {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .log-line {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 12px 16px;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .log-line:last-child {
+      border-bottom: none;
+    }
+
+    .log-line time {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip-add {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px dashed var(--border-strong);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .chip-add:hover {
+      border-color: var(--brand);
+      color: var(--brand-hover);
+      background: var(--brand-faint);
+    }
+
+    @media (max-width: 960px) {
+      .settings-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .settings-rail-wrap {
+        position: relative;
+        top: auto;
+        max-height: none;
+        overflow: visible;
+      }
+
+      .settings-rail {
+        flex-direction: row;
+        flex-wrap: wrap;
+        border-right: none;
+        padding-right: 0;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+        gap: 6px;
+      }
+
+      .settings-rail-label {
+        flex-basis: 100%;
+        padding: 0 0 6px;
+      }
+
+      .settings-rail button {
+        width: auto;
+        white-space: nowrap;
+      }
+    }
+
     /* Settings drawer */
     .drawer-backdrop {
       position: fixed;
@@ -1204,7 +1498,7 @@
       <div class="nav-section">Platform administration · Master</div>
       <button type="button" class="nav-item" data-view="master-settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-        Master settings hub
+        Firm settings hub
       </button>
 
       <div class="sidebar-footer">
@@ -1224,7 +1518,7 @@
           </div>
           <div class="page-actions">
             <button type="button" class="btn btn-ghost">Add company</button>
-            <button type="button" class="btn btn-primary" id="btnMasterSettingsAlt">Master settings hub</button>
+            <button type="button" class="btn btn-primary" id="btnMasterSettingsAlt">Firm settings hub</button>
           </div>
         </div>
 
@@ -1476,236 +1770,638 @@
         <p class="note">Header <strong>gear</strong>: shortcuts to full-page engagement settings (team &amp; access, methodology overrides, activity). Or open <strong>company settings</strong> from the dashboard row for RBAC, branding, and org-wide audit logs.</p>
       </section>
 
-      <!-- Master settings hub (platform administration) -->
+      <!-- Master settings · firm-wide (full page + rail) -->
       <section id="view-master-settings" class="view" aria-labelledby="ms-title">
-        <p class="crumb">Master / <strong>Platform administration</strong></p>
-        <div class="page-head">
-          <div>
-            <h1 id="ms-title">Master settings hub</h1>
-            <p>Everything here applies across <strong>all companies</strong>: governance of methodology inheritance, platform roles, audit trails, integrations, and default templates. Methodology <em>catalogues</em> (universe, risk scales, etc.) live in the sidebar — this hub is <em>configuration</em>.</p>
-          </div>
-          <div class="page-actions">
-            <span class="tag tag-teal">Scope: Master</span>
-          </div>
+        <p class="crumb">Firm (master) / <strong>Settings</strong></p>
+        <div class="settings-page-intro">
+          <h1 id="ms-title">Firm-wide settings</h1>
+          <p>Set once by your administrator. Defines defaults every client inherits — users, roles, templates, materiality methods, integrations, and billing. Methodology <strong>catalogues</strong> remain in the sidebar; this screen is <strong>firm configuration</strong>.</p>
         </div>
+        <p class="settings-pattern-note"><strong>Navigation:</strong> Use the left rail (scroll on mobile) to jump between sections. Prefer this full layout for dense policy — the header gear opens here; there is no secondary drawer for master.</p>
 
-        <div class="hub-grid">
-          <article class="hub-card">
-            <span class="tag tag-blue">Methodology</span>
-            <h3>Releases &amp; inheritance</h3>
-            <p>Pinned methodology version, change-freeze windows, what companies may override vs. lock, and rollout milestones.</p>
-          </article>
-          <article class="hub-card">
-            <span class="tag tag-danger">Security</span>
-            <h3>Platform roles &amp; access</h3>
-            <p>Who can publish master catalogues, approve methodology edits, manage tenants, and view cross-company analytics. Distinct from company RBAC.</p>
-          </article>
-          <article class="hub-card">
-            <span class="tag tag-warn">Audit</span>
-            <h3>Platform activity log</h3>
-            <p>Immutable trail of master changes, steward approvals, integration failures, and privileged actions across the estate.</p>
-          </article>
-          <article class="hub-card">
-            <span class="tag tag-purple">Integrations</span>
-            <h3>API &amp; webhooks</h3>
-            <p>SSO/SAML, provisioning hooks, evidence repositories, export schedules — governed at platform level.</p>
-          </article>
-          <article class="hub-card">
-            <span class="tag tag-teal">Branding</span>
-            <h3>Default templates &amp; letterhead</h3>
-            <p>Baseline report shells, fonts, and footer/legal blocks companies inherit; define what is locked vs. editable per company.</p>
-          </article>
-          <article class="hub-card">
-            <span class="tag tag-ok">Operations</span>
-            <h3>Firm preferences</h3>
-            <p>Locale defaults, numbering conventions, retention policies for platform-held data, maintenance windows.</p>
-          </article>
-        </div>
-
-        <div class="panel">
-          <div class="panel-h">
-            <h2>Starter fields (prototype)</h2>
-            <span class="tag tag-teal">Wire to backend later</span>
+        <div class="settings-layout" id="master-settings-root">
+          <div class="settings-rail-wrap">
+            <nav class="settings-rail" aria-label="Firm settings sections">
+              <div class="settings-rail-label">People &amp; access</div>
+              <button type="button" class="active" data-settings-target="ms-users">User management</button>
+              <button type="button" data-settings-target="ms-rbac">Role-based access control</button>
+              <button type="button" data-settings-target="ms-groups">Group / team profiles</button>
+              <button type="button" data-settings-target="ms-logs">Audit trail &amp; system logs</button>
+              <div class="settings-rail-label">Brand &amp; methodology defaults</div>
+              <button type="button" data-settings-target="ms-branding">Firm branding</button>
+              <button type="button" data-settings-target="ms-materiality">Materiality frameworks</button>
+              <button type="button" data-settings-target="ms-templates">Document templates</button>
+              <button type="button" data-settings-target="ms-signoff">Sign-off authority matrix</button>
+              <div class="settings-rail-label">Systems &amp; commercial</div>
+              <button type="button" data-settings-target="ms-integration">Integration settings</button>
+              <button type="button" data-settings-target="ms-notify">Notifications &amp; reminders</button>
+              <button type="button" data-settings-target="ms-billing">Billing / subscription</button>
+            </nav>
           </div>
-          <div class="panel-body">
-            <div class="two-col" style="gap: 20px;">
-              <div class="field">
-                <label for="ms-rel">Active methodology release</label>
-                <input type="text" id="ms-rel" placeholder="MA-2026.04" />
+          <div class="settings-main">
+            <section id="ms-users" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>User management</h2><p>Add and remove firm staff, activate seats, and assign baseline roles before they are refined per client engagement.</p></div>
+                <div class="panel-h" style="margin: 0 0 12px; border: none; padding: 0;"><button type="button" class="btn btn-primary btn-sm">Invite user</button><button type="button" class="btn btn-ghost btn-sm">Import CSV</button></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Name</th><th>Email</th><th>Firm role</th><th>Status</th><th></th></tr></thead>
+                    <tbody>
+                      <tr><td><strong>Hana Yusof</strong></td><td class="code">hana@firm.com</td><td>Partner</td><td><span class="tag tag-ok">Active</span></td><td><a class="link" href="#">Edit</a></td></tr>
+                      <tr><td><strong>Ravi Menon</strong></td><td class="code">ravi@firm.com</td><td>Manager</td><td><span class="tag tag-ok">Active</span></td><td><a class="link" href="#">Edit</a></td></tr>
+                      <tr><td><strong>Aina Rahman</strong></td><td class="code">aina@firm.com</td><td>Senior</td><td><span class="tag tag-warn">Pending invite</span></td><td><a class="link" href="#">Resend</a></td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div class="field">
-                <label for="ms-steward">Methodology steward group</label>
-                <input type="text" id="ms-steward" placeholder="grp-methodology-admins" />
+            </section>
+
+            <section id="ms-rbac" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Role-based access control</h2><p>Define what each firm role (partner, manager, senior, junior, admin) can see and do at platform level. Client-specific overrides stay under company settings.</p></div>
+                <div class="mini-matrix">
+                  <table>
+                    <thead><tr><th>Capability</th><th>Partner</th><th>Manager</th><th>Senior</th><th>Junior</th><th>Admin</th></tr></thead>
+                    <tbody>
+                      <tr><td>Publish methodology catalogue</td><td class="chk">●</td><td class="chk">—</td><td class="chk">—</td><td class="chk">—</td><td class="chk">●</td></tr>
+                      <tr><td>Create / archive client</td><td class="chk">●</td><td class="chk">●</td><td class="chk">—</td><td class="chk">—</td><td class="chk">●</td></tr>
+                      <tr><td>Approve issued findings</td><td class="chk">●</td><td class="chk">●</td><td class="chk">—</td><td class="chk">—</td><td class="chk">—</td></tr>
+                      <tr><td>Edit workpapers</td><td class="chk">●</td><td class="chk">●</td><td class="chk">●</td><td class="chk">●</td><td class="chk">—</td></tr>
+                      <tr><td>View firm billing</td><td class="chk">●</td><td class="chk">—</td><td class="chk">—</td><td class="chk">—</td><td class="chk">●</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="note" style="margin-top:14px;">Production UI: matrix editor with custom roles, field-level policies, and segregation-of-duties rules.</p>
               </div>
-              <div class="field">
-                <label for="ms-webhook">Platform webhook URL</label>
-                <input type="url" id="ms-webhook" placeholder="https://…" />
+            </section>
+
+            <section id="ms-groups" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Group / team profiles</h2><p>Departments or practice lines (Assurance, Risk, Tax support). Used for staffing defaults, review routing, and permission bundles.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>New practice group name<input type="text" placeholder="Digital audit cell" /></label></div>
+                  <div class="field"><label>Default partner sponsor<input type="text" placeholder="Search directory" /></label></div>
+                </div>
+                <div class="table-wrap" style="margin-top:16px;">
+                  <table class="data">
+                    <thead><tr><th>Group</th><th>Headcount</th><th>Default methodology pack</th></tr></thead>
+                    <tbody>
+                      <tr><td><strong>Financial services</strong></td><td>34</td><td class="code">MP-BANK</td></tr>
+                      <tr><td><strong>Commercial &amp; industry</strong></td><td>56</td><td class="code">MP-OPS</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="pill-row"><button type="button" class="chip-add">+ Add group</button></div>
               </div>
-              <div class="field">
-                <label for="ms-template">Default PDF master template ID</label>
-                <input type="text" id="ms-template" placeholder="RPT-MASTER-01" />
+            </section>
+
+            <section id="ms-logs" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Audit trail &amp; system logs</h2><p>Who accessed what, when — authentication, settings mutations, exports, and privileged reads across all clients.</p></div>
+                <div class="split-2">
+                  <div class="field"><label>Retention (years)<input type="number" value="7" min="1" /></label></div>
+                  <div class="field"><label>Export schedule<select><option>Monthly ZIP to SIEM</option><option>On demand only</option></select></label></div>
+                </div>
+                <div class="log-stream" style="margin-top:14px;">
+                  <div class="log-line"><time>05-May 09:14 UTC</time><div><strong>H. Yusof</strong> viewed client Contoso · Tax docs · IP logged</div></div>
+                  <div class="log-line"><time>05-May 08:02 UTC</time><div><strong>System</strong> SSO certificate rotated · IdP OKTA</div></div>
+                  <div class="log-line"><time>04-May 17:41 UTC</time><div><strong>R. Menon</strong> changed firm RBAC matrix · Partner approval pending</div></div>
+                </div>
               </div>
+            </section>
+
+            <section id="ms-branding" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Firm branding</h2><p>Logo, colour palette, typography, and default letterhead blocks applied when clients have not overridden branding.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Primary logo (SVG / PNG)<input type="file" /></label></div>
+                  <div class="field"><label>Wordmark<input type="file" /></label></div>
+                  <div class="field"><label>Primary colour<input type="color" value="#0f766e" /></label></div>
+                  <div class="field"><label>Report footer legal text<span class="lbl-hint">Appears on draft &amp; final PDFs</span><textarea rows="3" placeholder="Registered auditors …"></textarea></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="ms-materiality" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Materiality frameworks</h2><p>Default calculation methods new clients inherit — e.g. % of profit before tax, revenue, or total assets.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Framework code</th><th>Basis</th><th>Default %</th><th>Floor / cap rules</th></tr></thead>
+                    <tbody>
+                      <tr><td class="code">MAT-PBT-STD</td><td>% of PBT</td><td>5%</td><td>Min MYR 50k unless waived</td></tr>
+                      <tr><td class="code">MAT-REV-SM</td><td>% revenue</td><td>0.75%</td><td>For non-profit / volatile PBT</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" style="margin-top:12px;">+ Add framework</button>
+              </div>
+            </section>
+
+            <section id="ms-templates" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Document templates</h2><p>Standard workpaper shells, planning memo layouts, and issued report formats versioned at firm level.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Template</th><th>Type</th><th>Version</th><th>Locked regions</th></tr></thead>
+                    <tbody>
+                      <tr><td><strong>WP · Testing worksheet</strong></td><td>Workpaper</td><td>v12</td><td>Header / firm logo</td></tr>
+                      <tr><td><strong>RPT · Audit opinion</strong></td><td>Report</td><td>v5</td><td>Legal footer</td></tr>
+                      <tr><td><strong>MEM · Planning</strong></td><td>Memo</td><td>v8</td><td>—</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section id="ms-signoff" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Sign-off authority matrix</h2><p>Who can approve at each level for issued documents — preparer → reviewer → EQR → partner.</p></div>
+                <div class="mini-matrix">
+                  <table>
+                    <thead><tr><th>Artefact stage</th><th>Junior</th><th>Senior</th><th>Manager</th><th>Partner</th></tr></thead>
+                    <tbody>
+                      <tr><td>Draft workpaper complete</td><td class="chk">Prep</td><td class="chk">Rev</td><td class="chk">—</td><td class="chk">—</td></tr>
+                      <tr><td>Issue draft to client</td><td class="chk">—</td><td class="chk">—</td><td class="chk">✓</td><td class="chk">✓</td></tr>
+                      <tr><td>Final auditor’s report</td><td class="chk">—</td><td class="chk">—</td><td class="chk">EQR</td><td class="chk">✓</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section id="ms-integration" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Integration settings</h2><p>Accounting connectors, document vault (SharePoint / iManage), HR directory sync, and SSO identity provider.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>SSO provider<select><option>Okta</option><option>Azure AD</option><option>Google Workspace</option></select></label></div>
+                  <div class="field"><label>Default evidence repository<input type="text" placeholder="vault://firm-main" /></label></div>
+                  <div class="field"><label>ERP connector<select><option>SAP B1</option><option>Xero practice</option><option>None</option></select></label></div>
+                  <div class="field"><label>Webhook signing secret<span class="lbl-hint">Rotate quarterly</span><input type="password" placeholder="••••••••" /></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="ms-notify" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Notifications &amp; reminder defaults</h2><p>Firm-wide cadence for review reminders, open issue ageing, and committee pack deadlines.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Open issue reminder (days)<input type="number" value="14" /></label></div>
+                  <div class="field"><label>Timesheet burn vs budget alert<input type="number" value="90" placeholder="% threshold" /></label></div>
+                  <div class="field form-grid-full"><label>Digest email<select><option>Daily 07:00 local</option><option>Weekly Monday</option><option>None</option></select></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="ms-billing" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Billing / subscription</h2><p>For SaaS deployments — seats, storage tier, and invoicing contacts.</p></div>
+                <div class="split-2">
+                  <div class="panel" style="box-shadow:none;border-style:dashed;">
+                    <div class="panel-body">
+                      <strong>Current plan</strong><p class="note" style="margin:8px 0 0;border:none;padding:0;">Professional · 120 named users · MYR region</p>
+                      <button type="button" class="btn btn-primary btn-sm" style="margin-top:12px;">Manage subscription</button>
+                    </div>
+                  </div>
+                  <div class="form-grid">
+                    <div class="field"><label>Billing contact<input type="email" placeholder="finance@firm.com" /></label></div>
+                    <div class="field"><label>Purchase order ref<input type="text" /></label></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <div class="settings-toolbar">
+              <span class="muted">Unsaved changes appear here in a live app.</span>
+              <button type="button" class="btn btn-ghost">Discard</button>
+              <button type="button" class="btn btn-primary">Save firm settings</button>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Company settings (full hub — tenant) -->
+      <!-- Company settings · per client (full page + rail) -->
       <section id="view-company-settings" class="view" aria-labelledby="co-set-title">
-        <p class="crumb">Company / <strong id="co-set-crumb-name">…</strong> / <strong>Settings</strong></p>
-        <div class="page-head">
-          <div>
-            <h1 id="co-set-title">Company settings</h1>
-            <p id="co-set-desc">Tenant-scoped administration: org profile, branding, security, teams, and activity. Opens from the company gear shortcuts on the dashboard.</p>
-          </div>
-          <div class="page-actions">
-            <button type="button" class="btn btn-ghost" id="btnCompanySettingsBack">← Back</button>
-            <span class="tag tag-teal" id="co-set-id-tag">co-id</span>
+        <p class="crumb">Client (company) / <strong id="co-set-crumb-name">…</strong> / <strong>Settings</strong></p>
+        <div class="settings-page-intro">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px;">
+            <div style="flex:1;min-width:220px;">
+              <h1 id="co-set-title">Client onboarding &amp; profile</h1>
+              <p id="co-set-desc">Captured when onboarding the client. Risk profile and entity classification drive defaults on every engagement; materiality can be overridden per job.</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button type="button" class="btn btn-ghost" id="btnCompanySettingsBack">← Back</button>
+              <span class="tag tag-teal" id="co-set-id-tag">co-id</span>
+            </div>
           </div>
         </div>
+        <p class="settings-pattern-note"><strong>Navigation:</strong> Dashboard row <strong>gear</strong> opens a quick shortcut drawer; choosing any item lands here on the matching section. Use the rail for long forms — same pattern as firm settings.</p>
 
-        <div class="tabs settings-tabs-wrap co-settings-tabs" role="tablist" aria-label="Company settings sections">
-          <button type="button" class="tab co-tab active" role="tab" aria-selected="true" data-co-tab="general">General &amp; profile</button>
-          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="branding">Branding &amp; letterhead</button>
-          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="security">Security &amp; access (RBAC)</button>
-          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="teams">Teams &amp; groups</button>
-          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="activity">Activity log</button>
-        </div>
+        <div class="settings-layout" id="company-settings-root">
+          <div class="settings-rail-wrap">
+            <nav class="settings-rail" aria-label="Client settings sections">
+              <div class="settings-rail-label">Entity</div>
+              <button type="button" class="active" data-settings-target="co-entity">Entity details</button>
+              <button type="button" data-settings-target="co-classification">Type &amp; industry</button>
+              <button type="button" data-settings-target="co-riskprofile">Risk profile</button>
+              <div class="settings-rail-label">Relationships</div>
+              <button type="button" data-settings-target="co-contacts">Key contacts</button>
+              <button type="button" data-settings-target="co-related">Related parties</button>
+              <div class="settings-rail-label">Standards &amp; thresholds</div>
+              <button type="button" data-settings-target="co-materiality">Materiality</button>
+              <button type="button" data-settings-target="co-standards">Applicable standards</button>
+              <button type="button" data-settings-target="co-prior">Prior year &amp; carry-forwards</button>
+              <div class="settings-rail-label">Delivery</div>
+              <button type="button" data-settings-target="co-teamdefaults">Engagement team defaults</button>
+              <button type="button" data-settings-target="co-clientdocs">Document requirements</button>
+              <div class="settings-rail-label">Governance</div>
+              <button type="button" data-settings-target="co-security">Access &amp; RBAC</button>
+              <button type="button" data-settings-target="co-log">Client activity log</button>
+            </nav>
+          </div>
+          <div class="settings-main">
+            <section id="co-entity" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Entity details</h2><p>Registered legal identity as filed with SSM / registrar — drives statutory deadlines and filing packs.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Registered name<span class="lbl-hint">As per certificate of incorporation</span><input type="text" placeholder="Contoso Financial Group Berhad" /></label></div>
+                  <div class="field"><label>Company / registration no.<input type="text" placeholder="202001234567 (SSM)" /></label></div>
+                  <div class="field"><label>Incorporation jurisdiction<select><option>Malaysia</option><option>Singapore</option><option>Other</option></select></label></div>
+                  <div class="field"><label>Financial year-end<input type="text" placeholder="31 December" /></label></div>
+                  <div class="field form-grid-full"><label>Registered office address<textarea rows="2" placeholder="Full address"></textarea></label></div>
+                </div>
+              </div>
+            </section>
 
-        <div id="co-tab-general" class="co-panel active">
-          <div class="panel">
-            <div class="panel-h"><h2>Organisation profile</h2></div>
-            <div class="panel-body">
-              <p class="note" style="margin-top: 0;">Legal name, identifiers, fiscal calendar, primary currency, AC contacts — the company’s “directory root.”</p>
-              <div class="two-col">
-                <div class="field"><label>Fiscal year end</label><input type="text" placeholder="31 December" /></div>
-                <div class="field"><label>Reporting currency</label><input type="text" placeholder="USD" /></div>
+            <section id="co-classification" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Entity type &amp; industry</h2><p>Listed vs private drives disclosure templates; sector feeds inherent risk defaults from methodology catalogues.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Entity type<select><option>Listed issuer (Main)</option><option>Listed (ACE)</option><option>Private limited</option><option>Subsidiary of listed group</option><option>Government-linked</option><option>Not-for-profit</option></select></label></div>
+                  <div class="field"><label>Bursa sector (if listed)<input type="text" placeholder="Financials · Banks" /></label></div>
+                  <div class="field"><label>Industry (tier 1)<select><option>Financial services</option><option>Technology</option><option>Retail &amp; consumer</option><option>Manufacturing</option><option>Other</option></select></label></div>
+                  <div class="field"><label>NACE / MSIC codes<input type="text" placeholder="64191 · Central banking" /></label></div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div id="co-tab-branding" class="co-panel">
-          <div class="panel">
-            <div class="panel-h"><h2>Branding &amp; letterhead</h2></div>
-            <div class="panel-body">
-              <p class="note" style="margin-top: 0;">Logos, colour tokens, PDF headers/footers for audit reports; inherits master template locks where enforced.</p>
-              <div class="field"><label>Letterhead asset URL</label><input type="url" placeholder="https://…" /></div>
-            </div>
-          </div>
-        </div>
-        <div id="co-tab-security" class="co-panel">
-          <div class="panel">
-            <div class="panel-h"><h2>Security &amp; access (RBAC)</h2><span class="tag tag-danger">Full-screen tables in production</span></div>
-            <div class="table-wrap">
-              <table class="data">
-                <thead><tr><th>Role</th><th scope="col">Scope</th><th>Typical grants</th></tr></thead>
-                <tbody>
-                  <tr><td><strong>Org admin</strong></td><td>Company</td><td>Invite users, assign roles, branding, integrations</td></tr>
-                  <tr><td><strong>Audit partner</strong></td><td>Company + engagements</td><td>Approval chains, issue release</td></tr>
-                  <tr><td><strong>Staff</strong></td><td>Assigned engagements</td><td>Workpapers, testing</td></tr>
-                  <tr><td><strong>Guest SME</strong></td><td>Limited engagement</td><td>Read/select artefacts only</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div id="co-tab-teams" class="co-panel">
-          <div class="panel">
-            <div class="panel-h"><h2>Teams &amp; groups</h2></div>
-            <div class="panel-body">
-              <p class="note" style="margin-top: 0;">Org chart groups used for routing workitems, default reviewers, and bulk permission assignment.</p>
-              <div class="table-wrap">
-                <table class="data">
-                  <thead><tr><th>Group</th><th>Members</th><th>Use</th></tr></thead>
-                  <tbody>
-                    <tr><td><strong>IA hub — FinCrime</strong></td><td>12</td><td>AML engagements default team</td></tr>
-                    <tr><td><strong>IA hub — Technology</strong></td><td>18</td><td>ITGC / cyber cohort</td></tr>
-                  </tbody>
-                </table>
+            </section>
+
+            <section id="co-riskprofile" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Risk profile</h2><p>Inherent risk rating and control environment assessment at client level — engagements inherit unless refreshed.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Inherent risk rating<select><option>Low</option><option>Medium</option><option>High</option><option>Elevated — regulatory scrutiny</option></select></label></div>
+                  <div class="field"><label>Control environment<span class="lbl-hint">COSO-style summary</span><select><option>Strong</option><option>Moderate</option><option>Weak — pervasive themes</option></select></label></div>
+                  <div class="field form-grid-full"><label>Key executive commentary<span class="lbl-hint">Themes rolling into annual planning</span><textarea rows="3" placeholder="Crypto treasury pilot · third-party payment reliance …"></textarea></label></div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div id="co-tab-activity" class="co-panel">
-          <div class="panel">
-            <div class="panel-h"><h2>Company activity log</h2></div>
-            <div class="panel-body">
-              <p class="note" style="margin-top: 0;">Settings changes, user invites, role edits, branding uploads — filtered export for compliance.</p>
-              <ul style="margin: 0; padding-left: 1.2rem; font-size: 13px; color: var(--muted); line-height: 1.7;">
-                <li>Today · Role <strong>Analyst</strong> granted to user · by Org admin</li>
-                <li>Yesterday · Letterhead v3 uploaded · by Org admin</li>
-              </ul>
+            </section>
+
+            <section id="co-contacts" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Key contacts</h2><p>CFO, audit committee liaison, company secretary — used on correspondence and representation letters.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Role</th><th>Name</th><th>Email</th><th>Phone</th></tr></thead>
+                    <tbody>
+                      <tr><td>CFO</td><td><input type="text" placeholder="Name" style="width:100%;min-width:140px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font:inherit;" /></td><td><input type="email" placeholder="cfo@client.com" style="width:100%;min-width:160px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font:inherit;" /></td><td class="code">+60 …</td></tr>
+                      <tr><td>Audit liaison</td><td><input type="text" style="width:100%;min-width:140px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font:inherit;" /></td><td><input type="email" style="width:100%;min-width:160px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font:inherit;" /></td><td></td></tr>
+                      <tr><td>Legal counsel</td><td colspan="3"><input type="text" placeholder="Firm name · primary lawyer" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font:inherit;" /></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button type="button" class="chip-add" style="margin-top:12px;">+ Add contact role</button>
+              </div>
+            </section>
+
+            <section id="co-related" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Related parties list</h2><p>Subsidiaries, associates, joint ventures, and directors’ other interests — supports independence checks and group audit scoping.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Entity</th><th>Relationship</th><th>% holding</th><th>Notes</th></tr></thead>
+                    <tbody>
+                      <tr><td><strong>Contoso Pay Ltd</strong></td><td>Subsidiary</td><td>100%</td><td>Fintech payments</td></tr>
+                      <tr><td><strong>Pacific Nominees</strong></td><td>Associate</td><td>28%</td><td>Director overlap</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" style="margin-top:12px;">+ Add related party</button>
+              </div>
+            </section>
+
+            <section id="co-materiality" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Materiality threshold</h2><p>Overrides firm default framework for this client — engagements may tighten further.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Inherited framework<select><option>MAT-PBT-STD (firm)</option><option>MAT-REV-SM</option><option>Custom</option></select></label></div>
+                  <div class="field"><label>Planning materiality (whole MYR)<input type="text" placeholder="1 250 000" /></label></div>
+                  <div class="field"><label>Trivial threshold %<input type="text" placeholder="3% of planning PM" /></label></div>
+                  <div class="field"><label>Approval<span class="lbl-hint">Partner sign-off on benchmark</span><input type="text" placeholder="Partner · dated" /></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="co-standards" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Applicable standards</h2><p>Financial reporting framework and auditing standards applicable to filings.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Financial reporting<select><option>MFRS</option><option>MPERS</option><option>IFRS</option><option>Other</option></select></label></div>
+                  <div class="field"><label>Audit standards<select><option>ISA (Malaysia)</option><option>PCAOB</option><option>Other</option></select></label></div>
+                  <div class="field form-grid-full"><label>Additional circulars / RPG<input type="text" placeholder="BNM / SC supplemental …" /></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="co-prior" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Prior year balances &amp; carry-forwards</h2><p>Closing ties to prior auditor’s opinion and rolled-forward misstatements.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Prior year auditor<input type="text" placeholder="Firm name · cleared" /></label></div>
+                  <div class="field"><label>PY opinion type<select><option>Unmodified</option><option>Modified · emphasis</option><option>Disclaimer</option></select></label></div>
+                  <div class="field form-grid-full"><label>Carry-forward summary<span class="lbl-hint">Link to permanent file section</span><textarea rows="3" placeholder="Deferred tax roll-forward · opening TB tie-out …"></textarea></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="co-teamdefaults" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Assigned engagement team defaults</h2><p>Partner and manager usually handling this client — auto-populated on new engagements.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Responsible EQ partner<input type="text" placeholder="Search firm directory" /></label></div>
+                  <div class="field"><label>Default manager<input type="text" /></label></div>
+                  <div class="field"><label>Industry SME pool<select><option>FinCrime hub</option><option>Technology hub</option></select></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="co-clientdocs" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Client-specific document requirements</h2><p>Mandatory attachments per regulator or banking covenant.</p></div>
+                <ul style="margin:0;padding-left:1.2rem;color:var(--muted);font-size:13px;line-height:1.8;">
+                  <li>Bursa sustainability statement cross-reference</li>
+                  <li>BNM CP appendix for licensed subsidiary</li>
+                </ul>
+                <button type="button" class="chip-add" style="margin-top:14px;">+ Add requirement</button>
+              </div>
+            </section>
+
+            <section id="co-security" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Access &amp; RBAC (client tenant)</h2><p>Which firm users and external guests can see this client’s vault; distinct from firm-wide RBAC.</p></div>
+                <div class="mini-matrix">
+                  <table>
+                    <thead><tr><th>Role binding</th><th>View TB</th><th>Edit WP</th><th>Issue approval</th></tr></thead>
+                    <tbody>
+                      <tr><td>Client engagement team</td><td class="chk">●</td><td class="chk">●</td><td class="chk">Partner only</td></tr>
+                      <tr><td>Guest regulator liaison</td><td class="chk">Read</td><td class="chk">—</td><td class="chk">—</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section id="co-log" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Client activity log</h2><p>Changes to this profile, permission grants, and document uploads scoped to the client.</p></div>
+                <div class="log-stream">
+                  <div class="log-line"><time>05-May 14:02</time><div><strong>R. Menon</strong> updated materiality framework → MAT-PBT-STD</div></div>
+                  <div class="log-line"><time>02-May 09:18</time><div><strong>H. Yusof</strong> added related party · Pacific Nominees</div></div>
+                </div>
+              </div>
+            </section>
+
+            <div class="settings-toolbar">
+              <span class="muted">Last saved · prototype</span>
+              <button type="button" class="btn btn-ghost">Discard</button>
+              <button type="button" class="btn btn-primary">Save client settings</button>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Engagement settings (full hub — job) -->
+      <!-- Engagement settings · per audit job (full page + rail) -->
       <section id="view-engagement-settings" class="view" aria-labelledby="en-set-title">
         <p class="crumb"><a href="#" class="link js-back-dashboard" style="font-weight:600;">Dashboard</a> · <span id="en-set-crumb-co">Company</span> · <strong id="en-set-crumb-code">ENG</strong> / <strong>Settings</strong></p>
-        <div class="page-head">
-          <div>
-            <h1 id="en-set-title">Engagement settings</h1>
-            <p id="en-set-desc">Job-scoped: team on the audit, methodology pack override, visibility, sign-offs — not company-wide RBAC.</p>
-          </div>
-          <div class="page-actions">
-            <button type="button" class="btn btn-ghost" id="btnEngagementSettingsBack">← Back</button>
-            <span class="tag tag-blue" id="en-set-code-tag">ENG</span>
+        <div class="settings-page-intro">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px;">
+            <div style="flex:1;min-width:220px;">
+              <h1 id="en-set-title">Engagement setup</h1>
+              <p id="en-set-desc">Configured at engagement inception — type, period, team, scope, materiality, deadlines, fees, risks, component auditors, representations, and statutory filings.</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <button type="button" class="btn btn-ghost" id="btnEngagementSettingsBack">← Back</button>
+              <span class="tag tag-blue" id="en-set-code-tag">ENG</span>
+            </div>
           </div>
         </div>
+        <p class="settings-pattern-note"><strong>Navigation:</strong> Row gear or in-job header gear opens shortcuts; this page holds the complete checklist. Sticky toolbar commits changes for the engagement record only.</p>
 
-        <div class="tabs settings-tabs-wrap en-settings-tabs" role="tablist" aria-label="Engagement settings sections">
-          <button type="button" class="tab en-tab active" role="tab" aria-selected="true" data-en-tab="general">General</button>
-          <button type="button" class="tab en-tab" role="tab" aria-selected="false" data-en-tab="team">Team &amp; access</button>
-          <button type="button" class="tab en-tab" role="tab" aria-selected="false" data-en-tab="method">Methodology overrides</button>
-          <button type="button" class="tab en-tab" role="tab" aria-selected="false" data-en-tab="activity">Activity</button>
-        </div>
+        <div class="settings-layout" id="engagement-settings-root">
+          <div class="settings-rail-wrap">
+            <nav class="settings-rail" aria-label="Engagement settings sections">
+              <div class="settings-rail-label">Scope</div>
+              <button type="button" class="active" data-settings-target="en-type">Engagement type</button>
+              <button type="button" data-settings-target="en-period">Financial year / period</button>
+              <button type="button" data-settings-target="en-scope">Scope &amp; objectives</button>
+              <div class="settings-rail-label">People &amp; governance</div>
+              <button type="button" data-settings-target="en-team">Engagement team</button>
+              <button type="button" data-settings-target="en-signoff">Sign-off workflow</button>
+              <div class="settings-rail-label">Risk &amp; materiality</div>
+              <button type="button" data-settings-target="en-materiality">Materiality</button>
+              <button type="button" data-settings-target="en-riskassess">Risk assessment</button>
+              <div class="settings-rail-label">Delivery</div>
+              <button type="button" data-settings-target="en-reporting">Reporting deadlines</button>
+              <button type="button" data-settings-target="en-fee">Fee &amp; budget</button>
+              <button type="button" data-settings-target="en-components">Component auditors</button>
+              <div class="settings-rail-label">Compliance</div>
+              <button type="button" data-settings-target="en-repr">Mgmt representation</button>
+              <button type="button" data-settings-target="en-filing">Filing requirements</button>
+              <div class="settings-rail-label">Audit trail</div>
+              <button type="button" data-settings-target="en-activity">Engagement activity</button>
+            </nav>
+          </div>
+          <div class="settings-main">
+            <section id="en-type" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Engagement type</h2><p>Statutory audit, tax, review, agreed-upon procedures — drives checklist templates and regulator packs.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Engagement category<select><option>Statutory audit · annual</option><option>Statutory audit · interim review</option><option>Tax · corporate compliance</option><option>Special purpose / comfort letter</option><option>Other assurance</option></select></label></div>
+                  <div class="field"><label>Regulatory hook<select><option>SSM annual return</option><option>Bursa listing rules</option><option>BNM licensed entity</option><option>None</option></select></label></div>
+                </div>
+              </div>
+            </section>
 
-        <div id="en-tab-general" class="en-panel active">
-          <div class="panel">
-            <div class="panel-h"><h2>General</h2></div>
-            <div class="panel-body">
-              <div class="two-col">
-                <div class="field"><label>Period under review</label><input type="text" placeholder="1 Jan – 31 Dec 2026" /></div>
-                <div class="field"><label>Engagement manager</label><input type="text" placeholder="Name" /></div>
+            <section id="en-period" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Financial year &amp; reporting period</h2><p>Defines boundaries for sampling, subsequent events, and comparative columns.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Reporting period start<input type="date" /></label></div>
+                  <div class="field"><label>Reporting period end<input type="date" /></label></div>
+                  <div class="field"><label>Current year label<input type="text" placeholder="FY2026" /></label></div>
+                  <div class="field"><label>Comparative period<input type="text" placeholder="FY2025 audited" /></label></div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div id="en-tab-team" class="en-panel">
-          <div class="panel">
-            <div class="panel-h"><h2>Team &amp; access</h2><span class="tag tag-teal">Engagement membership</span></div>
-            <div class="panel-body">
-              <p class="note" style="margin-top: 0;">Which users and groups are on this job; optional restricted visibility vs. company directory.</p>
-              <div class="table-wrap">
-                <table class="data">
-                  <thead><tr><th>Person</th><th>Role on engagement</th></tr></thead>
-                  <tbody>
-                    <tr><td>J. Okonkwo</td><td>Lead</td></tr>
-                    <tr><td>Guest SME · IAM</td><td>Read-only evidence set B</td></tr>
-                  </tbody>
-                </table>
+            </section>
+
+            <section id="en-scope" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Scope &amp; objectives</h2><p>Inclusions, exclusions, emphasis-of-matter areas, and reliance on component auditors.</p></div>
+                <div class="form-grid">
+                  <div class="field form-grid-full"><label>Inclusions<textarea rows="2" placeholder="Consolidated FS · all subsidiaries listed in appendix A"></textarea></label></div>
+                  <div class="field form-grid-full"><label>Exclusions / carve-outs<textarea rows="2" placeholder="Discontinued ops disposal sub-group …"></textarea></label></div>
+                  <div class="field form-grid-full"><label>Emphasis &amp; focal risks<span class="lbl-hint">Link to planning memo sections</span><textarea rows="3" placeholder="Crypto custody · revenue recognition policy change …"></textarea></label></div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div id="en-tab-method" class="en-panel">
-          <div class="panel">
-            <div class="panel-h"><h2>Methodology overrides</h2></div>
-            <div class="panel-body">
-              <p class="note" style="margin-top: 0;">Pack selection, sampling policy waiver codes, sign-off chain — must remain within master allowance.</p>
-              <div class="field"><label>Methodology pack</label><input type="text" placeholder="MP-ITGC" /></div>
-            </div>
-          </div>
-        </div>
-        <div id="en-tab-activity" class="en-panel">
-          <div class="panel">
-            <div class="panel-h"><h2>Engagement activity</h2></div>
-            <div class="panel-body">
-              <ul style="margin: 0; padding-left: 1.2rem; font-size: 13px; color: var(--muted); line-height: 1.7;">
-                <li>Issue draft IA-2026-184 created · Lead</li>
-                <li>RACM v4 uploaded · Manager</li>
-              </ul>
+            </section>
+
+            <section id="en-team" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Engagement team</h2><p>Assigned partner, manager, seniors for this specific job — may differ from client defaults.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Seat</th><th>Name</th><th>Charge code</th></tr></thead>
+                    <tbody>
+                      <tr><td>Engagement partner</td><td><input type="text" placeholder="Search" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font:inherit;" /></td><td class="code">EP-4401</td></tr>
+                      <tr><td>Manager</td><td><input type="text" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font:inherit;" /></td><td class="code">M-8821</td></tr>
+                      <tr><td>Senior · ITGC</td><td>J. Okonkwo</td><td class="code">S-11203</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button type="button" class="chip-add" style="margin-top:12px;">+ Add staff / contractor</button>
+              </div>
+            </section>
+
+            <section id="en-signoff" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Engagement-level sign-off workflow</h2><p>Review chain for workpapers and outputs on this job — can shorten vs firm matrix if policy allows.</p></div>
+                <div class="mini-matrix">
+                  <table>
+                    <thead><tr><th>Stage</th><th>Reviewer</th><th>ETA</th></tr></thead>
+                    <tbody>
+                      <tr><td>Planning sign-off</td><td>Manager → Partner</td><td>Plan complete</td></tr>
+                      <tr><td>Hard-close testing</td><td>Senior → Manager</td><td>Fieldwork window</td></tr>
+                      <tr><td>Draft report issue</td><td>EQR → Partner</td><td>Target · AC meeting</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section id="en-materiality" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Materiality for this engagement</h2><p>May differ from client profile — document rationale when tightened.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Use client default?<select><option>Yes · inherit</option><option>No · engagement-specific</option></select></label></div>
+                  <div class="field"><label>Planning PM (MYR)<input type="text" placeholder="1 100 000" /></label></div>
+                  <div class="field"><label>Performance PM<input type="text" /></label></div>
+                  <div class="field form-grid-full"><label>Rationale / linkage to benchmark<span class="lbl-hint">ISA 320 documentation</span><textarea rows="2"></textarea></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="en-riskassess" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Risk assessment · period-specific</h2><p>Fraud inquiries, significant risks, going concern triggers — feeds audit programmes.</p></div>
+                <div class="form-grid">
+                  <div class="field form-grid-full"><label>Significant risks identified<textarea rows="4" placeholder="RSA-01 Revenue cutoff … RSA-02 Related-party lending …"></textarea></label></div>
+                  <div class="field"><label>Fraud brainstorming held?<select><option>Scheduled</option><option>Completed 02-May</option></select></label></div>
+                  <div class="field"><label>Going concern<span class="lbl-hint">Assessment outcome</span><select><option>No material uncertainty</option><option>Disclosure required</option></select></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="en-reporting" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Reporting deadlines</h2><p>Interim review, draft FS, final opinion — aligns AC calendar.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Milestone</th><th>Target date</th><th>Owner</th></tr></thead>
+                    <tbody>
+                      <tr><td>Hard-close fieldwork</td><td><input type="date" /></td><td>Manager</td></tr>
+                      <tr><td>Draft FS / MR draft</td><td><input type="date" /></td><td>Partner</td></tr>
+                      <tr><td>Final signed auditor’s report</td><td><input type="date" /></td><td>Partner</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section id="en-fee" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Fee &amp; budget</h2><p>Hours budgeted per section / assertion — feeds recovery reporting.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Fixed fee (MYR)<input type="text" placeholder="185 000" /></label></div>
+                  <div class="field"><label>Budget hours · total<input type="number" placeholder="820" /></label></div>
+                </div>
+                <div class="table-wrap" style="margin-top:16px;">
+                  <table class="data">
+                    <thead><tr><th>Section</th><th>Budget hrs</th><th>Burn %</th></tr></thead>
+                    <tbody>
+                      <tr><td>Risk &amp; planning</td><td>90</td><td>72%</td></tr>
+                      <tr><td>Controls / ITGC</td><td>210</td><td>41%</td></tr>
+                      <tr><td>Substantive · FS</td><td>380</td><td>18%</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section id="en-components" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Component auditors</h2><p>Other firms or overseas offices included in group audit scope.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Component</th><th>Firm</th><th>Jurisdiction</th><th>Instructions issued</th></tr></thead>
+                    <tbody>
+                      <tr><td>Contoso SG Pte Ltd</td><td>Associate firm</td><td>Singapore</td><td><span class="tag tag-warn">Draft</span></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" style="margin-top:12px;">+ Add component</button>
+              </div>
+            </section>
+
+            <section id="en-repr" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Management representation letter</h2><p>Drafting hooks — subjects covered, signatories, and dating relative to report.</p></div>
+                <div class="form-grid">
+                  <div class="field"><label>Template<select><option>MRL · statutory audit MY</option><option>MRL · review engagement</option></select></label></div>
+                  <div class="field"><label>Expected signatories<input type="text" placeholder="CEO · CFO" /></label></div>
+                  <div class="field form-grid-full"><label>Custom paragraphs<span class="lbl-hint">Fraud · litigation · crypto holdings</span><textarea rows="3"></textarea></label></div>
+                </div>
+              </div>
+            </section>
+
+            <section id="en-filing" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Filing requirements</h2><p>Bursa, SSM, tax authority — statutory clocks independent of internal milestones.</p></div>
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Obligation</th><th>Authority</th><th>Due</th><th>Status</th></tr></thead>
+                    <tbody>
+                      <tr><td>Annual return &amp; FS lodgement</td><td>SSM</td><td><input type="date" /></td><td><span class="tag tag-teal">Tracked</span></td></tr>
+                      <tr><td>Listed issuer annual report</td><td>Bursa</td><td><input type="date" /></td><td><span class="tag tag-teal">Tracked</span></td></tr>
+                      <tr><td>Corporate tax Form C</td><td>LHDNM</td><td><input type="date" /></td><td><span class="tag tag-warn">TBC</span></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+
+            <section id="en-activity" class="sett-section panel">
+              <div class="panel-body">
+                <div class="sett-head"><h2>Engagement activity</h2><p>Immutable-style feed for this job — planning memo locks, issue drafts, file exports.</p></div>
+                <div class="log-stream">
+                  <div class="log-line"><time>05-May 11:20</time><div><strong>J. Okonkwo</strong> locked planning memo v3</div></div>
+                  <div class="log-line"><time>04-May 16:05</time><div><strong>R. Menon</strong> uploaded signed TOC · ITGC</div></div>
+                </div>
+              </div>
+            </section>
+
+            <div class="settings-toolbar">
+              <span class="muted">Engagement settings · draft</span>
+              <button type="button" class="btn btn-ghost">Discard</button>
+              <button type="button" class="btn btn-primary">Save engagement setup</button>
             </div>
           </div>
         </div>
@@ -2542,29 +3238,36 @@
       var pendingEngCtx = { companyId: "", companyName: "", engCode: "", engTitle: "" };
       var settingsReturnView = "dashboard";
 
-      function activateCoTab(tab) {
-        document.querySelectorAll(".co-tab").forEach(function (t) {
-          var on = t.getAttribute("data-co-tab") === tab;
-          t.classList.toggle("active", on);
-          t.setAttribute("aria-selected", on ? "true" : "false");
-        });
-        document.querySelectorAll(".co-panel").forEach(function (p) {
-          p.classList.toggle("active", p.id === "co-tab-" + tab);
-        });
-      }
-
-      function activateEnTab(tab) {
-        document.querySelectorAll(".en-tab").forEach(function (t) {
-          var on = t.getAttribute("data-en-tab") === tab;
-          t.classList.toggle("active", on);
-          t.setAttribute("aria-selected", on ? "true" : "false");
-        });
-        document.querySelectorAll(".en-panel").forEach(function (p) {
-          p.classList.toggle("active", p.id === "en-tab-" + tab);
+      function scrollSettingsSection(rootId, sectionDomId) {
+        var root = document.getElementById(rootId);
+        var el = document.getElementById(sectionDomId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        if (!root) return;
+        root.querySelectorAll(".settings-rail button[data-settings-target]").forEach(function (b) {
+          b.classList.toggle("active", b.getAttribute("data-settings-target") === sectionDomId);
         });
       }
 
-      function openCompanySettingsHub(tab) {
+      function bindSettingsRails() {
+        ["master-settings-root", "company-settings-root", "engagement-settings-root"].forEach(function (rid) {
+          var root = document.getElementById(rid);
+          if (!root) return;
+          var rail = root.querySelector(".settings-rail");
+          if (!rail || rail.dataset.bound === "1") return;
+          rail.dataset.bound = "1";
+          rail.addEventListener("click", function (e) {
+            var btn = e.target.closest("button[data-settings-target]");
+            if (!btn) return;
+            scrollSettingsSection(rid, btn.getAttribute("data-settings-target"));
+          });
+        });
+      }
+
+      bindSettingsRails();
+
+      function openCompanySettingsHub(slug) {
         var c = pendingCompanyCtx;
         var nameEl = document.getElementById("co-set-crumb-name");
         var idTag = document.getElementById("co-set-id-tag");
@@ -2573,10 +3276,14 @@
         settingsReturnView = "dashboard";
         closeDrawer();
         showView("company-settings");
-        activateCoTab(tab || "general");
+        var sectionId = slug && slug.indexOf("co-") === 0 ? slug : "co-" + (slug || "entity");
+        setTimeout(function () {
+          bindSettingsRails();
+          scrollSettingsSection("company-settings-root", sectionId);
+        }, 60);
       }
 
-      function openEngagementSettingsHub(tab) {
+      function openEngagementSettingsHub(slug) {
         var x = pendingEngCtx;
         var c1 = document.getElementById("en-set-crumb-co");
         var c2 = document.getElementById("en-set-crumb-code");
@@ -2586,7 +3293,11 @@
         if (tag) tag.textContent = x.engCode || "ENG";
         closeDrawer();
         showView("engagement-settings");
-        activateEnTab(tab || "general");
+        var sectionId = slug && slug.indexOf("en-") === 0 ? slug : "en-" + (slug || "type");
+        setTimeout(function () {
+          bindSettingsRails();
+          scrollSettingsSection("engagement-settings-root", sectionId);
+        }, 60);
       }
 
       function openCompanyShortcuts(ctx) {
@@ -2596,12 +3307,20 @@
         };
         var sub = (ctx.companyName || "Company") + " · " + (ctx.companyId || "");
         var html =
-          shortcutBtn("General &amp; profile", "Fiscal calendar, currency, org identifiers, committee contacts.", 'data-co-open="general"') +
-          shortcutBtn("Branding &amp; letterhead", "Logos, PDF shells, inherited locks from master templates.", 'data-co-open="branding"') +
-          shortcutBtn("Security &amp; access (RBAC)", "Roles, permissions, user lifecycle — full tables on the next screen.", 'data-co-open="security"') +
-          shortcutBtn("Teams &amp; groups", "Org groups for routing, default reviewers, bulk grants.", 'data-co-open="teams"') +
-          shortcutBtn("Company activity log", "Settings changes, invites, branding uploads — exportable.", 'data-co-open="activity"');
-        openShortcutDrawer("Company settings", sub, html);
+          shortcutBtn("Open full client settings", "Scrollable hub — use after landing.", 'data-co-open="entity"') +
+          shortcutBtn("Entity details · SSM", "Registered name, number, year-end, office.", 'data-co-open="entity"') +
+          shortcutBtn("Entity type &amp; industry", "Listed / GLC · sectors driving risk defaults.", 'data-co-open="classification"') +
+          shortcutBtn("Risk profile", "Inherent rating · control environment narrative.", 'data-co-open="riskprofile"') +
+          shortcutBtn("Key contacts", "CFO, liaison, counsel.", 'data-co-open="contacts"') +
+          shortcutBtn("Related parties", "Subsidiaries · associates · director interests.", 'data-co-open="related"') +
+          shortcutBtn("Materiality threshold", "Override firm framework for this client.", 'data-co-open="materiality"') +
+          shortcutBtn("Applicable standards", "MFRS · IFRS · MPERS · audit standards.", 'data-co-open="standards"') +
+          shortcutBtn("Prior year carry-forwards", "PY auditor · opinion · rolled misstatements.", 'data-co-open="prior"') +
+          shortcutBtn("Engagement team defaults", "Usual partner / manager pool.", 'data-co-open="teamdefaults"') +
+          shortcutBtn("Client document requirements", "Regulator-specific attachments.", 'data-co-open="clientdocs"') +
+          shortcutBtn("Access &amp; RBAC (tenant)", "Who sees this client vault.", 'data-co-open="security"') +
+          shortcutBtn("Client activity log", "Profile &amp; permission changes.", 'data-co-open="log"');
+        openShortcutDrawer("Client · quick links", sub, html);
       }
 
       function openEngagementShortcuts(ctx, returnView) {
@@ -2614,11 +3333,21 @@
         settingsReturnView = returnView === "workspace" ? "engagement" : "dashboard";
         var sub = (ctx.engCode || "") + " · " + (ctx.engTitle || "Engagement");
         var html =
-          shortcutBtn("General", "Period, manager, sign-off expectations.", 'data-en-open="general"') +
-          shortcutBtn("Team &amp; access", "Who is on this engagement; restricted visibility vs directory.", 'data-en-open="team"') +
-          shortcutBtn("Methodology overrides", "Pack, sampling exceptions allowed by master policy.", 'data-en-open="method"') +
-          shortcutBtn("Engagement activity", "Workpaper and issue events for this job.", 'data-en-open="activity"');
-        openShortcutDrawer("Engagement settings", sub, html);
+          shortcutBtn("Open full engagement setup", "Complete checklist on one page.", 'data-en-open="type"') +
+          shortcutBtn("Engagement type", "Statutory · tax · review · special purpose.", 'data-en-open="type"') +
+          shortcutBtn("Financial year / period", "Reporting boundaries · comparatives.", 'data-en-open="period"') +
+          shortcutBtn("Scope &amp; objectives", "Inclusions · exclusions · emphasis.", 'data-en-open="scope"') +
+          shortcutBtn("Engagement team", "Partner · manager · seniors on this job.", 'data-en-open="team"') +
+          shortcutBtn("Sign-off workflow", "Review chain for this engagement.", 'data-en-open="signoff"') +
+          shortcutBtn("Materiality (job)", "May differ from client default.", 'data-en-open="materiality"') +
+          shortcutBtn("Period risk assessment", "Significant risks · fraud · going concern.", 'data-en-open="riskassess"') +
+          shortcutBtn("Reporting deadlines", "Interim · draft · final.", 'data-en-open="reporting"') +
+          shortcutBtn("Fee &amp; budget", "Hours by section.", 'data-en-open="fee"') +
+          shortcutBtn("Component auditors", "Other firms in group audit.", 'data-en-open="components"') +
+          shortcutBtn("Mgmt representation letter", "Template · signatories · custom paras.", 'data-en-open="repr"') +
+          shortcutBtn("Filing requirements", "Bursa · SSM · tax clocks.", 'data-en-open="filing"') +
+          shortcutBtn("Engagement activity", "Job-level audit trail.", 'data-en-open="activity"');
+        openShortcutDrawer("Engagement · quick links", sub, html);
       }
 
       if (drawerBody) {
@@ -2632,24 +3361,6 @@
           if (en) {
             openEngagementSettingsHub(en.getAttribute("data-en-open"));
           }
-        });
-      }
-
-      var coTabs = document.querySelector(".co-settings-tabs");
-      if (coTabs) {
-        coTabs.addEventListener("click", function (e) {
-          var t = e.target.closest(".co-tab[data-co-tab]");
-          if (!t) return;
-          activateCoTab(t.getAttribute("data-co-tab"));
-        });
-      }
-
-      var enTabs = document.querySelector(".en-settings-tabs");
-      if (enTabs) {
-        enTabs.addEventListener("click", function (e) {
-          var t = e.target.closest(".en-tab[data-en-tab]");
-          if (!t) return;
-          activateEnTab(t.getAttribute("data-en-tab"));
         });
       }
 
