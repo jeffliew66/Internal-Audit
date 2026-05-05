@@ -903,6 +903,115 @@
       font-size: 12px;
     }
 
+    /* Settings hubs & full-page scoped settings */
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .hub-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 140px;
+    }
+
+    .hub-card h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .hub-card p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.45;
+      flex: 1;
+    }
+
+    .hub-card .tag {
+      align-self: flex-start;
+    }
+
+    .settings-tabs-wrap {
+      margin-bottom: 18px;
+    }
+
+    .co-panel,
+    .en-panel {
+      display: none;
+    }
+
+    .co-panel.active,
+    .en-panel.active {
+      display: block;
+      animation: fade 0.18s ease;
+    }
+
+    .drawer-shortcuts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-shortcut {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      cursor: pointer;
+      text-align: left;
+      font: inherit;
+      width: 100%;
+      color: inherit;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .drawer-shortcut:hover {
+      background: #f3f4f6;
+      border-color: var(--border-strong);
+    }
+
+    .drawer-shortcut strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 650;
+      margin-bottom: 4px;
+    }
+
+    .drawer-shortcut span {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      display: block;
+    }
+
+    .drawer-shortcut .kbd-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--muted-2);
+    }
+
+    .drawer-backdrop.drawer-menu-mode #drawerSave {
+      display: none;
+    }
+
+    .drawer-backdrop.drawer-menu-mode #drawerCancel {
+      flex: 1;
+    }
+
     /* Settings drawer */
     .drawer-backdrop {
       position: fixed;
@@ -1051,17 +1160,18 @@
           <button type="button" class="layer-pill locked" role="tab" aria-selected="false" disabled title="Engagement layer — created per audit">Engagement</button>
         </div>
       </div>
-      <p class="layer-hint">Master settings: top-right gear. Company &amp; engagement settings: from each row below. Open an engagement to work inside it.</p>
+      <p class="layer-hint"><strong>Master</strong> = platform &amp; methodology administration. <strong>Company</strong> = tenant RBAC, branding, logs. <strong>Engagement</strong> = job team &amp; overrides. Settings hubs — not the same as methodology catalogues in the sidebar.</p>
     </div>
 
-    <nav class="sidebar" id="sidebar" aria-label="Master modules">
-      <div class="nav-section">Overview</div>
+    <nav class="sidebar" id="sidebar" aria-label="Application">
+      <div class="nav-section">Work</div>
       <button type="button" class="nav-item active" data-view="dashboard">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16v4H4zM4 14h10v4H4zM18 14h2v4h-2z"/></svg>
         Dashboard
       </button>
 
-      <div class="nav-section">Core artefacts</div>
+      <div class="nav-section">Methodology catalogues · Master</div>
+      <p style="margin: 0 12px 8px; font-size: 11px; line-height: 1.4; color: var(--muted); font-weight: 500;">Author and maintain artefacts every company inherits — not org preferences or RBAC.</p>
       <button type="button" class="nav-item" data-view="universe">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
         Audit universe
@@ -1076,28 +1186,30 @@
       </button>
       <button type="button" class="nav-item" data-view="methodology">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v12M6 12h12"/><circle cx="12" cy="12" r="10"/></svg>
-        Methodology
+        Methodology packs
       </button>
-
-      <div class="nav-section">Outcomes</div>
       <button type="button" class="nav-item" data-view="findings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>
         Findings model
       </button>
       <button type="button" class="nav-item" data-view="reports">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-        Audit reports
+        Report standards
       </button>
-
-      <div class="nav-section">Governance</div>
       <button type="button" class="nav-item" data-view="reference">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
         Reference data
       </button>
 
+      <div class="nav-section">Platform administration · Master</div>
+      <button type="button" class="nav-item" data-view="master-settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        Master settings hub
+      </button>
+
       <div class="sidebar-footer">
-        <strong>Master freeze</strong>
-        Version MA-2026.04 · Changes require methodology steward approval. Company rollout pending.
+        <strong>Methodology freeze</strong>
+        MA-2026.04 · Steward approval required for catalogue edits. Org RBAC &amp; branding live under each company (gear on dashboard).
       </div>
     </nav>
 
@@ -1108,15 +1220,15 @@
         <div class="page-head">
           <div>
             <h1 id="dash-title">Companies &amp; engagements</h1>
-            <p>Pick a company, expand to see its engagements, then <strong>Enter</strong> to open one. Use the <strong>gear</strong> for settings at master (top right), company (row), or engagement (row or inside engagement).</p>
+            <p>Expand a company to see engagements. <strong>Enter</strong> opens the job workspace. Gears open <strong>shortcut menus</strong> — heavy configuration (RBAC, logs, branding) opens full <strong>settings hubs</strong>. Master administration is the sidebar’s <strong>Master settings hub</strong> or the header gear (same place).</p>
           </div>
           <div class="page-actions">
             <button type="button" class="btn btn-ghost">Add company</button>
-            <button type="button" class="btn btn-primary" id="btnMasterSettingsAlt">Master settings</button>
+            <button type="button" class="btn btn-primary" id="btnMasterSettingsAlt">Master settings hub</button>
           </div>
         </div>
 
-        <p class="note" style="margin-bottom: 16px;">This hub sits above methodology catalogues in the sidebar. Master catalogue work is unchanged; the gear in the header opens <strong>master-level</strong> configuration (methodology version, defaults, integrations).</p>
+        <p class="note" style="margin-bottom: 16px;">Left sidebar <strong>Methodology catalogues</strong> are master <em>artefacts</em>. <strong>Master settings hub</strong> is platform administration (inheritance, platform RBAC, logs, integrations, default branding templates).</p>
 
         <div class="panel" style="margin-bottom: 0;">
           <div class="panel-h">
@@ -1325,7 +1437,7 @@
           </div>
           <div class="page-actions">
             <button type="button" class="btn btn-ghost js-back-dashboard">← Back to dashboard</button>
-            <button type="button" class="icon-btn on-accent js-engagement-settings-header" id="btnEngSettingsHeader" aria-label="Engagement settings" title="Engagement settings">
+            <button type="button" class="icon-btn on-accent" id="btnEngSettingsHeader" aria-label="Engagement settings shortcuts" title="Engagement settings">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
             </button>
           </div>
@@ -1361,7 +1473,242 @@
           </div>
         </div>
 
-        <p class="note">Use the header <strong>gear</strong> for this engagement’s settings (team, period, methodology pack, sign-off chain). Company-level defaults still apply unless overridden here.</p>
+        <p class="note">Header <strong>gear</strong>: shortcuts to full-page engagement settings (team &amp; access, methodology overrides, activity). Or open <strong>company settings</strong> from the dashboard row for RBAC, branding, and org-wide audit logs.</p>
+      </section>
+
+      <!-- Master settings hub (platform administration) -->
+      <section id="view-master-settings" class="view" aria-labelledby="ms-title">
+        <p class="crumb">Master / <strong>Platform administration</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="ms-title">Master settings hub</h1>
+            <p>Everything here applies across <strong>all companies</strong>: governance of methodology inheritance, platform roles, audit trails, integrations, and default templates. Methodology <em>catalogues</em> (universe, risk scales, etc.) live in the sidebar — this hub is <em>configuration</em>.</p>
+          </div>
+          <div class="page-actions">
+            <span class="tag tag-teal">Scope: Master</span>
+          </div>
+        </div>
+
+        <div class="hub-grid">
+          <article class="hub-card">
+            <span class="tag tag-blue">Methodology</span>
+            <h3>Releases &amp; inheritance</h3>
+            <p>Pinned methodology version, change-freeze windows, what companies may override vs. lock, and rollout milestones.</p>
+          </article>
+          <article class="hub-card">
+            <span class="tag tag-danger">Security</span>
+            <h3>Platform roles &amp; access</h3>
+            <p>Who can publish master catalogues, approve methodology edits, manage tenants, and view cross-company analytics. Distinct from company RBAC.</p>
+          </article>
+          <article class="hub-card">
+            <span class="tag tag-warn">Audit</span>
+            <h3>Platform activity log</h3>
+            <p>Immutable trail of master changes, steward approvals, integration failures, and privileged actions across the estate.</p>
+          </article>
+          <article class="hub-card">
+            <span class="tag tag-purple">Integrations</span>
+            <h3>API &amp; webhooks</h3>
+            <p>SSO/SAML, provisioning hooks, evidence repositories, export schedules — governed at platform level.</p>
+          </article>
+          <article class="hub-card">
+            <span class="tag tag-teal">Branding</span>
+            <h3>Default templates &amp; letterhead</h3>
+            <p>Baseline report shells, fonts, and footer/legal blocks companies inherit; define what is locked vs. editable per company.</p>
+          </article>
+          <article class="hub-card">
+            <span class="tag tag-ok">Operations</span>
+            <h3>Firm preferences</h3>
+            <p>Locale defaults, numbering conventions, retention policies for platform-held data, maintenance windows.</p>
+          </article>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Starter fields (prototype)</h2>
+            <span class="tag tag-teal">Wire to backend later</span>
+          </div>
+          <div class="panel-body">
+            <div class="two-col" style="gap: 20px;">
+              <div class="field">
+                <label for="ms-rel">Active methodology release</label>
+                <input type="text" id="ms-rel" placeholder="MA-2026.04" />
+              </div>
+              <div class="field">
+                <label for="ms-steward">Methodology steward group</label>
+                <input type="text" id="ms-steward" placeholder="grp-methodology-admins" />
+              </div>
+              <div class="field">
+                <label for="ms-webhook">Platform webhook URL</label>
+                <input type="url" id="ms-webhook" placeholder="https://…" />
+              </div>
+              <div class="field">
+                <label for="ms-template">Default PDF master template ID</label>
+                <input type="text" id="ms-template" placeholder="RPT-MASTER-01" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Company settings (full hub — tenant) -->
+      <section id="view-company-settings" class="view" aria-labelledby="co-set-title">
+        <p class="crumb">Company / <strong id="co-set-crumb-name">…</strong> / <strong>Settings</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="co-set-title">Company settings</h1>
+            <p id="co-set-desc">Tenant-scoped administration: org profile, branding, security, teams, and activity. Opens from the company gear shortcuts on the dashboard.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost" id="btnCompanySettingsBack">← Back</button>
+            <span class="tag tag-teal" id="co-set-id-tag">co-id</span>
+          </div>
+        </div>
+
+        <div class="tabs settings-tabs-wrap co-settings-tabs" role="tablist" aria-label="Company settings sections">
+          <button type="button" class="tab co-tab active" role="tab" aria-selected="true" data-co-tab="general">General &amp; profile</button>
+          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="branding">Branding &amp; letterhead</button>
+          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="security">Security &amp; access (RBAC)</button>
+          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="teams">Teams &amp; groups</button>
+          <button type="button" class="tab co-tab" role="tab" aria-selected="false" data-co-tab="activity">Activity log</button>
+        </div>
+
+        <div id="co-tab-general" class="co-panel active">
+          <div class="panel">
+            <div class="panel-h"><h2>Organisation profile</h2></div>
+            <div class="panel-body">
+              <p class="note" style="margin-top: 0;">Legal name, identifiers, fiscal calendar, primary currency, AC contacts — the company’s “directory root.”</p>
+              <div class="two-col">
+                <div class="field"><label>Fiscal year end</label><input type="text" placeholder="31 December" /></div>
+                <div class="field"><label>Reporting currency</label><input type="text" placeholder="USD" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="co-tab-branding" class="co-panel">
+          <div class="panel">
+            <div class="panel-h"><h2>Branding &amp; letterhead</h2></div>
+            <div class="panel-body">
+              <p class="note" style="margin-top: 0;">Logos, colour tokens, PDF headers/footers for audit reports; inherits master template locks where enforced.</p>
+              <div class="field"><label>Letterhead asset URL</label><input type="url" placeholder="https://…" /></div>
+            </div>
+          </div>
+        </div>
+        <div id="co-tab-security" class="co-panel">
+          <div class="panel">
+            <div class="panel-h"><h2>Security &amp; access (RBAC)</h2><span class="tag tag-danger">Full-screen tables in production</span></div>
+            <div class="table-wrap">
+              <table class="data">
+                <thead><tr><th>Role</th><th scope="col">Scope</th><th>Typical grants</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Org admin</strong></td><td>Company</td><td>Invite users, assign roles, branding, integrations</td></tr>
+                  <tr><td><strong>Audit partner</strong></td><td>Company + engagements</td><td>Approval chains, issue release</td></tr>
+                  <tr><td><strong>Staff</strong></td><td>Assigned engagements</td><td>Workpapers, testing</td></tr>
+                  <tr><td><strong>Guest SME</strong></td><td>Limited engagement</td><td>Read/select artefacts only</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="co-tab-teams" class="co-panel">
+          <div class="panel">
+            <div class="panel-h"><h2>Teams &amp; groups</h2></div>
+            <div class="panel-body">
+              <p class="note" style="margin-top: 0;">Org chart groups used for routing workitems, default reviewers, and bulk permission assignment.</p>
+              <div class="table-wrap">
+                <table class="data">
+                  <thead><tr><th>Group</th><th>Members</th><th>Use</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>IA hub — FinCrime</strong></td><td>12</td><td>AML engagements default team</td></tr>
+                    <tr><td><strong>IA hub — Technology</strong></td><td>18</td><td>ITGC / cyber cohort</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="co-tab-activity" class="co-panel">
+          <div class="panel">
+            <div class="panel-h"><h2>Company activity log</h2></div>
+            <div class="panel-body">
+              <p class="note" style="margin-top: 0;">Settings changes, user invites, role edits, branding uploads — filtered export for compliance.</p>
+              <ul style="margin: 0; padding-left: 1.2rem; font-size: 13px; color: var(--muted); line-height: 1.7;">
+                <li>Today · Role <strong>Analyst</strong> granted to user · by Org admin</li>
+                <li>Yesterday · Letterhead v3 uploaded · by Org admin</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Engagement settings (full hub — job) -->
+      <section id="view-engagement-settings" class="view" aria-labelledby="en-set-title">
+        <p class="crumb"><a href="#" class="link js-back-dashboard" style="font-weight:600;">Dashboard</a> · <span id="en-set-crumb-co">Company</span> · <strong id="en-set-crumb-code">ENG</strong> / <strong>Settings</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="en-set-title">Engagement settings</h1>
+            <p id="en-set-desc">Job-scoped: team on the audit, methodology pack override, visibility, sign-offs — not company-wide RBAC.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost" id="btnEngagementSettingsBack">← Back</button>
+            <span class="tag tag-blue" id="en-set-code-tag">ENG</span>
+          </div>
+        </div>
+
+        <div class="tabs settings-tabs-wrap en-settings-tabs" role="tablist" aria-label="Engagement settings sections">
+          <button type="button" class="tab en-tab active" role="tab" aria-selected="true" data-en-tab="general">General</button>
+          <button type="button" class="tab en-tab" role="tab" aria-selected="false" data-en-tab="team">Team &amp; access</button>
+          <button type="button" class="tab en-tab" role="tab" aria-selected="false" data-en-tab="method">Methodology overrides</button>
+          <button type="button" class="tab en-tab" role="tab" aria-selected="false" data-en-tab="activity">Activity</button>
+        </div>
+
+        <div id="en-tab-general" class="en-panel active">
+          <div class="panel">
+            <div class="panel-h"><h2>General</h2></div>
+            <div class="panel-body">
+              <div class="two-col">
+                <div class="field"><label>Period under review</label><input type="text" placeholder="1 Jan – 31 Dec 2026" /></div>
+                <div class="field"><label>Engagement manager</label><input type="text" placeholder="Name" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="en-tab-team" class="en-panel">
+          <div class="panel">
+            <div class="panel-h"><h2>Team &amp; access</h2><span class="tag tag-teal">Engagement membership</span></div>
+            <div class="panel-body">
+              <p class="note" style="margin-top: 0;">Which users and groups are on this job; optional restricted visibility vs. company directory.</p>
+              <div class="table-wrap">
+                <table class="data">
+                  <thead><tr><th>Person</th><th>Role on engagement</th></tr></thead>
+                  <tbody>
+                    <tr><td>J. Okonkwo</td><td>Lead</td></tr>
+                    <tr><td>Guest SME · IAM</td><td>Read-only evidence set B</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="en-tab-method" class="en-panel">
+          <div class="panel">
+            <div class="panel-h"><h2>Methodology overrides</h2></div>
+            <div class="panel-body">
+              <p class="note" style="margin-top: 0;">Pack selection, sampling policy waiver codes, sign-off chain — must remain within master allowance.</p>
+              <div class="field"><label>Methodology pack</label><input type="text" placeholder="MP-ITGC" /></div>
+            </div>
+          </div>
+        </div>
+        <div id="en-tab-activity" class="en-panel">
+          <div class="panel">
+            <div class="panel-h"><h2>Engagement activity</h2></div>
+            <div class="panel-body">
+              <ul style="margin: 0; padding-left: 1.2rem; font-size: 13px; color: var(--muted); line-height: 1.7;">
+                <li>Issue draft IA-2026-184 created · Lead</li>
+                <li>RACM v4 uploaded · Manager</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- Universe -->
@@ -2067,13 +2414,21 @@
         });
       }
 
+      var NAV_HIGHLIGHT = {
+        engagement: "dashboard",
+        "company-settings": "__none__",
+        "engagement-settings": "__none__",
+        "master-settings": "master-settings"
+      };
+
       function showView(id) {
         document.querySelectorAll(".view").forEach(function (el) {
           el.classList.toggle("active", el.id === "view-" + id);
         });
-        var navHighlight = id === "engagement" ? "dashboard" : id;
+        var nh = Object.prototype.hasOwnProperty.call(NAV_HIGHLIGHT, id) ? NAV_HIGHLIGHT[id] : id;
         document.querySelectorAll(".nav-item").forEach(function (btn) {
-          btn.classList.toggle("active", btn.getAttribute("data-view") === navHighlight);
+          var dv = btn.getAttribute("data-view");
+          btn.classList.toggle("active", nh !== "__none__" && dv === nh);
         });
       }
 
@@ -2094,7 +2449,7 @@
       document.querySelectorAll(".tab[data-tab]").forEach(function (tab) {
         tab.addEventListener("click", function () {
           var key = tab.getAttribute("data-tab");
-          document.querySelectorAll(".tab").forEach(function (t) {
+          document.querySelectorAll(".tab[data-tab]").forEach(function (t) {
             var on = t.getAttribute("data-tab") === key;
             t.classList.toggle("active", on);
             t.setAttribute("aria-selected", on ? "true" : "false");
@@ -2105,7 +2460,6 @@
         });
       });
 
-      /* Company accordion */
       function setCompanyOpen(card, open) {
         if (!card) return;
         card.classList.toggle("open", open);
@@ -2129,7 +2483,7 @@
         });
       }
 
-      /* Settings drawer */
+      /* Drawer — shortcut menus only (master uses full hub) */
       var backdrop = document.getElementById("settingsDrawerBackdrop");
       var drawerTitle = document.getElementById("drawerTitle");
       var drawerSubtitle = document.getElementById("drawerSubtitle");
@@ -2141,48 +2495,20 @@
       function closeDrawer() {
         if (!backdrop) return;
         backdrop.classList.remove("open");
+        backdrop.classList.remove("drawer-menu-mode");
         backdrop.setAttribute("aria-hidden", "true");
+        if (drawerCancel) drawerCancel.textContent = "Cancel";
       }
 
-      function field(label, id, type, placeholder) {
-        return (
-          '<div class="field"><label for="' + id + '">' + label + "</label>" +
-          '<input type="' + type + '" id="' + id + '" placeholder="' + placeholder + '" /></div>'
-        );
-      }
-
-      function openDrawer(tier, ctx) {
-        ctx = ctx || {};
+      function openShortcutDrawer(title, subtitle, buttonsHtml) {
         if (!backdrop || !drawerTitle || !drawerSubtitle || !drawerBody) return;
-        var html = "";
-        if (tier === "master") {
-          drawerTitle.textContent = "Master settings";
-          drawerSubtitle.textContent = "Applies to all companies — methodology, defaults, and platform configuration.";
-          html +=
-            field("Methodology release", "f-ma-rel", "text", "MA-2026.04") +
-            field("Default inherent scale", "f-ma-scale", "text", "5×5 matrix MA-STD") +
-            '<div class="field"><label for="f-ma-notes">Steward notes</label><textarea id="f-ma-notes" placeholder="Change freeze, exceptions, rollout…"></textarea></div>' +
-            '<div class="field"><label for="f-ma-int">Integration webhook URL</label><input type="url" id="f-ma-int" placeholder="https://…" /></div>';
-        } else if (tier === "company") {
-          drawerTitle.textContent = "Company settings";
-          drawerSubtitle.textContent = ctx.companyName ? ctx.companyName + " · " + (ctx.companyId || "") : "Company";
-          html +=
-            field("Fiscal year end", "f-co-fye", "text", "e.g. 31 December") +
-            field("Reporting currency", "f-co-ccy", "text", "USD") +
-            field("Materiality template", "f-co-mat", "text", "Group TM-2026") +
-            '<div class="field"><label for="f-co-ap">Audit committee chair email</label><input type="email" id="f-co-ap" placeholder="chair@company.com" /></div>';
-        } else if (tier === "engagement") {
-          drawerTitle.textContent = "Engagement settings";
-          drawerSubtitle.textContent = (ctx.engCode || "") + (ctx.engTitle ? " · " + ctx.engTitle : "");
-          html +=
-            field("Period under review", "f-en-period", "text", "e.g. 1 Jan – 31 Dec 2026") +
-            field("Methodology pack", "f-en-pack", "text", "MP-OPS / MP-ITGC") +
-            field("Engagement manager", "f-en-mgr", "text", "Name") +
-            '<div class="field"><label for="f-en-sign">Sign-off chain</label><textarea id="f-en-sign" placeholder="Partner → EQA → issue…"></textarea></div>';
-        }
-        drawerBody.innerHTML = html;
+        drawerTitle.textContent = title;
+        drawerSubtitle.textContent = subtitle;
+        drawerBody.innerHTML = '<div class="drawer-shortcuts">' + buttonsHtml + "</div>";
+        backdrop.classList.add("drawer-menu-mode");
         backdrop.classList.add("open");
         backdrop.setAttribute("aria-hidden", "false");
+        if (drawerCancel) drawerCancel.textContent = "Done";
       }
 
       if (backdrop) {
@@ -2204,10 +2530,147 @@
         }
       });
 
+      function shortcutBtn(label, desc, attrs) {
+        var a = attrs || "";
+        return (
+          '<button type="button" class="drawer-shortcut" ' + a + ">" +
+          "<strong>" + label + "</strong><span>" + desc + "</span></button>"
+        );
+      }
+
+      var pendingCompanyCtx = { companyId: "", companyName: "" };
+      var pendingEngCtx = { companyId: "", companyName: "", engCode: "", engTitle: "" };
+      var settingsReturnView = "dashboard";
+
+      function activateCoTab(tab) {
+        document.querySelectorAll(".co-tab").forEach(function (t) {
+          var on = t.getAttribute("data-co-tab") === tab;
+          t.classList.toggle("active", on);
+          t.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        document.querySelectorAll(".co-panel").forEach(function (p) {
+          p.classList.toggle("active", p.id === "co-tab-" + tab);
+        });
+      }
+
+      function activateEnTab(tab) {
+        document.querySelectorAll(".en-tab").forEach(function (t) {
+          var on = t.getAttribute("data-en-tab") === tab;
+          t.classList.toggle("active", on);
+          t.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        document.querySelectorAll(".en-panel").forEach(function (p) {
+          p.classList.toggle("active", p.id === "en-tab-" + tab);
+        });
+      }
+
+      function openCompanySettingsHub(tab) {
+        var c = pendingCompanyCtx;
+        var nameEl = document.getElementById("co-set-crumb-name");
+        var idTag = document.getElementById("co-set-id-tag");
+        if (nameEl) nameEl.textContent = c.companyName || "Company";
+        if (idTag) idTag.textContent = c.companyId || "—";
+        settingsReturnView = "dashboard";
+        closeDrawer();
+        showView("company-settings");
+        activateCoTab(tab || "general");
+      }
+
+      function openEngagementSettingsHub(tab) {
+        var x = pendingEngCtx;
+        var c1 = document.getElementById("en-set-crumb-co");
+        var c2 = document.getElementById("en-set-crumb-code");
+        var tag = document.getElementById("en-set-code-tag");
+        if (c1) c1.textContent = x.companyName || "Company";
+        if (c2) c2.textContent = x.engCode || "ENG";
+        if (tag) tag.textContent = x.engCode || "ENG";
+        closeDrawer();
+        showView("engagement-settings");
+        activateEnTab(tab || "general");
+      }
+
+      function openCompanyShortcuts(ctx) {
+        pendingCompanyCtx = {
+          companyId: ctx.companyId || "",
+          companyName: ctx.companyName || ""
+        };
+        var sub = (ctx.companyName || "Company") + " · " + (ctx.companyId || "");
+        var html =
+          shortcutBtn("General &amp; profile", "Fiscal calendar, currency, org identifiers, committee contacts.", 'data-co-open="general"') +
+          shortcutBtn("Branding &amp; letterhead", "Logos, PDF shells, inherited locks from master templates.", 'data-co-open="branding"') +
+          shortcutBtn("Security &amp; access (RBAC)", "Roles, permissions, user lifecycle — full tables on the next screen.", 'data-co-open="security"') +
+          shortcutBtn("Teams &amp; groups", "Org groups for routing, default reviewers, bulk grants.", 'data-co-open="teams"') +
+          shortcutBtn("Company activity log", "Settings changes, invites, branding uploads — exportable.", 'data-co-open="activity"');
+        openShortcutDrawer("Company settings", sub, html);
+      }
+
+      function openEngagementShortcuts(ctx, returnView) {
+        pendingEngCtx = {
+          companyId: ctx.companyId || "",
+          companyName: ctx.companyName || "",
+          engCode: ctx.engCode || "",
+          engTitle: ctx.engTitle || ""
+        };
+        settingsReturnView = returnView === "workspace" ? "engagement" : "dashboard";
+        var sub = (ctx.engCode || "") + " · " + (ctx.engTitle || "Engagement");
+        var html =
+          shortcutBtn("General", "Period, manager, sign-off expectations.", 'data-en-open="general"') +
+          shortcutBtn("Team &amp; access", "Who is on this engagement; restricted visibility vs directory.", 'data-en-open="team"') +
+          shortcutBtn("Methodology overrides", "Pack, sampling exceptions allowed by master policy.", 'data-en-open="method"') +
+          shortcutBtn("Engagement activity", "Workpaper and issue events for this job.", 'data-en-open="activity"');
+        openShortcutDrawer("Engagement settings", sub, html);
+      }
+
+      if (drawerBody) {
+        drawerBody.addEventListener("click", function (e) {
+          var co = e.target.closest("[data-co-open]");
+          if (co) {
+            openCompanySettingsHub(co.getAttribute("data-co-open"));
+            return;
+          }
+          var en = e.target.closest("[data-en-open]");
+          if (en) {
+            openEngagementSettingsHub(en.getAttribute("data-en-open"));
+          }
+        });
+      }
+
+      var coTabs = document.querySelector(".co-settings-tabs");
+      if (coTabs) {
+        coTabs.addEventListener("click", function (e) {
+          var t = e.target.closest(".co-tab[data-co-tab]");
+          if (!t) return;
+          activateCoTab(t.getAttribute("data-co-tab"));
+        });
+      }
+
+      var enTabs = document.querySelector(".en-settings-tabs");
+      if (enTabs) {
+        enTabs.addEventListener("click", function (e) {
+          var t = e.target.closest(".en-tab[data-en-tab]");
+          if (!t) return;
+          activateEnTab(t.getAttribute("data-en-tab"));
+        });
+      }
+
+      var btnCompanyBack = document.getElementById("btnCompanySettingsBack");
+      if (btnCompanyBack) {
+        btnCompanyBack.addEventListener("click", function () {
+          showView("dashboard");
+        });
+      }
+
+      var btnEngSetBack = document.getElementById("btnEngagementSettingsBack");
+      if (btnEngSetBack) {
+        btnEngSetBack.addEventListener("click", function () {
+          showView(settingsReturnView === "engagement" ? "engagement" : "dashboard");
+        });
+      }
+
       var btnMaster = document.getElementById("btnMasterSettings");
       var btnMasterAlt = document.getElementById("btnMasterSettingsAlt");
-      if (btnMaster) btnMaster.addEventListener("click", function () { openDrawer("master"); });
-      if (btnMasterAlt) btnMasterAlt.addEventListener("click", function () { openDrawer("master"); });
+      if (btnMaster) btnMaster.addEventListener("click", function () { showView("master-settings"); });
+      if (btnMasterAlt) btnMasterAlt.addEventListener("click", function () { showView("master-settings"); });
 
       var engHeaderBtn = document.getElementById("btnEngSettingsHeader");
 
@@ -2235,12 +2698,15 @@
 
       if (engHeaderBtn) {
         engHeaderBtn.addEventListener("click", function () {
-          openDrawer("engagement", {
-            companyName: engHeaderBtn.getAttribute("data-company-name"),
-            companyId: engHeaderBtn.getAttribute("data-company-id"),
-            engTitle: engHeaderBtn.getAttribute("data-eng-title"),
-            engCode: engHeaderBtn.getAttribute("data-eng-code")
-          });
+          openEngagementShortcuts(
+            {
+              companyName: engHeaderBtn.getAttribute("data-company-name"),
+              companyId: engHeaderBtn.getAttribute("data-company-id"),
+              engTitle: engHeaderBtn.getAttribute("data-eng-title"),
+              engCode: engHeaderBtn.getAttribute("data-eng-code")
+            },
+            "workspace"
+          );
         });
       }
 
@@ -2248,18 +2714,24 @@
         var c = e.target.closest(".js-company-settings");
         if (c) {
           e.preventDefault();
-          openDrawer("company", { companyName: c.getAttribute("data-company-name"), companyId: c.getAttribute("data-company-id") });
+          openCompanyShortcuts({
+            companyName: c.getAttribute("data-company-name"),
+            companyId: c.getAttribute("data-company-id")
+          });
           return;
         }
         var g = e.target.closest(".js-engagement-settings");
         if (g) {
           e.preventDefault();
-          openDrawer("engagement", {
-            companyName: g.getAttribute("data-company-name"),
-            companyId: g.getAttribute("data-company-id"),
-            engTitle: g.getAttribute("data-eng-title"),
-            engCode: g.getAttribute("data-eng-code")
-          });
+          openEngagementShortcuts(
+            {
+              companyName: g.getAttribute("data-company-name"),
+              companyId: g.getAttribute("data-company-id"),
+              engTitle: g.getAttribute("data-eng-title"),
+              engCode: g.getAttribute("data-eng-code")
+            },
+            "dashboard"
+          );
           return;
         }
         var b = e.target.closest(".js-enter-engagement");
