@@ -135,6 +135,15 @@
       background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px;
       box-shadow: 0 24px 80px rgba(0,0,0,.45);
     }
+    .modal.modal-wide { width: min(840px, 100%); }
+    .table-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+    .table-scroll table.data { margin: 0; border-radius: 0; border: none; }
+    .pill-warn { border-color: rgba(251,191,36,.55); color: #fde68a; }
+    .pill-urgent { border-color: rgba(248,113,113,.55); color: #fecaca; }
+    .nav-section-label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted);
+      margin: 14px 8px 6px;
+    }
     .modal h2 { margin: 0 0 12px; font-size: 18px; }
     .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
 
@@ -146,8 +155,12 @@
     }
 
     .kbd { font-size: 11px; padding: 2px 6px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); }
-    .breadcrumb { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
-    .breadcrumb a { cursor: pointer; }
+    .breadcrumb { font-size: 13px; color: var(--muted); margin-bottom: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+    .crumb {
+      background: none; border: none; padding: 0; margin: 0; font: inherit; color: var(--accent);
+      cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+    }
+    .crumb:hover { color: #7dd3fc; }
   </style>
 </head>
 <body>
@@ -222,6 +235,27 @@
         methodologyLibrary: [
           { id: uid(), title: 'Firm audit approach overview', category: 'Approach', body: 'Risk-based ISA-aligned methodology; document assertions per cycle.' },
           { id: uid(), title: 'Sampling guidance', category: 'Execution', body: 'Random for populations >500; judgmental only with documented rationale.' }
+        ],
+        riskPlanning: {
+          inherentScale: 'Map inherent risk (H/M/L) to likelihood × magnitude of misstatement; escalate High to EQCR.',
+          controlAssessment: 'Design vs operating effectiveness; document walkthrough evidence before reliance.',
+          materialityNotes: 'Planning materiality typically 5% PBT unless benchmark rationale approved.',
+          rotationPolicy: 'Engagement quality reviewer rotation; independence cooling-off per institute rules.'
+        },
+        auditPlanTemplates: [
+          { id: uid(), name: 'Statutory audit — planning memo', outline: 'Objectives & scope\nUnderstanding entity\nRisk assessment\nTeam & timeline\nDeliverables' }
+        ],
+        reportFormats: [
+          { id: uid(), name: 'Auditor report & financial statements', structure: 'Title\nTOC\nIndependent auditor report\nStatements\nNotes\nAppendices' }
+        ],
+        remediationPolicy: {
+          slaDays: 90,
+          escalation: 'Partner notified if critical finding remains open >30 days after management response due.'
+        },
+        auditUniverse: [
+          { id: uid(), companyId: c1, area: 'Procurement & payables', owner: 'IA Lead', frequency: 'Annual', lastAuditDate: '2024-08-01', nextDue: '2025-08-01', status: 'scheduled' },
+          { id: uid(), companyId: c2, area: 'Treasury & liquidity', owner: 'IA Lead', frequency: 'Annual', lastAuditDate: '2023-11-15', nextDue: '2025-05-30', status: 'in_progress' },
+          { id: uid(), companyId: '', area: 'ITGC — firm-wide reference', owner: 'IT Audit', frequency: 'Continuous', lastAuditDate: '', nextDue: '', status: 'framework' }
         ]
       },
       staffDirectory: [
@@ -301,6 +335,22 @@
           regulatorySubmissions: [
             { id: uid(), filing: 'Annual return & audited FS', regulator: 'SSM', due: '2025-07-31', status: 'not_started' },
             { id: uid(), filing: 'Related-party disclosure schedule', regulator: 'Listing compliance', due: '2025-06-15', status: 'in_progress' }
+          ],
+          targetCompletionDate: '2025-06-30',
+          teamMemberIds: ['staff_1', 'staff_2'],
+          clientUsers: [
+            { id: uid(), name: 'Ahmad Yusof', email: 'cfo@langit.example', role: 'CFO', status: 'active' },
+            { id: uid(), name: 'Siti Nurhaliza', email: 'controller@langit.example', role: 'Financial controller', status: 'active' }
+          ],
+          riskRegister: [
+            { id: uid(), assertion: 'Occurrence — revenue', description: 'Cut-off around period end', inherent: 'medium', controlReliance: 'moderate', residual: 'medium', response: 'Substantive analytical procedures + detail testing' }
+          ],
+          auditPlan: [
+            { id: uid(), section: 'Planning & risk assessment', procedure: 'Kick-off, inquiries, fraud brainstorming', owner: 'EM', status: 'done' },
+            { id: uid(), section: 'Revenue cycle', procedure: 'Sampling per firm methodology; revenue cutoff tests', owner: 'Senior', status: 'in_progress' }
+          ],
+          remedies: [
+            { id: uid(), title: 'Procurement card segregation', source: 'Management letter', owner: 'CFO', due: '2025-09-30', status: 'open' }
           ]
         },
         {
@@ -317,13 +367,22 @@
           managementLetterItems: [],
           subsequentEventsCutoff: '',
           groupAuditInstructions: '',
-          regulatorySubmissions: []
+          regulatorySubmissions: [],
+          targetCompletionDate: '2025-09-30',
+          teamMemberIds: ['staff_1'],
+          clientUsers: [],
+          riskRegister: [],
+          auditPlan: [
+            { id: uid(), section: 'First-year opening balances', procedure: 'Predecessor communication & opening TB verification', owner: 'EM', status: 'planned' }
+          ],
+          remedies: []
         }
       ],
       ui: {
         route: { view: 'dashboard', id: null, tab: null, firmSection: 'security' },
         companyTab: 'overview',
-        engagementTab: 'overview'
+        engagementTab: 'overview',
+        engagementsCompanyId: ''
       }
     };
   }
@@ -344,7 +403,8 @@
     if (!over || typeof over !== 'object') return base;
     Object.keys(over).forEach(function (k) {
       var v = over[k];
-      if (v && typeof v === 'object' && !Array.isArray(v) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) {
+      if (v === null || v === undefined) return;
+      if (typeof v === 'object' && !Array.isArray(v) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) {
         mergeDeep(base[k], v);
       } else {
         base[k] = v;
@@ -361,6 +421,41 @@
 
   var state = loadState();
 
+  function normalizeState(s) {
+    s.companies = Array.isArray(s.companies) ? s.companies : [];
+    s.engagements = Array.isArray(s.engagements) ? s.engagements : [];
+    s.staffDirectory = Array.isArray(s.staffDirectory) ? s.staffDirectory : [];
+    if (!s.firm || typeof s.firm !== 'object') s.firm = defaultState().firm;
+    s.firm.passwordPolicy = s.firm.passwordPolicy || {};
+    s.firm.retentionPurging = s.firm.retentionPurging || {};
+    s.firm.archiving = s.firm.archiving || {};
+    s.firm.customFields = Array.isArray(s.firm.customFields) ? s.firm.customFields : [];
+    s.firm.methodologyLibrary = Array.isArray(s.firm.methodologyLibrary) ? s.firm.methodologyLibrary : [];
+    s.firm.auditUniverse = Array.isArray(s.firm.auditUniverse) ? s.firm.auditUniverse : [];
+    s.firm.auditPlanTemplates = Array.isArray(s.firm.auditPlanTemplates) ? s.firm.auditPlanTemplates : [];
+    s.firm.reportFormats = Array.isArray(s.firm.reportFormats) ? s.firm.reportFormats : [];
+    s.firm.riskPlanning = s.firm.riskPlanning && typeof s.firm.riskPlanning === 'object' ? s.firm.riskPlanning : {};
+    s.firm.remediationPolicy = s.firm.remediationPolicy && typeof s.firm.remediationPolicy === 'object' ? s.firm.remediationPolicy : {};
+    s.ui = s.ui && typeof s.ui === 'object' ? s.ui : {};
+    s.ui.route = s.ui.route && typeof s.ui.route === 'object' ? s.ui.route : {};
+    if (!s.ui.route.view) s.ui.route.view = 'dashboard';
+    if (s.ui.route.id === undefined) s.ui.route.id = null;
+    if (!s.ui.route.firmSection) s.ui.route.firmSection = 'security';
+    if (!s.ui.companyTab) s.ui.companyTab = 'overview';
+    if (!s.ui.engagementTab) s.ui.engagementTab = 'overview';
+    if (s.ui.engagementsCompanyId === undefined || s.ui.engagementsCompanyId === null) s.ui.engagementsCompanyId = '';
+    s.engagements.forEach(function (e) {
+      e.teamMemberIds = Array.isArray(e.teamMemberIds) ? e.teamMemberIds : [];
+      e.clientUsers = Array.isArray(e.clientUsers) ? e.clientUsers : [];
+      e.riskRegister = Array.isArray(e.riskRegister) ? e.riskRegister : [];
+      e.auditPlan = Array.isArray(e.auditPlan) ? e.auditPlan : [];
+      e.remedies = Array.isArray(e.remedies) ? e.remedies : [];
+      if (e.targetCompletionDate === undefined) e.targetCompletionDate = '';
+    });
+  }
+
+  normalizeState(state);
+
   function companyById(id) {
     return state.companies.find(function (c) { return c.id === id; });
   }
@@ -375,6 +470,38 @@
 
   function staffById(id) {
     return state.staffDirectory.find(function (s) { return s.id === id; });
+  }
+
+  function todayISO() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function parseDay(d) {
+    if (!d) return NaN;
+    return Date.parse(String(d).slice(0, 10) + 'T00:00:00');
+  }
+
+  function engagementDeadlineHtml(e) {
+    if (!e.targetCompletionDate) return '<span class="muted">—</span>';
+    var due = parseDay(e.targetCompletionDate);
+    var label = escapeHtml(e.targetCompletionDate);
+    if (isNaN(due)) return label;
+    if ((e.status || '') === 'closed') return label + ' <span class="muted">(closed)</span>';
+    var diff = Math.ceil((due - parseDay(todayISO())) / 86400000);
+    if (diff < 0) return label + ' <span class="pill pill-urgent">Overdue</span>';
+    if (diff <= 14) return label + ' <span class="pill pill-warn">' + diff + 'd</span>';
+    return label;
+  }
+
+  function formatTeamHtml(ids) {
+    if (!ids || !ids.length) return '<span class="muted">—</span>';
+    var names = ids.map(function (id) {
+      var s = staffById(id);
+      return s ? s.name : id;
+    });
+    var shown = names.slice(0, 3).map(function (n) { return escapeHtml(n); }).join(', ');
+    var more = names.length > 3 ? ' <span class="muted">+' + (names.length - 3) + '</span>' : '';
+    return shown + more;
   }
 
   function toast(msg) {
@@ -399,9 +526,13 @@
     backdrop.classList.add('open');
     backdrop.setAttribute('aria-hidden', 'false');
 
+    var modalEl = backdrop.querySelector('.modal');
+    if (opts.wide) modalEl.classList.add('modal-wide');
+
     function cleanup() {
       backdrop.classList.remove('open');
       backdrop.setAttribute('aria-hidden', 'true');
+      modalEl.classList.remove('modal-wide');
       okBtn.onclick = null;
       cancelBtn.onclick = null;
       backdrop.onclick = null;
@@ -494,9 +625,12 @@
         (rid ? ' data-nav-id="' + escapeHtml(rid) + '"' : '') + '>' + escapeHtml(label) + '</button>';
     }
     sb.innerHTML =
+      '<div class="nav-section-label">Work</div>' +
       btn('dashboard', 'Dashboard') +
       btn('companies', 'Companies') +
       btn('engagements', 'Engagements') +
+      btn('universe', 'Audit universe') +
+      '<div class="nav-section-label">Practice library</div>' +
       btn('firm-settings', 'Firm settings');
     sb.querySelectorAll('[data-nav]').forEach(function (b) {
       b.onclick = function () {
@@ -510,30 +644,106 @@
   function renderDashboard() {
     var comps = state.companies.length;
     var engs = state.engagements.length;
-    var active = state.engagements.filter(function (e) { return e.status === 'active'; }).length;
+    var activeList = state.engagements.filter(function (e) { return (e.status || 'active') === 'active'; });
+    var active = activeList.length;
+    var today = parseDay(todayISO());
+    var overdue = activeList.filter(function (e) {
+      if (!e.targetCompletionDate) return false;
+      var due = parseDay(e.targetCompletionDate);
+      return !isNaN(due) && due < today;
+    });
+    var phaseCount = { planning: 0, fieldwork: 0, completion: 0, archived: 0 };
+    state.engagements.forEach(function (e) {
+      var p = e.phase || 'planning';
+      if (phaseCount[p] !== undefined) phaseCount[p]++;
+    });
+    var openMl = 0;
+    var openRem = 0;
+    state.engagements.forEach(function (e) {
+      (e.managementLetterItems || []).forEach(function (m) {
+        if ((m.status || '') !== 'closed') openMl++;
+      });
+      (e.remedies || []).forEach(function (r) {
+        if ((r.status || '') !== 'closed' && (r.status || '') !== 'waived') openRem++;
+      });
+    });
+    var filingsSoon = [];
+    var horizon = today + 30 * 86400000;
+    state.engagements.forEach(function (e) {
+      var co = companyById(e.companyId);
+      (e.regulatorySubmissions || []).forEach(function (f) {
+        var due = parseDay(f.due);
+        if (isNaN(due) || due > horizon) return;
+        if ((f.status || '') === 'filed' || (f.status || '') === 'waived') return;
+        filingsSoon.push({ eng: e, co: co, f: f });
+      });
+    });
+    filingsSoon.sort(function (a, b) { return parseDay(a.f.due) - parseDay(b.f.due); });
+    var regHeat = 0;
+    state.companies.forEach(function (c) {
+      (c.regulatoryFlags || []).forEach(function (r) {
+        if ((r.status || '') === 'investigation' || (r.status || '') === 'monitoring') regHeat++;
+      });
+    });
+    var highRiskClients = state.companies.filter(function (c) { return (c.riskTier || '') === 'high'; }).length;
+    var uni = (state.firm.auditUniverse || []).length;
+
+    var overdueRows = overdue.slice(0, 8).map(function (e) {
+      var co = companyById(e.companyId);
+      return '<tr><td>' + escapeHtml(e.code) + '</td><td>' + escapeHtml(co ? co.name : '') + '</td><td>' + escapeHtml(e.targetCompletionDate || '') + '</td>' +
+        '<td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Open</button></td></tr>';
+    }).join('');
+    var filingRows = filingsSoon.slice(0, 10).map(function (x) {
+      return '<tr><td>' + escapeHtml(x.f.filing || '') + '</td><td>' + escapeHtml(x.co ? x.co.name : '') + '</td><td>' + escapeHtml(x.f.due || '') + '</td><td>' + escapeHtml(x.f.status || '') + '</td>' +
+        '<td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(x.eng.id) + '">Engagement</button></td></tr>';
+    }).join('');
+
     return (
       '<div class="page-head">' +
-        '<div><h1>Dashboard</h1><p class="muted">Operational overview — click through to manage records.</p></div>' +
+        '<div><h1>Dashboard</h1><p class="muted">Roll-up across clients, engagements, filings, and firm programme.</p></div>' +
         '<div class="toolbar">' +
-          '<button type="button" class="primary" data-action="goto-companies">Manage companies</button>' +
+          '<button type="button" class="primary" data-action="goto-engagements">Engagements hub</button>' +
+          '<button type="button" class="ghost" data-action="goto-universe">Audit universe</button>' +
           '<button type="button" class="ghost" data-action="goto-firm">Firm settings</button>' +
         '</div>' +
       '</div>' +
       '<div class="cards">' +
         '<div class="card" style="cursor:pointer" data-action="goto-companies" role="button" tabindex="0"><h3>Companies</h3><div class="stat">' + comps + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Open list</p></div>' +
-        '<div class="card" style="cursor:pointer" data-action="goto-engagements" role="button" tabindex="0"><h3>Engagements</h3><div class="stat">' + engs + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Open list</p></div>' +
-        '<div class="card"><h3>Active engagements</h3><div class="stat">' + active + '</div></div>' +
-        '<div class="card" style="cursor:pointer" data-action="goto-firm" role="button" tabindex="0"><h3>Retention default</h3><div class="stat">' + escapeHtml(String(state.firm.retentionPurging.completedEngagementYears)) + ' yrs</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Companies Act baseline — click to open Firm settings.</p></div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">High-risk clients: ' + highRiskClients + '</p></div>' +
+        '<div class="card" style="cursor:pointer" data-action="goto-engagements" role="button" tabindex="0"><h3>Active engagements</h3><div class="stat">' + active + '</div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Total records: ' + engs + '</p></div>' +
+        '<div class="card" style="cursor:pointer" data-action="goto-engagements" role="button" tabindex="0"><h3>Overdue deadlines</h3><div class="stat">' + overdue.length + '</div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Target completion passed</p></div>' +
+        '<div class="card"><h3>Open ML points</h3><div class="stat">' + openMl + '</div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Across engagements</p></div>' +
+        '<div class="card"><h3>Open remedies</h3><div class="stat">' + openRem + '</div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Tracking corrective actions</p></div>' +
+        '<div class="card"><h3>Filings ≤30 days</h3><div class="stat">' + filingsSoon.length + '</div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Regulatory submissions due soon</p></div>' +
+        '<div class="card" style="cursor:pointer" data-action="goto-universe" role="button" tabindex="0"><h3>Universe rows</h3><div class="stat">' + uni + '</div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Auditable areas registered</p></div>' +
+        '<div class="card"><h3>Regulatory flags</h3><div class="stat">' + regHeat + '</div>' +
+        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Monitoring / investigation</p></div>' +
       '</div>' +
-      '<div class="section-panel"><h2>Jump in</h2>' +
-      '<p class="muted" style="margin:0 0 10px;">Use the sidebar or open a company to edit Going concern, fees, regulatory flags, conflicts, and linked engagements.</p>' +
-      '<div class="toolbar">' +
-        '<button type="button" class="primary small" data-action="goto-companies">Companies list</button>' +
-        '<button type="button" class="ghost small" data-action="goto-engagements">Engagements list</button>' +
-      '</div></div>'
+      '<div class="grid2" style="align-items:start">' +
+        '<div class="section-panel"><h2>Engagements by phase</h2>' +
+        '<p class="muted" style="margin:0 0 10px;">Planning <strong>' + phaseCount.planning + '</strong> · Fieldwork <strong>' + phaseCount.fieldwork + '</strong> · Completion <strong>' + phaseCount.completion + '</strong> · Archived <strong>' + phaseCount.archived + '</strong></p>' +
+        '<button type="button" class="primary small" data-action="goto-engagements">Open engagements hub</button></div>' +
+        '<div class="section-panel"><h2>Firm snapshot</h2>' +
+        '<p class="muted" style="margin:0 0 10px;">Retention default <strong>' + escapeHtml(String(state.firm.retentionPurging.completedEngagementYears || 7)) + ' yrs</strong> · Archiving after sign-off <strong>' + escapeHtml(String(state.firm.archiving.autoArchiveDaysAfterSignoff || '—')) + ' days</strong></p>' +
+        '<div class="toolbar" style="margin:0">' +
+          '<button type="button" class="ghost small" data-action="goto-firm">Firm settings</button>' +
+          '<button type="button" class="ghost small" data-action="goto-universe">Audit universe</button>' +
+        '</div></div>' +
+      '</div>' +
+      '<div class="section-panel" style="margin-top:14px"><h2>Engagements past target completion</h2>' +
+      '<div class="table-scroll"><table class="data"><thead><tr><th>Code</th><th>Company</th><th>Deadline</th><th></th></tr></thead><tbody>' +
+      (overdueRows || '<tr><td colspan="4" class="muted">None — great job.</td></tr>') +
+      '</tbody></table></div></div>' +
+      '<div class="section-panel"><h2>Regulatory filings due within 30 days</h2>' +
+      '<div class="table-scroll"><table class="data"><thead><tr><th>Filing</th><th>Company</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>' +
+      (filingRows || '<tr><td colspan="5" class="muted">No filings in this window.</td></tr>') +
+      '</tbody></table></div></div>'
     );
   }
 
@@ -661,17 +871,14 @@
         '<div class="toolbar">' +
         '<button type="button" class="primary small" data-action="eng-add" data-company="' + escapeHtml(id) + '">New engagement</button>' +
         '</div>' +
-        '<table class="data"><thead><tr><th>Code</th><th>Title</th><th>Phase</th><th></th></tr></thead><tbody>' +
-        engagementsForCompany(id).map(function (e) {
-          return '<tr><td>' + escapeHtml(e.code) + '</td><td>' + escapeHtml(e.title) + '</td><td>' + escapeHtml(e.phase || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Open workspace</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
+        '<div class="table-scroll"><table class="data"><thead><tr><th>Engagement</th><th>Phase / status</th><th>Deadline</th><th>Team</th><th>Client users</th><th></th></tr></thead><tbody>' +
+        (engagementsForCompany(id).map(engagementCompanyScopedRow).join('') || '<tr><td colspan="6" class="muted">No engagements for this company yet.</td></tr>') +
+        '</tbody></table></div>';
     }
 
     return (
       '<div class="breadcrumb">' +
-      '<a data-action="goto-companies">Companies</a> · <strong>' + escapeHtml(c.name) + '</strong>' +
+      '<button type="button" class="crumb" data-action="goto-companies">Companies</button><span aria-hidden="true">·</span><strong>' + escapeHtml(c.name) + '</strong>' +
       '</div>' +
       '<div class="page-head"><div><h1>' + escapeHtml(c.name) + '</h1><p class="muted">Company hub — regulatory context and recurring-client intelligence.</p></div>' +
       '<button type="button" class="ghost" data-action="goto-companies">Back to list</button></div>' +
@@ -683,25 +890,93 @@
     return '<button type="button" class="tab' + (cur === key ? ' active' : '') + '" data-engagement-tab="' + escapeHtml(key) + '">' + escapeHtml(label) + '</button>';
   }
 
+  function engagementCompanyScopedRow(e) {
+    return '<tr>' +
+      '<td><strong>' + escapeHtml(e.code) + '</strong><div class="muted">' + escapeHtml(e.title || '') + '</div></td>' +
+      '<td>' + escapeHtml(e.phase || '') + '<span class="muted"> · </span>' + escapeHtml(e.status || 'active') + '</td>' +
+      '<td>' + engagementDeadlineHtml(e) + '</td>' +
+      '<td>' + formatTeamHtml(e.teamMemberIds) + '</td>' +
+      '<td>' + (e.clientUsers || []).length + '</td>' +
+      '<td style="white-space:nowrap">' +
+      '<button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Workspace</button> ' +
+      '<button type="button" class="small ghost" data-action="eng-manage-team" data-id="' + escapeHtml(e.id) + '">Team</button> ' +
+      '<button type="button" class="small ghost" data-action="eng-manage-clients" data-id="' + escapeHtml(e.id) + '">Client users</button>' +
+      '</td></tr>';
+  }
+
+  function engagementHubRow(e) {
+    var co = companyById(e.companyId);
+    var clients = (e.clientUsers || []).length;
+    var clientPreview = (e.clientUsers || []).slice(0, 2).map(function (u) { return escapeHtml(u.name || u.email || ''); }).join(', ');
+    if ((e.clientUsers || []).length > 2) clientPreview += ' <span class="muted">+' + ((e.clientUsers || []).length - 2) + '</span>';
+    if (!clients) clientPreview = '<span class="muted">—</span>';
+    return '<tr>' +
+      '<td><strong>' + escapeHtml(e.code) + '</strong><div class="muted">' + escapeHtml(e.title || '') + '</div></td>' +
+      '<td>' + escapeHtml(co ? co.name : '') + '</td>' +
+      '<td>' + escapeHtml(e.phase || '') + '<span class="muted"> · </span>' + escapeHtml(e.status || 'active') + '</td>' +
+      '<td>' + engagementDeadlineHtml(e) + '</td>' +
+      '<td>' + formatTeamHtml(e.teamMemberIds) + '</td>' +
+      '<td>' + clients + ' · ' + clientPreview + '</td>' +
+      '<td style="white-space:nowrap">' +
+      '<button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Workspace</button> ' +
+      '<button type="button" class="small ghost" data-action="eng-manage-team" data-id="' + escapeHtml(e.id) + '">Team</button> ' +
+      '<button type="button" class="small ghost" data-action="eng-manage-clients" data-id="' + escapeHtml(e.id) + '">Client users</button> ' +
+      '<button type="button" class="small danger" data-action="eng-delete" data-id="' + escapeHtml(e.id) + '">Delete</button>' +
+      '</td></tr>';
+  }
+
   function renderEngagementsList() {
-    var rows = state.engagements.map(function (e) {
-      var co = companyById(e.companyId);
-      return '<tr>' +
-        '<td>' + escapeHtml(e.code) + '</td>' +
-        '<td>' + escapeHtml(e.title) + '</td>' +
-        '<td>' + escapeHtml(co ? co.name : '') + '</td>' +
-        '<td>' + escapeHtml(e.phase || '') + '</td>' +
-        '<td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Open</button> ' +
-        '<button type="button" class="small danger" data-action="eng-delete" data-id="' + escapeHtml(e.id) + '">Delete</button></td>' +
-      '</tr>';
+    var filterId = state.ui.engagementsCompanyId || '';
+    var opts = '<option value="">All companies</option>' +
+      state.companies.map(function (c) {
+        return '<option value="' + escapeHtml(c.id) + '"' + (filterId === c.id ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
+      }).join('');
+    var list = state.engagements.filter(function (e) {
+      return !filterId || e.companyId === filterId;
+    });
+    var rows = list.map(engagementHubRow).join('');
+    var selCo = filterId ? companyById(filterId) : null;
+    return (
+      '<div class="page-head">' +
+        '<div><h1>Engagements hub</h1><p class="muted">' +
+        (selCo ? 'Filtered to <strong>' + escapeHtml(selCo.name) + '</strong> — deadlines, staffing, and client portal contacts.' : 'Pick a company to focus the portfolio, or leave “All companies”.') +
+        '</p></div>' +
+        '<button type="button" class="primary" data-action="company-picker-new-eng" title="Choose company in modal">New engagement…</button>' +
+      '</div>' +
+      '<div class="toolbar" style="align-items:flex-end">' +
+        '<div class="field" style="margin:0;min-width:260px"><label>Company scope</label>' +
+        '<select data-bind="eng-company-filter">' + opts + '</select></div>' +
+        '<button type="button" class="ghost" data-action="goto-companies">Companies</button>' +
+        '<button type="button" class="ghost" data-action="goto-universe">Audit universe</button>' +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px;font-size:12px;">Columns: delivery deadline (target completion), assigned audit team (directory-linked), and client users available for collaboration tracking.</p>' +
+      '<div class="table-scroll">' +
+      '<table class="data"><thead><tr><th>Engagement</th><th>Company</th><th>Phase / status</th><th>Deadline</th><th>Audit team</th><th>Client users</th><th></th></tr></thead><tbody>' +
+      (rows || '<tr><td colspan="7" class="muted">No engagements for this filter.</td></tr>') +
+      '</tbody></table></div>'
+    );
+  }
+
+  function renderUniverse() {
+    var rows = (state.firm.auditUniverse || []).map(function (u) {
+      var cn = u.companyId ? (companyById(u.companyId) || {}).name || 'Unknown' : '— Firm-wide / methodology';
+      return '<tr><td>' + escapeHtml(u.area || '') + '</td><td>' + escapeHtml(cn) + '</td><td>' + escapeHtml(u.owner || '') + '</td>' +
+        '<td>' + escapeHtml(u.frequency || '') + '</td><td>' + escapeHtml(u.lastAuditDate || '—') + '</td><td>' + escapeHtml(u.nextDue || '—') + '</td><td>' + escapeHtml(u.status || '') + '</td>' +
+        '<td style="white-space:nowrap">' +
+        '<button type="button" class="small ghost" data-action="uni-edit" data-row="' + escapeHtml(u.id) + '">Edit</button> ' +
+        '<button type="button" class="small danger" data-action="uni-del" data-row="' + escapeHtml(u.id) + '">Delete</button></td></tr>';
     }).join('');
     return (
       '<div class="page-head">' +
-        '<div><h1>Engagements</h1><p class="muted">Per-engagement independence sign-offs, sampling plans, management letters, filings.</p></div>' +
+        '<div><h1>Audit universe</h1><p class="muted">Auditable processes / entities — feeds coverage discussions and annual planning.</p></div>' +
+        '<button type="button" class="primary" data-action="uni-add">Add universe row</button>' +
       '</div>' +
-      '<table class="data"><thead><tr><th>Code</th><th>Title</th><th>Company</th><th>Phase</th><th></th></tr></thead><tbody>' +
-      (rows || '<tr><td colspan="5" class="muted">No engagements.</td></tr>') +
-      '</tbody></table>'
+      '<div class="section-panel"><h2>Universe register</h2>' +
+      '<div class="table-scroll"><table class="data"><thead><tr><th>Area / process</th><th>Company</th><th>Owner</th><th>Frequency</th><th>Last covered</th><th>Next due</th><th>Status</th><th></th></tr></thead><tbody>' +
+      (rows || '<tr><td colspan="8" class="muted">No rows yet — build your universe.</td></tr>') +
+      '</tbody></table></div></div>' +
+      '<div class="section-panel"><h2>Link to engagements</h2>' +
+      '<p class="muted" style="margin:0">Operational engagements live under each company; use the universe above for portfolio-level visibility and planning gates.</p></div>'
     );
   }
 
@@ -713,13 +988,18 @@
     var tabs =
       '<div class="tabs">' +
       engagementTabButton('overview', 'Overview', tab) +
-      engagementTabButton('independence', 'Independence confirmations', tab) +
-      engagementTabButton('opening', 'Predecessor / opening balances', tab) +
-      engagementTabButton('sampling', 'Sampling methodology', tab) +
-      engagementTabButton('mgmt', 'Management letter items', tab) +
+      engagementTabButton('team', 'Audit team', tab) +
+      engagementTabButton('clients', 'Client users', tab) +
+      engagementTabButton('independence', 'Independence', tab) +
+      engagementTabButton('risk', 'Risk register', tab) +
+      engagementTabButton('auditplan', 'Audit plan', tab) +
+      engagementTabButton('opening', 'Opening balances', tab) +
+      engagementTabButton('sampling', 'Sampling', tab) +
+      engagementTabButton('mgmt', 'Mgmt letter', tab) +
       engagementTabButton('subsequent', 'Subsequent events', tab) +
-      engagementTabButton('group', 'Group audit instructions', tab) +
-      engagementTabButton('filings', 'Regulatory submissions', tab) +
+      engagementTabButton('group', 'Group audit', tab) +
+      engagementTabButton('filings', 'Filings', tab) +
+      engagementTabButton('remedies', 'Remedies', tab) +
       '</div>';
 
     var body = '';
@@ -740,9 +1020,32 @@
         '</select></div>' +
         '</div>' +
         '<div class="field"><label>Title</label><input data-bind="eng-title" value="' + escapeHtml(e.title || '') + '" /></div>' +
+        '<div class="field"><label>Target completion / report deadline</label><input type="date" data-bind="eng-deadline" value="' + escapeHtml(e.targetCompletionDate || '') + '" /></div>' +
+        '<p class="muted" style="margin:0 0 12px;font-size:12px;">Staff assignments and client portal contacts are managed under Audit team and Client users tabs.</p>' +
         customFieldsHtml('engagement', e.customFieldValues) +
         '<button type="button" class="primary small" data-action="eng-save-overview" data-id="' + escapeHtml(id) + '">Save overview</button>' +
         '</div>';
+    } else if (tab === 'team') {
+      var boxes = state.staffDirectory.map(function (s) {
+        var on = (e.teamMemberIds || []).indexOf(s.id) >= 0 ? ' checked' : '';
+        return '<label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" data-team-member="' + escapeHtml(s.id) + '"' + on + ' /> ' + escapeHtml(s.name) + ' <span class="muted">— ' + escapeHtml(s.role || '') + '</span></label>';
+      }).join('');
+      body =
+        '<div class="section-panel"><h2>Audit team roster</h2>' +
+        '<p class="muted" style="margin:0 0 10px;">Mirrors staffing from the firm directory. Independence attestations stay on the Independence tab.</p>' +
+        (boxes || '<p class="muted">No staff in directory — add under Firm settings.</p>') +
+        '<button type="button" class="primary small" style="margin-top:14px" data-action="eng-save-team" data-id="' + escapeHtml(id) + '">Save team roster</button>' +
+        '</div>';
+    } else if (tab === 'clients') {
+      body =
+        '<div class="toolbar"><button type="button" class="primary small" data-action="cu-add" data-eng="' + escapeHtml(id) + '">Add client user</button></div>' +
+        '<table class="data"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Access</th><th></th></tr></thead><tbody>' +
+        (e.clientUsers || []).map(function (u) {
+          return '<tr><td>' + escapeHtml(u.name || '') + '</td><td>' + escapeHtml(u.email || '') + '</td><td>' + escapeHtml(u.role || '') + '</td><td>' + escapeHtml(u.status || '') + '</td>' +
+            '<td><button type="button" class="small ghost" data-action="cu-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(u.id) + '">Edit</button> ' +
+            '<button type="button" class="small danger" data-action="cu-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(u.id) + '">Delete</button></td></tr>';
+        }).join('') +
+        '</tbody></table>';
     } else if (tab === 'independence') {
       body =
         '<div class="toolbar"><button type="button" class="primary small" data-action="ind-add" data-id="' + escapeHtml(id) + '">Add confirmation</button></div>' +
@@ -752,6 +1055,29 @@
           return '<tr><td>' + escapeHtml(st ? st.name : row.staffId) + '</td><td>' + escapeHtml(row.signedAt || '') + '</td><td>' + escapeHtml(row.note || '') + '</td>' +
             '<td><button type="button" class="small ghost" data-action="ind-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(row.id) + '">Edit</button> ' +
             '<button type="button" class="small danger" data-action="ind-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(row.id) + '">Delete</button></td></tr>';
+        }).join('') +
+        '</tbody></table>';
+    } else if (tab === 'risk') {
+      body =
+        '<p class="muted" style="margin:0 0 12px">Engagement-level risk responses — firm methodology sits under <button type="button" class="crumb" data-action="goto-firm-risk">Firm settings → Risk planning</button>.</p>' +
+        '<div class="toolbar"><button type="button" class="primary small" data-action="risk-add" data-id="' + escapeHtml(id) + '">Add risk row</button></div>' +
+        '<div class="table-scroll"><table class="data"><thead><tr><th>Assertion / area</th><th>Risk</th><th>Inherent</th><th>Controls</th><th>Residual</th><th>Response</th><th></th></tr></thead><tbody>' +
+        (e.riskRegister || []).map(function (r) {
+          return '<tr><td>' + escapeHtml(r.assertion || '') + '</td><td>' + escapeHtml(r.description || '') + '</td><td>' + escapeHtml(r.inherent || '') + '</td>' +
+            '<td>' + escapeHtml(r.controlReliance || '') + '</td><td>' + escapeHtml(r.residual || '') + '</td><td>' + escapeHtml(r.response || '') + '</td>' +
+            '<td><button type="button" class="small ghost" data-action="risk-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
+            '<button type="button" class="small danger" data-action="risk-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
+        }).join('') +
+        '</tbody></table></div>';
+    } else if (tab === 'auditplan') {
+      body =
+        '<p class="muted" style="margin:0 0 12px">Link to firm audit plan templates under Firm settings. Below is this engagement\'s executed programme.</p>' +
+        '<div class="toolbar"><button type="button" class="primary small" data-action="ap-eng-add" data-id="' + escapeHtml(id) + '">Add audit procedure</button></div>' +
+        '<table class="data"><thead><tr><th>Section</th><th>Procedure</th><th>Owner</th><th>Status</th><th></th></tr></thead><tbody>' +
+        (e.auditPlan || []).map(function (p) {
+          return '<tr><td>' + escapeHtml(p.section || '') + '</td><td>' + escapeHtml(p.procedure || '') + '</td><td>' + escapeHtml(p.owner || '') + '</td><td>' + escapeHtml(p.status || '') + '</td>' +
+            '<td><button type="button" class="small ghost" data-action="ap-eng-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(p.id) + '">Edit</button> ' +
+            '<button type="button" class="small danger" data-action="ap-eng-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(p.id) + '">Delete</button></td></tr>';
         }).join('') +
         '</tbody></table>';
     } else if (tab === 'opening') {
@@ -805,15 +1131,27 @@
             '<button type="button" class="small danger" data-action="fil-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(f.id) + '">Delete</button></td></tr>';
         }).join('') +
         '</tbody></table>';
+    } else if (tab === 'remedies') {
+      body =
+        '<p class="muted" style="margin:0 0 12px">Corrective actions / remediation tracker — separate from formal findings log if you maintain one elsewhere.</p>' +
+        '<div class="toolbar"><button type="button" class="primary small" data-action="rem-add" data-id="' + escapeHtml(id) + '">Add remedy</button></div>' +
+        '<table class="data"><thead><tr><th>Title</th><th>Source</th><th>Owner</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>' +
+        (e.remedies || []).map(function (r) {
+          return '<tr><td>' + escapeHtml(r.title || '') + '</td><td>' + escapeHtml(r.source || '') + '</td><td>' + escapeHtml(r.owner || '') + '</td><td>' + escapeHtml(r.due || '') + '</td><td>' + escapeHtml(r.status || '') + '</td>' +
+            '<td><button type="button" class="small ghost" data-action="rem-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
+            '<button type="button" class="small danger" data-action="rem-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
+        }).join('') +
+        '</tbody></table>';
     }
 
     return (
       '<div class="breadcrumb">' +
-      '<a data-action="goto-companies">Companies</a> · ' +
-      '<a data-action="company-open" data-id="' + escapeHtml(e.companyId) + '">' + escapeHtml(co ? co.name : 'Company') + '</a> · <strong>' + escapeHtml(e.code) + '</strong>' +
+      '<button type="button" class="crumb" data-action="goto-companies">Companies</button><span aria-hidden="true">·</span>' +
+      '<button type="button" class="crumb" data-action="company-open" data-id="' + escapeHtml(e.companyId) + '">' + escapeHtml(co ? co.name : 'Company') + '</button><span aria-hidden="true">·</span><strong>' + escapeHtml(e.code) + '</strong>' +
       '</div>' +
-      '<div class="page-head"><div><h1>' + escapeHtml(e.title) + '</h1><p class="muted">' + escapeHtml(e.code) + ' · ' + escapeHtml(co ? co.name : '') + '</p></div>' +
-      '<button type="button" class="ghost" data-action="goto-engagements">All engagements</button></div>' +
+      '<div class="page-head"><div><h1>' + escapeHtml(e.title) + '</h1><p class="muted">' + escapeHtml(e.code) + ' · ' + escapeHtml(co ? co.name : '') +
+      ' · Deadline <strong>' + escapeHtml(e.targetCompletionDate || '—') + '</strong></p></div>' +
+      '<button type="button" class="ghost" data-action="goto-engagements">Engagements hub</button></div>' +
       tabs + body
     );
   }
@@ -832,6 +1170,10 @@
       railBtn('archiving', 'Archiving rules', sec) +
       railBtn('custom', 'Custom fields', sec) +
       railBtn('methodology', 'Methodology library', sec) +
+      railBtn('riskplanning', 'Risk planning', sec) +
+      railBtn('aptemplates', 'Audit plan templates', sec) +
+      railBtn('reportformats', 'Report formats', sec) +
+      railBtn('remediation', 'Remediation policy', sec) +
       railBtn('staff', 'Staff directory', sec) +
       '</div>';
 
@@ -893,6 +1235,47 @@
             '<button type="button" class="small danger" data-action="mlib-del" data-row="' + escapeHtml(m.id) + '">Delete</button></td></tr>';
         }).join('') +
         '</tbody></table>';
+    } else if (sec === 'riskplanning') {
+      var rp = fs.riskPlanning || {};
+      panel =
+        '<div class="section-panel"><h2>Risk planning framework</h2>' +
+        '<p class="muted" style="margin:0 0 12px">Engagements maintain their own risk register under each workspace — this section documents firm-wide scales and expectations.</p>' +
+        '<div class="field"><label>Inherent risk scale & thresholds</label><textarea data-bind="fp-inherent" rows="4">' + escapeHtml(rp.inherentScale || '') + '</textarea></div>' +
+        '<div class="field"><label>Control assessment approach</label><textarea data-bind="fp-control" rows="4">' + escapeHtml(rp.controlAssessment || '') + '</textarea></div>' +
+        '<div class="field"><label>Materiality & benchmarking notes</label><textarea data-bind="fp-mat" rows="3">' + escapeHtml(rp.materialityNotes || '') + '</textarea></div>' +
+        '<div class="field"><label>EQCR / rotation policy summary</label><textarea data-bind="fp-rot" rows="3">' + escapeHtml(rp.rotationPolicy || '') + '</textarea></div>' +
+        '<button type="button" class="primary small" data-action="firm-save-riskplanning">Save risk planning framework</button>' +
+        '</div>';
+    } else if (sec === 'aptemplates') {
+      panel =
+        '<div class="toolbar"><button type="button" class="primary small" data-action="apt-add">Add audit plan template</button></div>' +
+        '<table class="data"><thead><tr><th>Name</th><th>Outline preview</th><th></th></tr></thead><tbody>' +
+        (fs.auditPlanTemplates || []).map(function (t) {
+          var prev = (t.outline || '').slice(0, 100).replace(/\n/g, ' ');
+          return '<tr><td>' + escapeHtml(t.name || '') + '</td><td class="muted">' + escapeHtml(prev) + '</td>' +
+            '<td><button type="button" class="small ghost" data-action="apt-edit" data-row="' + escapeHtml(t.id) + '">Edit</button> ' +
+            '<button type="button" class="small danger" data-action="apt-del" data-row="' + escapeHtml(t.id) + '">Delete</button></td></tr>';
+        }).join('') +
+        '</tbody></table>';
+    } else if (sec === 'reportformats') {
+      panel =
+        '<div class="toolbar"><button type="button" class="primary small" data-action="rf-add">Add report format</button></div>' +
+        '<table class="data"><thead><tr><th>Name</th><th>Structure preview</th><th></th></tr></thead><tbody>' +
+        (fs.reportFormats || []).map(function (t) {
+          var prev = (t.structure || '').slice(0, 100).replace(/\n/g, ' ');
+          return '<tr><td>' + escapeHtml(t.name || '') + '</td><td class="muted">' + escapeHtml(prev) + '</td>' +
+            '<td><button type="button" class="small ghost" data-action="rf-edit" data-row="' + escapeHtml(t.id) + '">Edit</button> ' +
+            '<button type="button" class="small danger" data-action="rf-del" data-row="' + escapeHtml(t.id) + '">Delete</button></td></tr>';
+        }).join('') +
+        '</tbody></table>';
+    } else if (sec === 'remediation') {
+      var rem = fs.remediationPolicy || {};
+      panel =
+        '<div class="section-panel"><h2>Remediation & corrective action policy</h2>' +
+        '<div class="field"><label>Default SLA (days to management response)</label><input type="number" data-bind="rem-sla" value="' + escapeHtml(String(rem.slaDays != null ? rem.slaDays : 90)) + '" /></div>' +
+        '<div class="field"><label>Escalation matrix</label><textarea data-bind="rem-esc" rows="5">' + escapeHtml(rem.escalation || '') + '</textarea></div>' +
+        '<button type="button" class="primary small" data-action="firm-save-remediation">Save remediation policy</button>' +
+        '</div>';
     } else if (sec === 'staff') {
       panel =
         '<div class="toolbar"><button type="button" class="primary small" data-action="staff-add">Add team member</button></div>' +
@@ -908,7 +1291,7 @@
 
     return (
       '<div class="page-head">' +
-        '<div><h1>Firm settings</h1><p class="muted">Tenant-wide policies — security, retention (7-year baseline), archiving, metadata schema, methodology.</p></div>' +
+        '<div><h1>Firm settings</h1><p class="muted">Security, retention, methodology, <strong>risk planning framework</strong>, audit plan & report templates, remediation SLAs, plus staff and audit universe registers.</p></div>' +
       '</div>' +
       '<div class="rail-layout">' + rail + '<div>' + panel + '</div></div>'
     );
@@ -922,6 +1305,7 @@
     if (r.view === 'engagements') return renderEngagementsList();
     if (r.view === 'engagement') return r.id ? renderEngagementDetail(r.id) : renderEngagementsList();
     if (r.view === 'firm-settings') return renderFirmSettings();
+    if (r.view === 'universe') return renderUniverse();
     return renderDashboard();
   }
 
@@ -958,15 +1342,27 @@
     root.onclick = function (ev) {
       var t = ev.target.closest('[data-action]');
       if (!t || !root.contains(t)) return;
+      ev.preventDefault();
       var action = t.getAttribute('data-action');
       handleAction(action, t, root);
     };
+
+    var engFilt = root.querySelector('[data-bind="eng-company-filter"]');
+    if (engFilt) {
+      engFilt.onchange = function () {
+        state.ui.engagementsCompanyId = engFilt.value || '';
+        saveState(state);
+        renderAll();
+      };
+    }
   }
 
   function handleAction(action, el, root) {
     if (action === 'goto-companies') navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
     else if (action === 'goto-engagements') navigate({ view: 'engagements', id: null, firmSection: state.ui.route.firmSection });
     else if (action === 'goto-firm') navigate({ view: 'firm-settings', id: null, firmSection: state.ui.route.firmSection || 'security' });
+    else if (action === 'goto-universe') navigate({ view: 'universe', id: null, firmSection: state.ui.route.firmSection });
+    else if (action === 'goto-firm-risk') navigate({ view: 'firm-settings', id: null, firmSection: 'riskplanning' });
     else if (action === 'company-open') navigate({ view: 'company', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
     else if (action === 'company-delete') {
       var cid = el.getAttribute('data-id');
@@ -1211,7 +1607,13 @@
             subsequentEventsCutoff: '',
             groupAuditInstructions: '',
             regulatorySubmissions: [],
-            customFieldValues: {}
+            customFieldValues: {},
+            targetCompletionDate: '',
+            teamMemberIds: [],
+            clientUsers: [],
+            riskRegister: [],
+            auditPlan: [],
+            remedies: []
           };
           state.engagements.push(eng);
           toast('Engagement created');
@@ -1219,6 +1621,298 @@
           saveState(state);
         }
       });
+    } else if (action === 'uni-add' || action === 'uni-edit') {
+      var rowId = action === 'uni-edit' ? el.getAttribute('data-row') : null;
+      var existing = rowId ? state.firm.auditUniverse.find(function (x) { return x.id === rowId; }) : null;
+      var coSel = '<option value=""' + ((!existing || !existing.companyId) ? ' selected' : '') + '>— Firm-wide / methodology —</option>' +
+        state.companies.map(function (c) {
+          return '<option value="' + escapeHtml(c.id) + '"' + ((existing && existing.companyId === c.id) ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
+        }).join('');
+      openModal({
+        title: existing ? 'Edit universe row' : 'Add universe row',
+        bodyHtml:
+          '<div class="field"><label>Area / process</label><input id="uni_area" value="' + escapeHtml(existing ? existing.area || '' : '') + '" /></div>' +
+          '<div class="field"><label>Company scope</label><select id="uni_coid">' + coSel + '</select></div>' +
+          '<div class="grid2">' +
+          '<div class="field"><label>Owner</label><input id="uni_own" value="' + escapeHtml(existing ? existing.owner || '' : '') + '" /></div>' +
+          '<div class="field"><label>Frequency</label><input id="uni_freq" value="' + escapeHtml(existing ? existing.frequency || '' : '') + '" /></div>' +
+          '<div class="field"><label>Last covered</label><input type="date" id="uni_last" value="' + escapeHtml(existing ? existing.lastAuditDate || '' : '') + '" /></div>' +
+          '<div class="field"><label>Next due</label><input type="date" id="uni_next" value="' + escapeHtml(existing ? existing.nextDue || '' : '') + '" /></div>' +
+          '</div>' +
+          '<div class="field"><label>Status</label><input id="uni_stat" placeholder="scheduled / in_progress / framework..." value="' + escapeHtml(existing ? existing.status || '' : '') + '" /></div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            area: document.getElementById('uni_area').value.trim(),
+            companyId: document.getElementById('uni_coid').value,
+            owner: document.getElementById('uni_own').value,
+            frequency: document.getElementById('uni_freq').value,
+            lastAuditDate: document.getElementById('uni_last').value,
+            nextDue: document.getElementById('uni_next').value,
+            status: document.getElementById('uni_stat').value
+          };
+          state.firm.auditUniverse = state.firm.auditUniverse || [];
+          if (existing) {
+            var ix = state.firm.auditUniverse.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) state.firm.auditUniverse[ix] = rec;
+          } else state.firm.auditUniverse.push(rec);
+          toast('Universe updated');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'uni-del') {
+      var uidRow = el.getAttribute('data-row');
+      state.firm.auditUniverse = (state.firm.auditUniverse || []).filter(function (x) { return x.id !== uidRow; });
+      toast('Removed');
+      saveState(state); renderAll();
+    } else if (action === 'firm-save-riskplanning') {
+      var rp = state.firm.riskPlanning || (state.firm.riskPlanning = {});
+      rp.inherentScale = val(root, '[data-bind="fp-inherent"]');
+      rp.controlAssessment = val(root, '[data-bind="fp-control"]');
+      rp.materialityNotes = val(root, '[data-bind="fp-mat"]');
+      rp.rotationPolicy = val(root, '[data-bind="fp-rot"]');
+      toast('Risk framework saved');
+      saveState(state); renderAll();
+    } else if (action === 'firm-save-remediation') {
+      var rm = state.firm.remediationPolicy || (state.firm.remediationPolicy = {});
+      rm.slaDays = parseInt(val(root, '[data-bind="rem-sla"]'), 10) || 90;
+      rm.escalation = val(root, '[data-bind="rem-esc"]');
+      toast('Remediation policy saved');
+      saveState(state); renderAll();
+    } else if (action === 'apt-add' || action === 'apt-edit') {
+      var rowId = action === 'apt-edit' ? el.getAttribute('data-row') : null;
+      var fs = state.firm;
+      var existing = rowId ? fs.auditPlanTemplates.find(function (x) { return x.id === rowId; }) : null;
+      openModal({
+        title: existing ? 'Edit audit plan template' : 'Add audit plan template',
+        bodyHtml:
+          '<div class="field"><label>Template name</label><input id="apt_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
+          '<div class="field"><label>Outline / sections</label><textarea id="apt_out" rows="8">' + escapeHtml(existing ? existing.outline || '' : '') + '</textarea></div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            name: document.getElementById('apt_name').value.trim() || 'Untitled template',
+            outline: document.getElementById('apt_out').value
+          };
+          fs.auditPlanTemplates = fs.auditPlanTemplates || [];
+          if (existing) {
+            var ix = fs.auditPlanTemplates.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) fs.auditPlanTemplates[ix] = rec;
+          } else fs.auditPlanTemplates.push(rec);
+          toast('Template saved');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'apt-del') {
+      var aptId = el.getAttribute('data-row');
+      state.firm.auditPlanTemplates = (state.firm.auditPlanTemplates || []).filter(function (x) { return x.id !== aptId; });
+      toast('Removed');
+      saveState(state); renderAll();
+    } else if (action === 'rf-add' || action === 'rf-edit') {
+      var rowId = action === 'rf-edit' ? el.getAttribute('data-row') : null;
+      var fs = state.firm;
+      var existing = rowId ? fs.reportFormats.find(function (x) { return x.id === rowId; }) : null;
+      openModal({
+        title: existing ? 'Edit report format' : 'Add report format',
+        bodyHtml:
+          '<div class="field"><label>Report name</label><input id="rf_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
+          '<div class="field"><label>Structure / sections</label><textarea id="rf_struct" rows="8">' + escapeHtml(existing ? existing.structure || '' : '') + '</textarea></div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            name: document.getElementById('rf_name').value.trim() || 'Untitled report',
+            structure: document.getElementById('rf_struct').value
+          };
+          fs.reportFormats = fs.reportFormats || [];
+          if (existing) {
+            var ix = fs.reportFormats.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) fs.reportFormats[ix] = rec;
+          } else fs.reportFormats.push(rec);
+          toast('Report format saved');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'rf-del') {
+      var rfId = el.getAttribute('data-row');
+      state.firm.reportFormats = (state.firm.reportFormats || []).filter(function (x) { return x.id !== rfId; });
+      toast('Removed');
+      saveState(state); renderAll();
+    } else if (action === 'risk-add' || action === 'risk-edit') {
+      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
+      var e = engagementById(eid);
+      if (!e) return;
+      var rowId = action === 'risk-edit' ? el.getAttribute('data-row') : null;
+      var existing = rowId ? (e.riskRegister || []).find(function (x) { return x.id === rowId; }) : null;
+      openModal({
+        title: existing ? 'Edit risk row' : 'Add risk row',
+        bodyHtml:
+          '<div class="field"><label>Assertion / area</label><input id="rk_as" value="' + escapeHtml(existing ? existing.assertion || '' : '') + '" /></div>' +
+          '<div class="field"><label>Risk description</label><textarea id="rk_desc">' + escapeHtml(existing ? existing.description || '' : '') + '</textarea></div>' +
+          '<div class="grid2">' +
+          '<div class="field"><label>Inherent</label><select id="rk_inh">' + ['high', 'medium', 'low'].map(function (x) {
+            return '<option value="' + x + '"' + ((existing && existing.inherent === x) ? ' selected' : '') + '>' + x + '</option>';
+          }).join('') + '</select></div>' +
+          '<div class="field"><label>Control reliance</label><input id="rk_cr" value="' + escapeHtml(existing ? existing.controlReliance || '' : '') + '" /></div>' +
+          '<div class="field"><label>Residual</label><select id="rk_res">' + ['high', 'medium', 'low'].map(function (x) {
+            return '<option value="' + x + '"' + ((existing && existing.residual === x) ? ' selected' : '') + '>' + x + '</option>';
+          }).join('') + '</select></div>' +
+          '</div>' +
+          '<div class="field"><label>Audit response</label><textarea id="rk_resp">' + escapeHtml(existing ? existing.response || '' : '') + '</textarea></div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            assertion: document.getElementById('rk_as').value,
+            description: document.getElementById('rk_desc').value,
+            inherent: document.getElementById('rk_inh').value,
+            controlReliance: document.getElementById('rk_cr').value,
+            residual: document.getElementById('rk_res').value,
+            response: document.getElementById('rk_resp').value
+          };
+          e.riskRegister = e.riskRegister || [];
+          if (existing) {
+            var ix = e.riskRegister.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) e.riskRegister[ix] = rec;
+          } else e.riskRegister.push(rec);
+          toast('Risk register updated');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'risk-del') {
+      var eid = el.getAttribute('data-eng');
+      var rid = el.getAttribute('data-row');
+      var e = engagementById(eid);
+      if (!e) return;
+      e.riskRegister = (e.riskRegister || []).filter(function (x) { return x.id !== rid; });
+      toast('Removed');
+      saveState(state); renderAll();
+    } else if (action === 'ap-eng-add' || action === 'ap-eng-edit') {
+      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
+      var e = engagementById(eid);
+      if (!e) return;
+      var rowId = action === 'ap-eng-edit' ? el.getAttribute('data-row') : null;
+      var existing = rowId ? (e.auditPlan || []).find(function (x) { return x.id === rowId; }) : null;
+      openModal({
+        title: existing ? 'Edit audit procedure' : 'Add audit procedure',
+        bodyHtml:
+          '<div class="field"><label>Section</label><input id="ape_sec" value="' + escapeHtml(existing ? existing.section || '' : '') + '" /></div>' +
+          '<div class="field"><label>Procedure</label><textarea id="ape_proc">' + escapeHtml(existing ? existing.procedure || '' : '') + '</textarea></div>' +
+          '<div class="grid2">' +
+          '<div class="field"><label>Owner</label><input id="ape_own" value="' + escapeHtml(existing ? existing.owner || '' : '') + '" /></div>' +
+          '<div class="field"><label>Status</label><select id="ape_st">' + ['planned', 'in_progress', 'done', 'deferred'].map(function (x) {
+            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
+          }).join('') + '</select></div>' +
+          '</div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            section: document.getElementById('ape_sec').value,
+            procedure: document.getElementById('ape_proc').value,
+            owner: document.getElementById('ape_own').value,
+            status: document.getElementById('ape_st').value
+          };
+          e.auditPlan = e.auditPlan || [];
+          if (existing) {
+            var ix = e.auditPlan.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) e.auditPlan[ix] = rec;
+          } else e.auditPlan.push(rec);
+          toast('Audit plan updated');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'ap-eng-del') {
+      var eid = el.getAttribute('data-eng');
+      var rid = el.getAttribute('data-row');
+      var e = engagementById(eid);
+      if (!e) return;
+      e.auditPlan = (e.auditPlan || []).filter(function (x) { return x.id !== rid; });
+      toast('Removed');
+      saveState(state); renderAll();
+    } else if (action === 'rem-add' || action === 'rem-edit') {
+      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
+      var e = engagementById(eid);
+      if (!e) return;
+      var rowId = action === 'rem-edit' ? el.getAttribute('data-row') : null;
+      var existing = rowId ? (e.remedies || []).find(function (x) { return x.id === rowId; }) : null;
+      openModal({
+        title: existing ? 'Edit remedy' : 'Add remedy',
+        bodyHtml:
+          '<div class="field"><label>Title</label><input id="rm_title" value="' + escapeHtml(existing ? existing.title || '' : '') + '" /></div>' +
+          '<div class="field"><label>Source</label><input id="rm_src" placeholder="Finding ref / ML / regulator" value="' + escapeHtml(existing ? existing.source || '' : '') + '" /></div>' +
+          '<div class="grid2">' +
+          '<div class="field"><label>Owner</label><input id="rm_own" value="' + escapeHtml(existing ? existing.owner || '' : '') + '" /></div>' +
+          '<div class="field"><label>Due</label><input type="date" id="rm_due" value="' + escapeHtml(existing ? existing.due || '' : '') + '" /></div>' +
+          '</div>' +
+          '<div class="field"><label>Status</label><select id="rm_st">' + ['open', 'in_progress', 'closed', 'waived'].map(function (x) {
+            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
+          }).join('') + '</select></div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            title: document.getElementById('rm_title').value,
+            source: document.getElementById('rm_src').value,
+            owner: document.getElementById('rm_own').value,
+            due: document.getElementById('rm_due').value,
+            status: document.getElementById('rm_st').value
+          };
+          e.remedies = e.remedies || [];
+          if (existing) {
+            var ix = e.remedies.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) e.remedies[ix] = rec;
+          } else e.remedies.push(rec);
+          toast('Remedy saved');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'rem-del') {
+      var eid = el.getAttribute('data-eng');
+      var rid = el.getAttribute('data-row');
+      var e = engagementById(eid);
+      if (!e) return;
+      e.remedies = (e.remedies || []).filter(function (x) { return x.id !== rid; });
+      toast('Removed');
+      saveState(state); renderAll();
+    } else if (action === 'cu-add' || action === 'cu-edit') {
+      var eid = el.getAttribute('data-eng');
+      var e = engagementById(eid);
+      if (!e) return;
+      var rowId = action === 'cu-edit' ? el.getAttribute('data-row') : null;
+      var existing = rowId ? (e.clientUsers || []).find(function (x) { return x.id === rowId; }) : null;
+      openModal({
+        title: existing ? 'Edit client user' : 'Add client user',
+        bodyHtml:
+          '<div class="field"><label>Name</label><input id="cu_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
+          '<div class="field"><label>Email</label><input id="cu_email" type="email" value="' + escapeHtml(existing ? existing.email || '' : '') + '" /></div>' +
+          '<div class="grid2">' +
+          '<div class="field"><label>Role</label><input id="cu_role" value="' + escapeHtml(existing ? existing.role || '' : '') + '" /></div>' +
+          '<div class="field"><label>Access status</label><select id="cu_st">' + ['active', 'invited', 'suspended'].map(function (x) {
+            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
+          }).join('') + '</select></div>' +
+          '</div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            name: document.getElementById('cu_name').value.trim(),
+            email: document.getElementById('cu_email').value.trim(),
+            role: document.getElementById('cu_role').value,
+            status: document.getElementById('cu_st').value
+          };
+          e.clientUsers = e.clientUsers || [];
+          if (existing) {
+            var ix = e.clientUsers.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) e.clientUsers[ix] = rec;
+          } else e.clientUsers.push(rec);
+          toast('Client user saved');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'cu-del') {
+      var eid = el.getAttribute('data-eng');
+      var rid = el.getAttribute('data-row');
+      var e = engagementById(eid);
+      if (!e) return;
+      e.clientUsers = (e.clientUsers || []).filter(function (x) { return x.id !== rid; });
+      toast('Removed');
+      saveState(state); renderAll();
     } else if (action === 'eng-open') navigate({ view: 'engagement', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
     else if (action === 'eng-delete') {
       var eid = el.getAttribute('data-id');
@@ -1234,9 +1928,73 @@
       e.title = val(root, '[data-bind="eng-title"]');
       e.phase = val(root, '[data-bind="eng-phase"]');
       e.status = val(root, '[data-bind="eng-status"]');
+      e.targetCompletionDate = val(root, '[data-bind="eng-deadline"]');
       e.customFieldValues = Object.assign({}, e.customFieldValues || {}, collectCustomFieldValues(root, 'engagement'));
       toast('Overview saved');
       saveState(state); renderAll();
+    } else if (action === 'eng-save-team') {
+      var e = engagementById(el.getAttribute('data-id'));
+      if (!e) return;
+      e.teamMemberIds = [];
+      root.querySelectorAll('input[data-team-member]').forEach(function (cb) {
+        if (cb.checked) e.teamMemberIds.push(cb.getAttribute('data-team-member'));
+      });
+      toast('Audit team saved');
+      saveState(state); renderAll();
+    } else if (action === 'eng-manage-team') {
+      state.ui.engagementTab = 'team';
+      navigate({ view: 'engagement', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
+    } else if (action === 'eng-manage-clients') {
+      state.ui.engagementTab = 'clients';
+      navigate({ view: 'engagement', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
+    } else if (action === 'company-picker-new-eng') {
+      if (!state.companies.length) {
+        toast('Add a company first.');
+        return;
+      }
+      var coOpts = state.companies.map(function (c) {
+        return '<option value="' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>';
+      }).join('');
+      openModal({
+        title: 'Create engagement',
+        bodyHtml:
+          '<div class="field"><label>Company</label><select id="np_co">' + coOpts + '</select></div>' +
+          '<div class="field"><label>Code</label><input id="np_code" placeholder="FY26-AUD-001" /></div>' +
+          '<div class="field"><label>Title</label><input id="np_title" /></div>' +
+          '<div class="field"><label>Report deadline</label><input type="date" id="np_dead" /></div>' +
+          '<div class="field"><label>Phase</label><select id="np_phase"><option>planning</option><option selected>fieldwork</option><option>completion</option></select></div>',
+        onOk: function () {
+          var cid = document.getElementById('np_co').value;
+          var eng = {
+            id: uid(),
+            companyId: cid,
+            code: document.getElementById('np_code').value.trim() || 'ENG-' + uid().slice(-6),
+            title: document.getElementById('np_title').value.trim() || 'New engagement',
+            phase: document.getElementById('np_phase').value,
+            status: 'active',
+            targetCompletionDate: document.getElementById('np_dead').value,
+            teamMemberIds: [],
+            clientUsers: [],
+            independenceConfirmations: [],
+            firstYearWithClient: false,
+            openingBalanceProcedures: '',
+            samplingBySection: [],
+            managementLetterItems: [],
+            subsequentEventsCutoff: '',
+            groupAuditInstructions: '',
+            regulatorySubmissions: [],
+            customFieldValues: {},
+            riskRegister: [],
+            auditPlan: [],
+            remedies: []
+          };
+          state.engagements.push(eng);
+          state.ui.engagementsCompanyId = cid;
+          toast('Engagement created');
+          navigate({ view: 'engagement', id: eng.id, firmSection: state.ui.route.firmSection });
+          saveState(state);
+        }
+      });
     } else if (action === 'eng-save-opening') {
       var e = engagementById(el.getAttribute('data-id'));
       if (!e) return;
@@ -1261,6 +2019,10 @@
       var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
       var e = engagementById(eid);
       if (!e) return;
+      if (!(state.staffDirectory || []).length) {
+        toast('Add team members under Firm settings → Staff directory first.');
+        return;
+      }
       var rowId = action === 'ind-edit' ? el.getAttribute('data-row') : null;
       var existing = rowId ? (e.independenceConfirmations || []).find(function (x) { return x.id === rowId; }) : null;
       var opts = state.staffDirectory.map(function (s) {
@@ -1557,6 +2319,7 @@
     if (!confirm('Replace workspace data with seeded demo?')) return;
     localStorage.removeItem(STORAGE_KEY);
     state = defaultState();
+    normalizeState(state);
     saveState(state);
     toast('Demo data restored');
     navigate({ view: 'dashboard', id: null, firmSection: 'security' });
