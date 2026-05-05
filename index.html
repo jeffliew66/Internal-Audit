@@ -109,6 +109,16 @@
     }
     .tab.active { border-color: var(--border); background: var(--panel2); color: var(--text); }
 
+    .tabs.client-hub-pills {
+      border-bottom: none; padding-bottom: 0; margin-top: 2px; margin-bottom: 14px; gap: 8px;
+    }
+    .tabs.client-hub-pills .tab {
+      border-radius: 999px; border-color: var(--border); background: var(--panel2); font-size: 12px; padding: 7px 14px;
+    }
+    .tabs.client-hub-pills .tab.active {
+      border-color: rgba(56,189,248,.5); background: rgba(56,189,248,.12); color: var(--text);
+    }
+
     .rail-layout { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: start; }
     @media (max-width: 980px) { .rail-layout { grid-template-columns: 1fr; } }
     .rail {
@@ -222,9 +232,6 @@
     }
     .strip-chip button { padding: 2px 8px; font-size: 11px; }
 
-    details.company-directory > summary {
-      cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); padding: 4px 0;
-    }
   </style>
 </head>
 <body>
@@ -457,7 +464,7 @@
       ],
       ui: {
         route: { view: 'dashboard', id: null, tab: null, firmSection: 'universe' },
-        companyTab: 'overview',
+        companyTab: 'engagements',
         engagementTab: 'overview',
         engagementsCompanyId: ''
       }
@@ -532,7 +539,7 @@
     if (!s.ui.route.view) s.ui.route.view = 'dashboard';
     if (s.ui.route.id === undefined) s.ui.route.id = null;
     if (!s.ui.route.firmSection) s.ui.route.firmSection = 'universe';
-    if (!s.ui.companyTab) s.ui.companyTab = 'overview';
+    if (!s.ui.companyTab) s.ui.companyTab = 'engagements';
     if (!s.ui.engagementTab) s.ui.engagementTab = 'overview';
     if (s.ui.engagementsCompanyId === undefined || s.ui.engagementsCompanyId === null) s.ui.engagementsCompanyId = '';
     var selCo = s.ui.engagementsCompanyId;
@@ -888,19 +895,7 @@
     var opts = state.companies.map(function (c) {
       return '<option value="' + escapeHtml(c.id) + '"' + (cid === c.id ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
     }).join('');
-    var list = cid ? engagementsForCompany(cid) : [];
-    var rows = list.map(engagementPortfolioRow).join('');
-    var dirRows = state.companies.map(function (c) {
-      var risk = (c.riskTier || 'medium').toLowerCase();
-      return '<tr><td><strong>' + escapeHtml(c.name) + '</strong><div class="muted">' + escapeHtml(c.industry || '') + '</div></td>' +
-        '<td><span class="pill ' + escapeHtml(risk) + '">' + escapeHtml(c.riskTier || '') + '</span></td>' +
-        '<td>' + engagementsForCompany(c.id).length + '</td>' +
-        '<td style="white-space:nowrap">' +
-        '<button type="button" class="small ghost" data-action="company-open" data-id="' + escapeHtml(c.id) + '">Profile</button> ' +
-        '<button type="button" class="small ghost" data-action="pick-client-for-grid" data-id="' + escapeHtml(c.id) + '">Show jobs</button> ' +
-        '<button type="button" class="small danger" data-action="company-delete" data-id="' + escapeHtml(c.id) + '">Del</button>' +
-        '</td></tr>';
-    }).join('');
+    var hubTab = state.ui.companyTab || 'engagements';
 
     if (!state.companies.length) {
       return (
@@ -910,12 +905,23 @@
       );
     }
 
+    var hubBody = '';
+    if (co) {
+      hubBody =
+        companyHubTabsHtml(hubTab) +
+        '<div class="viz-card" style="margin-bottom:14px">' +
+        (hubTab === 'engagements' ? '<div class="viz-title">Engagements</div>' : '') +
+        renderCompanyTabBody(co.id, hubTab, { compactEngagements: hubTab === 'engagements' }) +
+        '</div>';
+    }
+
     return (
       '<div class="dash-top">' +
         '<h1 class="dash-title">Clients & engagements</h1>' +
         '<div class="toolbar">' +
           '<button type="button" class="primary" data-action="company-add">+ Client</button>' +
-          '<button type="button" class="ghost" data-action="company-picker-new-eng">+ Job</button>' +
+          '<button type="button" class="ghost" data-action="company-picker-new-eng"' + (co ? ' data-company="' + escapeHtml(co.id) + '"' : '') + '>+ Job</button>' +
+          (co ? '<button type="button" class="small danger" data-action="company-delete" data-id="' + escapeHtml(co.id) + '">Remove client</button>' : '') +
         '</div>' +
       '</div>' +
       '<div class="portfolio-bar">' +
@@ -923,23 +929,8 @@
           '<label>Select company — engagements listed below</label>' +
           '<select class="select-xl" data-bind="eng-company-filter">' + opts + '</select>' +
         '</div>' +
-        '<div class="toolbar" style="margin:0">' +
-        (co ? '<button type="button" class="ghost" data-action="company-open" data-id="' + escapeHtml(co.id) + '">Company profile</button>' : '') +
-        '</div>' +
       '</div>' +
-      '<div class="viz-card" style="margin-bottom:14px">' +
-        '<div class="viz-title">Engagements</div>' +
-        '<div class="table-scroll">' +
-        '<table class="data"><thead><tr><th>Job</th><th>Phase</th><th>Deadline</th><th>Team</th><th>Grp</th><th>FY1</th><th>ML</th><th>≤30d</th><th>Cli</th><th>Risk</th><th></th></tr></thead><tbody>' +
-        (rows || '<tr><td colspan="11" class="muted">No engagements — use Profile or + Job.</td></tr>') +
-        '</tbody></table></div></div>' +
-      '<details open class="company-directory section-panel">' +
-        '<summary>Client directory</summary>' +
-        '<div class="table-scroll" style="margin-top:12px">' +
-        '<table class="data"><thead><tr><th>Client</th><th>Risk</th><th>Jobs</th><th></th></tr></thead><tbody>' +
-        dirRows +
-        '</tbody></table></div>' +
-      '</details>'
+      (co ? hubBody : '<div class="viz-card"><p class="muted">Select a client.</p></div>')
     );
   }
 
@@ -947,24 +938,47 @@
     return '<button type="button" class="tab' + (cur === key ? ' active' : '') + '" data-company-tab="' + escapeHtml(key) + '">' + escapeHtml(label) + '</button>';
   }
 
-  function renderCompanyDetail(id) {
-    var c = companyById(id);
-    if (!c) return '<p class="muted">Company not found.</p>';
-    var tab = state.ui.companyTab || 'overview';
-    var tabs =
-      '<div class="tabs">' +
-      tabButton('overview', 'Overview', tab) +
-      tabButton('goingConcern', 'Going concern history', tab) +
-      tabButton('predecessor', 'Predecessor auditor', tab) +
-      tabButton('fees', 'Fee history', tab) +
-      tabButton('regulatory', 'Regulatory flags', tab) +
-      tabButton('coi', 'Conflict check', tab) +
-      tabButton('engagements', 'Engagements', tab) +
-      '</div>';
+  function companyHubTabsHtml(activeTab) {
+    var t = activeTab || 'engagements';
+    return (
+      '<div class="tabs client-hub-pills">' +
+      tabButton('engagements', 'Engagements', t) +
+      tabButton('overview', 'Profile', t) +
+      tabButton('users', 'Users', t) +
+      tabButton('fees', 'Fee history', t) +
+      tabButton('regulatory', 'Regulatory', t) +
+      tabButton('goingConcern', 'Going concern', t) +
+      tabButton('predecessor', 'Predecessor', t) +
+      tabButton('coi', 'Independence', t) +
+      '</div>'
+    );
+  }
 
-    var body = '';
+  function renderCompanyTabBody(companyId, tab, opts) {
+    opts = opts || {};
+    var compactEng = opts.compactEngagements;
+    var c = companyById(companyId);
+    if (!c) return '<p class="muted">Company not found.</p>';
+    var id = companyId;
+
+    if (tab === 'engagements') {
+      var engToolbar = compactEng
+        ? ''
+        : (
+          '<div class="toolbar">' +
+          '<button type="button" class="primary small" data-action="eng-add" data-company="' + escapeHtml(id) + '">New engagement</button>' +
+          '</div>'
+        );
+      return (
+        engToolbar +
+        '<div class="table-scroll"><table class="data"><thead><tr><th>Job</th><th>Phase</th><th>Deadline</th><th>Team</th><th>Grp</th><th>FY1</th><th>ML</th><th>Due≤30d</th><th>Cli</th><th>Risk</th><th></th></tr></thead><tbody>' +
+        (engagementsForCompany(id).map(engagementPortfolioRow).join('') || '<tr><td colspan="11" class="muted">No engagements yet.</td></tr>') +
+        '</tbody></table></div>'
+      );
+    }
+
     if (tab === 'overview') {
-      body =
+      return (
         '<div class="section-panel"><h2>Profile</h2>' +
         '<div class="grid2">' +
         '<div class="field"><label>Name</label><input data-bind="company-name" value="' + escapeHtml(c.name) + '" /></div>' +
@@ -980,9 +994,34 @@
         '<div class="field"><label>Notes</label><textarea data-bind="company-notes">' + escapeHtml(c.notes || '') + '</textarea></div>' +
         customFieldsHtml('company', c.customFieldValues) +
         '<button type="button" class="primary small" data-action="company-save-profile" data-id="' + escapeHtml(id) + '">Save profile</button>' +
-        '</div>';
-    } else if (tab === 'goingConcern') {
-      body =
+        '</div>'
+      );
+    }
+
+    if (tab === 'users') {
+      var flat = [];
+      engagementsForCompany(id).forEach(function (eng) {
+        (eng.clientUsers || []).forEach(function (u) {
+          flat.push({ eng: eng, u: u });
+        });
+      });
+      return (
+        '<div class="section-panel"><h2>Client users</h2>' +
+        '<p class="muted" style="margin:0 0 12px;font-size:12px">Portal contacts across all jobs for this client. Edit removes the user from that engagement only.</p>' +
+        '<div class="table-scroll"><table class="data"><thead><tr><th>Job</th><th>Name</th><th>Email</th><th>Role</th><th>Access</th><th></th></tr></thead><tbody>' +
+        (flat.length
+          ? flat.map(function (row) {
+            return '<tr><td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(row.eng.id) + '">' + escapeHtml(row.eng.code || '') + '</button></td><td>' + escapeHtml(row.u.name || '') + '</td><td>' + escapeHtml(row.u.email || '') + '</td><td>' + escapeHtml(row.u.role || '') + '</td><td>' + escapeHtml(row.u.status || '') + '</td>' +
+              '<td><button type="button" class="small ghost" data-action="cu-edit" data-eng="' + escapeHtml(row.eng.id) + '" data-row="' + escapeHtml(row.u.id) + '">Edit</button> ' +
+              '<button type="button" class="small danger" data-action="cu-del" data-eng="' + escapeHtml(row.eng.id) + '" data-row="' + escapeHtml(row.u.id) + '">Delete</button></td></tr>';
+          }).join('')
+          : '<tr><td colspan="6" class="muted">No client users — add under each job’s Client users tab.</td></tr>') +
+        '</tbody></table></div></div>'
+      );
+    }
+
+    if (tab === 'goingConcern') {
+      return (
         '<div class="toolbar"><button type="button" class="primary small" data-action="gc-add" data-id="' + escapeHtml(id) + '">Add entry</button></div>' +
         '<table class="data"><thead><tr><th>As at</th><th>Flag</th><th>Detail</th><th></th></tr></thead><tbody>' +
         (c.goingConcernHistory || []).map(function (g) {
@@ -990,10 +1029,13 @@
             '<td><button type="button" class="small ghost" data-action="gc-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(g.id) + '">Edit</button> ' +
             '<button type="button" class="small danger" data-action="gc-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(g.id) + '">Delete</button></td></tr>';
         }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'predecessor') {
+        '</tbody></table>'
+      );
+    }
+
+    if (tab === 'predecessor') {
       var p = c.predecessorAuditor || {};
-      body =
+      return (
         '<div class="section-panel"><h2>Predecessor auditor</h2>' +
         '<div class="grid2">' +
         '<div class="field"><label>Firm name</label><input data-bind="pred-name" value="' + escapeHtml(p.firmName || '') + '" /></div>' +
@@ -1007,9 +1049,12 @@
         '</div>' +
         '<div class="field"><label>Notes</label><textarea data-bind="pred-notes">' + escapeHtml(p.notes || '') + '</textarea></div>' +
         '<button type="button" class="primary small" data-action="pred-save" data-id="' + escapeHtml(id) + '">Save predecessor info</button>' +
-        '</div>';
-    } else if (tab === 'fees') {
-      body =
+        '</div>'
+      );
+    }
+
+    if (tab === 'fees') {
+      return (
         '<div class="toolbar"><button type="button" class="primary small" data-action="fee-add" data-id="' + escapeHtml(id) + '">Add fee year</button></div>' +
         '<table class="data"><thead><tr><th>Year</th><th>Amount</th><th>CCY</th><th>Scope</th><th></th></tr></thead><tbody>' +
         (c.feeHistory || []).map(function (f) {
@@ -1017,9 +1062,12 @@
             '<td><button type="button" class="small ghost" data-action="fee-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(f.id) + '">Edit</button> ' +
             '<button type="button" class="small danger" data-action="fee-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(f.id) + '">Delete</button></td></tr>';
         }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'regulatory') {
-      body =
+        '</tbody></table>'
+      );
+    }
+
+    if (tab === 'regulatory') {
+      return (
         '<div class="toolbar"><button type="button" class="primary small" data-action="reg-add" data-id="' + escapeHtml(id) + '">Add flag</button></div>' +
         '<table class="data"><thead><tr><th>Regulator</th><th>Status</th><th>Detail</th><th></th></tr></thead><tbody>' +
         (c.regulatoryFlags || []).map(function (r) {
@@ -1027,9 +1075,12 @@
             '<td><button type="button" class="small ghost" data-action="reg-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
             '<button type="button" class="small danger" data-action="reg-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
         }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'coi') {
-      body =
+        '</tbody></table>'
+      );
+    }
+
+    if (tab === 'coi') {
+      return (
         '<div class="toolbar"><button type="button" class="primary small" data-action="coi-add" data-id="' + escapeHtml(id) + '">Record independence check</button></div>' +
         '<table class="data"><thead><tr><th>Checked</th><th>Declared by</th><th>Outcome</th><th>Notes</th><th></th></tr></thead><tbody>' +
         (c.conflictChecks || []).map(function (x) {
@@ -1037,23 +1088,26 @@
             '<td><button type="button" class="small ghost" data-action="coi-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(x.id) + '">Edit</button> ' +
             '<button type="button" class="small danger" data-action="coi-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(x.id) + '">Delete</button></td></tr>';
         }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'engagements') {
-      body =
-        '<div class="toolbar">' +
-        '<button type="button" class="primary small" data-action="eng-add" data-company="' + escapeHtml(id) + '">New engagement</button>' +
-        '</div>' +
-        '<div class="table-scroll"><table class="data"><thead><tr><th>Job</th><th>Phase</th><th>Deadline</th><th>Team</th><th>Grp</th><th>FY1</th><th>ML</th><th>Due≤30d</th><th>Cli</th><th>Risk</th><th></th></tr></thead><tbody>' +
-        (engagementsForCompany(id).map(engagementPortfolioRow).join('') || '<tr><td colspan="11" class="muted">No engagements yet.</td></tr>') +
-        '</tbody></table></div>';
+        '</tbody></table>'
+      );
     }
+
+    return '<p class="muted">Unknown tab.</p>';
+  }
+
+  function renderCompanyDetail(id) {
+    var c = companyById(id);
+    if (!c) return '<p class="muted">Company not found.</p>';
+    var tab = state.ui.companyTab || 'engagements';
+    var tabs = companyHubTabsHtml(tab);
+    var body = renderCompanyTabBody(id, tab, {});
 
     return (
       '<div class="breadcrumb">' +
       '<button type="button" class="crumb" data-action="goto-companies">Clients</button><span aria-hidden="true">·</span><strong>' + escapeHtml(c.name) + '</strong>' +
       '</div>' +
-      '<div class="page-head"><div><h1>' + escapeHtml(c.name) + '</h1><p class="muted">Company hub — regulatory context and recurring-client intelligence.</p></div>' +
-      '<button type="button" class="ghost" data-action="goto-companies">Back to list</button></div>' +
+      '<div class="page-head"><div><h1>' + escapeHtml(c.name) + '</h1><p class="muted">Client record — engagements and firm intelligence.</p></div>' +
+      '<button type="button" class="ghost" data-action="goto-companies">← Clients & engagements</button></div>' +
       tabs + body
     );
   }
@@ -1500,6 +1554,7 @@
     if (engFilt) {
       engFilt.onchange = function () {
         state.ui.engagementsCompanyId = engFilt.value || '';
+        state.ui.companyTab = 'engagements';
         saveState(state);
         renderAll();
       };
@@ -1512,15 +1567,19 @@
     else if (action === 'goto-firm') navigate({ view: 'firm-settings', id: null, firmSection: state.ui.route.firmSection || 'universe' });
     else if (action === 'goto-universe') navigate({ view: 'firm-settings', id: null, firmSection: 'universe' });
     else if (action === 'goto-firm-risk') navigate({ view: 'firm-settings', id: null, firmSection: 'riskplanning' });
-    else if (action === 'pick-client-for-grid') {
-      state.ui.engagementsCompanyId = el.getAttribute('data-id');
+    else if (action === 'company-open') {
+      var oid = el.getAttribute('data-id');
+      state.ui.engagementsCompanyId = oid;
+      state.ui.companyTab = 'overview';
       navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-    } else if (action === 'company-open') navigate({ view: 'company', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
-    else if (action === 'company-delete') {
+    } else if (action === 'company-delete') {
       var cid = el.getAttribute('data-id');
       if (!confirm('Delete company and its engagements from this workspace?')) return;
       state.companies = state.companies.filter(function (c) { return c.id !== cid; });
       state.engagements = state.engagements.filter(function (e) { return e.companyId !== cid; });
+      if (state.ui.engagementsCompanyId === cid) {
+        state.ui.engagementsCompanyId = state.companies.length ? state.companies[0].id : '';
+      }
       toast('Company removed');
       navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
       saveState(state);
@@ -1547,8 +1606,10 @@
             customFieldValues: {}
           };
           state.companies.push(c);
+          state.ui.engagementsCompanyId = c.id;
+          state.ui.companyTab = 'overview';
           toast('Company added');
-          navigate({ view: 'company', id: c.id, firmSection: state.ui.route.firmSection });
+          navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
           saveState(state);
         }
       });
@@ -2104,8 +2165,9 @@
         toast('Add a company first.');
         return;
       }
+      var preferCo = el.getAttribute('data-company') || state.ui.engagementsCompanyId || state.companies[0].id;
       var coOpts = state.companies.map(function (c) {
-        return '<option value="' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>';
+        return '<option value="' + escapeHtml(c.id) + '"' + (preferCo === c.id ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
       }).join('');
       openModal({
         title: 'Create engagement',
