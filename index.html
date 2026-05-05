@@ -161,12 +161,76 @@
       cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
     }
     .crumb:hover { color: #7dd3fc; }
+
+    .rail-group-label {
+      font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted);
+      margin: 12px 6px 6px; padding-top: 8px; border-top: 1px solid var(--border);
+    }
+    .rail-group-label:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+
+    .portfolio-bar {
+      display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; margin-bottom: 16px;
+      padding: 16px; border-radius: var(--radius); border: 1px solid var(--border);
+      background: linear-gradient(145deg, var(--panel2), var(--panel));
+    }
+    .portfolio-bar .field { margin-bottom: 0; flex: 1; min-width: 240px; }
+    select.select-xl { font-size: 15px; padding: 12px 12px; }
+
+    .dash-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+    .dash-title { font-size: 22px; font-weight: 700; margin: 0; }
+    .kpi-row {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px;
+    }
+    .kpi {
+      display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-radius: var(--radius);
+      border: 1px solid var(--border); background: var(--panel); cursor: default;
+      transition: border-color .15s, background .15s;
+    }
+    .kpi.clickable { cursor: pointer; }
+    .kpi.clickable:hover { border-color: rgba(56,189,248,.4); background: var(--panel2); }
+    .kpi-ico {
+      width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; background: rgba(56,189,248,.12); flex-shrink: 0;
+    }
+    .kpi-val { font-size: 24px; font-weight: 700; line-height: 1.1; }
+    .kpi-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+
+    .dash-panels { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; align-items: start; }
+    @media (max-width: 960px) { .dash-panels { grid-template-columns: 1fr; } }
+
+    .viz-card {
+      border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); padding: 14px 16px 18px;
+    }
+    .viz-title { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 14px; }
+    .bar-row { display: flex; align-items: flex-end; gap: 8px; height: 132px; padding-top: 8px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
+    .bar-fill {
+      width: 100%; max-width: 48px; border-radius: 6px 6px 2px 2px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2)); opacity: .85;
+      min-height: 6px; transition: opacity .15s;
+    }
+    .bar-fill:hover { opacity: 1; }
+    .bar-cap { font-size: 11px; font-weight: 700; }
+    .bar-name { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; text-align: center; }
+
+    .dash-strip {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .strip-chip {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--panel2); font-size: 12px;
+    }
+    .strip-chip button { padding: 2px 8px; font-size: 11px; }
+
+    details.company-directory > summary {
+      cursor: pointer; font-size: 13px; font-weight: 600; color: var(--muted); padding: 4px 0;
+    }
   </style>
 </head>
 <body>
   <div id="app">
     <header class="topbar">
-      <div class="brand">Aura Audit<span>Interactive workspace · Malaysia-ready retention defaults</span></div>
+      <div class="brand">Aura Audit<span id="brand-firm-name"></span></div>
       <div style="display:flex;gap:8px;align-items:center;">
         <button type="button" class="ghost small" data-action="reset-demo">Reset demo data</button>
       </div>
@@ -228,6 +292,19 @@
           autoArchiveDaysAfterSignoff: 30,
           notes: 'Archive includes signed PDF reports, final trial balance tie-outs, and closing checklist.'
         },
+        profile: {
+          legalName: 'Aura Assurance PLT',
+          tradingName: 'Aura Audit',
+          letterheadNotes: 'Registered office line · practising certificate ref · regulatory footer boilerplate.'
+        },
+        rbacRoles: [
+          { id: uid(), name: 'Partner', scope: 'Tenant configuration, EQCR, final issue sign-off' },
+          { id: uid(), name: 'Senior', scope: 'Engagement workspace, review packs, clearance drafting' },
+          { id: uid(), name: 'Staff', scope: 'Fieldwork execution under supervisor' }
+        ],
+        activityLog: [
+          { id: uid(), at: '2025-05-05T08:00:00.000Z', actor: 'System', message: 'Demo workspace loaded.' }
+        ],
         customFields: [
           { id: uid(), name: 'Industry code', appliesTo: 'company', fieldType: 'text' },
           { id: uid(), name: 'BU owner', appliesTo: 'engagement', fieldType: 'text' }
@@ -379,12 +456,23 @@
         }
       ],
       ui: {
-        route: { view: 'dashboard', id: null, tab: null, firmSection: 'security' },
+        route: { view: 'dashboard', id: null, tab: null, firmSection: 'universe' },
         companyTab: 'overview',
         engagementTab: 'overview',
         engagementsCompanyId: ''
       }
     };
+  }
+
+  function appendActivityLog(actor, message) {
+    state.firm.activityLog = state.firm.activityLog || [];
+    state.firm.activityLog.unshift({
+      id: uid(),
+      at: new Date().toISOString(),
+      actor: actor || 'User',
+      message: message || ''
+    });
+    if (state.firm.activityLog.length > 200) state.firm.activityLog.length = 200;
   }
 
   function loadState() {
@@ -436,14 +524,24 @@
     s.firm.reportFormats = Array.isArray(s.firm.reportFormats) ? s.firm.reportFormats : [];
     s.firm.riskPlanning = s.firm.riskPlanning && typeof s.firm.riskPlanning === 'object' ? s.firm.riskPlanning : {};
     s.firm.remediationPolicy = s.firm.remediationPolicy && typeof s.firm.remediationPolicy === 'object' ? s.firm.remediationPolicy : {};
+    s.firm.profile = s.firm.profile && typeof s.firm.profile === 'object' ? s.firm.profile : {};
+    s.firm.rbacRoles = Array.isArray(s.firm.rbacRoles) ? s.firm.rbacRoles : [];
+    s.firm.activityLog = Array.isArray(s.firm.activityLog) ? s.firm.activityLog : [];
     s.ui = s.ui && typeof s.ui === 'object' ? s.ui : {};
     s.ui.route = s.ui.route && typeof s.ui.route === 'object' ? s.ui.route : {};
     if (!s.ui.route.view) s.ui.route.view = 'dashboard';
     if (s.ui.route.id === undefined) s.ui.route.id = null;
-    if (!s.ui.route.firmSection) s.ui.route.firmSection = 'security';
+    if (!s.ui.route.firmSection) s.ui.route.firmSection = 'universe';
     if (!s.ui.companyTab) s.ui.companyTab = 'overview';
     if (!s.ui.engagementTab) s.ui.engagementTab = 'overview';
     if (s.ui.engagementsCompanyId === undefined || s.ui.engagementsCompanyId === null) s.ui.engagementsCompanyId = '';
+    var selCo = s.ui.engagementsCompanyId;
+    var validCo = selCo && s.companies.some(function (c) { return c.id === selCo; });
+    if (s.companies.length && !validCo) s.ui.engagementsCompanyId = s.companies[0].id;
+    if (s.ui.route && s.ui.route.view === 'universe') {
+      s.ui.route.view = 'firm-settings';
+      s.ui.route.firmSection = 'universe';
+    }
     s.engagements.forEach(function (e) {
       e.teamMemberIds = Array.isArray(e.teamMemberIds) ? e.teamMemberIds : [];
       e.clientUsers = Array.isArray(e.clientUsers) ? e.clientUsers : [];
@@ -504,6 +602,50 @@
     return shown + more;
   }
 
+  function mlOpenCount(e) {
+    return (e.managementLetterItems || []).filter(function (m) { return (m.status || '') !== 'closed'; }).length;
+  }
+
+  function filingsSoonEngCount(e) {
+    var horizon = parseDay(todayISO()) + 30 * 86400000;
+    return (e.regulatorySubmissions || []).filter(function (f) {
+      var due = parseDay(f.due);
+      if (isNaN(due) || due > horizon) return false;
+      if ((f.status || '') === 'filed' || (f.status || '') === 'waived') return false;
+      return true;
+    }).length;
+  }
+
+  function engagementPortfolioRow(e) {
+    var co = companyById(e.companyId);
+    var riskTier = (co && co.riskTier) ? (co.riskTier || '').toLowerCase() : '';
+    var riskHtml = co && co.riskTier ? '<span class="pill ' + escapeHtml(riskTier) + '">' + escapeHtml(co.riskTier) + '</span>' : '<span class="muted">—</span>';
+    var grp = ((e.groupAuditInstructions || '').trim())
+      ? '<span class="pill pill-warn">Grp</span>'
+      : '<span class="muted">—</span>';
+    var fy = e.firstYearWithClient ? '<span class="pill medium">FY1</span>' : '<span class="muted">—</span>';
+    var mlc = mlOpenCount(e);
+    var fc = filingsSoonEngCount(e);
+    var clients = (e.clientUsers || []).length;
+    return '<tr>' +
+      '<td><strong>' + escapeHtml(e.code) + '</strong><div class="muted">' + escapeHtml(e.title || '') + '</div></td>' +
+      '<td>' + escapeHtml(e.phase || '') + '<div class="muted">' + escapeHtml(e.status || 'active') + '</div></td>' +
+      '<td>' + engagementDeadlineHtml(e) + '</td>' +
+      '<td>' + formatTeamHtml(e.teamMemberIds) + '</td>' +
+      '<td>' + grp + '</td>' +
+      '<td>' + fy + '</td>' +
+      '<td>' + (mlc ? '<strong>' + mlc + '</strong>' : '<span class="muted">0</span>') + '</td>' +
+      '<td>' + (fc ? '<span class="pill pill-warn">' + fc + '</span>' : '<span class="muted">0</span>') + '</td>' +
+      '<td>' + clients + '</td>' +
+      '<td>' + riskHtml + '</td>' +
+      '<td style="white-space:nowrap">' +
+      '<button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Open</button> ' +
+      '<button type="button" class="small ghost" data-action="eng-manage-team" data-id="' + escapeHtml(e.id) + '">Team</button> ' +
+      '<button type="button" class="small ghost" data-action="eng-manage-clients" data-id="' + escapeHtml(e.id) + '">Clients</button> ' +
+      '<button type="button" class="small danger" data-action="eng-delete" data-id="' + escapeHtml(e.id) + '">Del</button>' +
+      '</td></tr>';
+  }
+
   function toast(msg) {
     var host = document.getElementById('toastHost');
     var el = document.createElement('div');
@@ -562,7 +704,7 @@
     state.ui.route = {
       view: next.view || 'dashboard',
       id: next.id !== undefined ? next.id : null,
-      firmSection: next.firmSection !== undefined ? next.firmSection : (prev.firmSection || 'security')
+      firmSection: next.firmSection !== undefined ? next.firmSection : (prev.firmSection || 'universe')
     };
     renderAll();
     saveState(state);
@@ -625,18 +767,14 @@
         (rid ? ' data-nav-id="' + escapeHtml(rid) + '"' : '') + '>' + escapeHtml(label) + '</button>';
     }
     sb.innerHTML =
-      '<div class="nav-section-label">Work</div>' +
       btn('dashboard', 'Dashboard') +
-      btn('companies', 'Companies') +
-      btn('engagements', 'Engagements') +
-      btn('universe', 'Audit universe') +
-      '<div class="nav-section-label">Practice library</div>' +
+      btn('companies', 'Clients & engagements') +
       btn('firm-settings', 'Firm settings');
     sb.querySelectorAll('[data-nav]').forEach(function (b) {
       b.onclick = function () {
         var v = b.getAttribute('data-nav');
         var id = b.getAttribute('data-nav-id');
-        navigate({ view: v, id: id || null, tab: null, firmSection: state.ui.route.firmSection || 'security' });
+        navigate({ view: v, id: id || null, tab: null, firmSection: state.ui.route.firmSection || 'universe' });
       };
     });
   }
@@ -657,6 +795,13 @@
       var p = e.phase || 'planning';
       if (phaseCount[p] !== undefined) phaseCount[p]++;
     });
+    var maxP = Math.max(phaseCount.planning, phaseCount.fieldwork, phaseCount.completion, phaseCount.archived, 1);
+    function barPx(n) {
+      return Math.max(10, Math.round((n / maxP) * 108));
+    }
+    function barBlock(label, n) {
+      return '<div class="bar-col"><div class="bar-fill" style="height:' + barPx(n) + 'px"></div><div class="bar-cap">' + n + '</div><div class="bar-name">' + label + '</div></div>';
+    }
     var openMl = 0;
     var openRem = 0;
     state.engagements.forEach(function (e) {
@@ -686,88 +831,115 @@
       });
     });
     var highRiskClients = state.companies.filter(function (c) { return (c.riskTier || '') === 'high'; }).length;
-    var uni = (state.firm.auditUniverse || []).length;
 
-    var overdueRows = overdue.slice(0, 8).map(function (e) {
+    var overdueChips = overdue.slice(0, 6).map(function (e) {
       var co = companyById(e.companyId);
-      return '<tr><td>' + escapeHtml(e.code) + '</td><td>' + escapeHtml(co ? co.name : '') + '</td><td>' + escapeHtml(e.targetCompletionDate || '') + '</td>' +
-        '<td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Open</button></td></tr>';
+      return '<span class="strip-chip"><span class="pill pill-urgent">!</span> ' + escapeHtml(e.code) +
+        '<span class="muted">' + escapeHtml(co ? co.name : '') + '</span>' +
+        '<button type="button" class="ghost small" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">→</button></span>';
     }).join('');
-    var filingRows = filingsSoon.slice(0, 10).map(function (x) {
-      return '<tr><td>' + escapeHtml(x.f.filing || '') + '</td><td>' + escapeHtml(x.co ? x.co.name : '') + '</td><td>' + escapeHtml(x.f.due || '') + '</td><td>' + escapeHtml(x.f.status || '') + '</td>' +
-        '<td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(x.eng.id) + '">Engagement</button></td></tr>';
+    var filingChips = filingsSoon.slice(0, 5).map(function (x) {
+      return '<span class="strip-chip">' + escapeHtml(x.f.due || '') + ' · ' + escapeHtml(x.f.filing || '').slice(0, 28) +
+        '<button type="button" class="ghost small" data-action="eng-open" data-id="' + escapeHtml(x.eng.id) + '">→</button></span>';
     }).join('');
 
     return (
-      '<div class="page-head">' +
-        '<div><h1>Dashboard</h1><p class="muted">Roll-up across clients, engagements, filings, and firm programme.</p></div>' +
+      '<div class="dash-top">' +
+        '<h1 class="dash-title">Overview</h1>' +
         '<div class="toolbar">' +
-          '<button type="button" class="primary" data-action="goto-engagements">Engagements hub</button>' +
-          '<button type="button" class="ghost" data-action="goto-universe">Audit universe</button>' +
-          '<button type="button" class="ghost" data-action="goto-firm">Firm settings</button>' +
+          '<button type="button" class="primary" data-action="goto-companies">Clients</button>' +
+          '<button type="button" class="ghost" data-action="goto-firm">Firm</button>' +
         '</div>' +
       '</div>' +
-      '<div class="cards">' +
-        '<div class="card" style="cursor:pointer" data-action="goto-companies" role="button" tabindex="0"><h3>Companies</h3><div class="stat">' + comps + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">High-risk clients: ' + highRiskClients + '</p></div>' +
-        '<div class="card" style="cursor:pointer" data-action="goto-engagements" role="button" tabindex="0"><h3>Active engagements</h3><div class="stat">' + active + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Total records: ' + engs + '</p></div>' +
-        '<div class="card" style="cursor:pointer" data-action="goto-engagements" role="button" tabindex="0"><h3>Overdue deadlines</h3><div class="stat">' + overdue.length + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Target completion passed</p></div>' +
-        '<div class="card"><h3>Open ML points</h3><div class="stat">' + openMl + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Across engagements</p></div>' +
-        '<div class="card"><h3>Open remedies</h3><div class="stat">' + openRem + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Tracking corrective actions</p></div>' +
-        '<div class="card"><h3>Filings ≤30 days</h3><div class="stat">' + filingsSoon.length + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Regulatory submissions due soon</p></div>' +
-        '<div class="card" style="cursor:pointer" data-action="goto-universe" role="button" tabindex="0"><h3>Universe rows</h3><div class="stat">' + uni + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Auditable areas registered</p></div>' +
-        '<div class="card"><h3>Regulatory flags</h3><div class="stat">' + regHeat + '</div>' +
-        '<p class="muted" style="margin:8px 0 0;font-size:12px;">Monitoring / investigation</p></div>' +
+      '<div class="kpi-row">' +
+        '<div class="kpi clickable" data-action="goto-companies" role="button" tabindex="0"><span class="kpi-ico">⌂</span><div><div class="kpi-val">' + comps + '</div><div class="kpi-lbl">Clients</div></div></div>' +
+        '<div class="kpi clickable" data-action="goto-companies" role="button" tabindex="0"><span class="kpi-ico">◆</span><div><div class="kpi-val">' + active + '</div><div class="kpi-lbl">Live jobs</div></div></div>' +
+        '<div class="kpi clickable" data-action="goto-companies" role="button" tabindex="0"><span class="kpi-ico">⏱</span><div><div class="kpi-val">' + overdue.length + '</div><div class="kpi-lbl">Past deadline</div></div></div>' +
+        '<div class="kpi"><span class="kpi-ico">✉</span><div><div class="kpi-val">' + filingsSoon.length + '</div><div class="kpi-lbl">Filings 30d</div></div></div>' +
+        '<div class="kpi"><span class="kpi-ico">⚠</span><div><div class="kpi-val">' + openMl + '</div><div class="kpi-lbl">ML open</div></div></div>' +
+        '<div class="kpi"><span class="kpi-ico">↻</span><div><div class="kpi-val">' + openRem + '</div><div class="kpi-lbl">Remedies</div></div></div>' +
+        '<div class="kpi"><span class="kpi-ico">⌖</span><div><div class="kpi-val">' + highRiskClients + '</div><div class="kpi-lbl">High risk</div></div></div>' +
+        '<div class="kpi"><span class="kpi-ico">⌖</span><div><div class="kpi-val">' + regHeat + '</div><div class="kpi-lbl">Reg flags</div></div></div>' +
       '</div>' +
-      '<div class="grid2" style="align-items:start">' +
-        '<div class="section-panel"><h2>Engagements by phase</h2>' +
-        '<p class="muted" style="margin:0 0 10px;">Planning <strong>' + phaseCount.planning + '</strong> · Fieldwork <strong>' + phaseCount.fieldwork + '</strong> · Completion <strong>' + phaseCount.completion + '</strong> · Archived <strong>' + phaseCount.archived + '</strong></p>' +
-        '<button type="button" class="primary small" data-action="goto-engagements">Open engagements hub</button></div>' +
-        '<div class="section-panel"><h2>Firm snapshot</h2>' +
-        '<p class="muted" style="margin:0 0 10px;">Retention default <strong>' + escapeHtml(String(state.firm.retentionPurging.completedEngagementYears || 7)) + ' yrs</strong> · Archiving after sign-off <strong>' + escapeHtml(String(state.firm.archiving.autoArchiveDaysAfterSignoff || '—')) + ' days</strong></p>' +
-        '<div class="toolbar" style="margin:0">' +
-          '<button type="button" class="ghost small" data-action="goto-firm">Firm settings</button>' +
-          '<button type="button" class="ghost small" data-action="goto-universe">Audit universe</button>' +
-        '</div></div>' +
-      '</div>' +
-      '<div class="section-panel" style="margin-top:14px"><h2>Engagements past target completion</h2>' +
-      '<div class="table-scroll"><table class="data"><thead><tr><th>Code</th><th>Company</th><th>Deadline</th><th></th></tr></thead><tbody>' +
-      (overdueRows || '<tr><td colspan="4" class="muted">None — great job.</td></tr>') +
-      '</tbody></table></div></div>' +
-      '<div class="section-panel"><h2>Regulatory filings due within 30 days</h2>' +
-      '<div class="table-scroll"><table class="data"><thead><tr><th>Filing</th><th>Company</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>' +
-      (filingRows || '<tr><td colspan="5" class="muted">No filings in this window.</td></tr>') +
-      '</tbody></table></div></div>'
+      '<div class="dash-panels">' +
+        '<div class="viz-card">' +
+          '<div class="viz-title">Jobs by phase</div>' +
+          '<div class="bar-row">' +
+          barBlock('Plan', phaseCount.planning) +
+          barBlock('Field', phaseCount.fieldwork) +
+          barBlock('Done', phaseCount.completion) +
+          barBlock('Arch', phaseCount.archived) +
+          '</div>' +
+          '<div class="muted" style="margin-top:12px;font-size:11px">' + engs + ' total · ' + active + ' active</div>' +
+        '</div>' +
+        '<div class="viz-card">' +
+          '<div class="viz-title">Past deadline</div>' +
+          '<div class="dash-strip">' + (overdueChips || '<span class="muted">None</span>') + '</div>' +
+          '<div class="viz-title" style="margin-top:16px">Filings ≤30d</div>' +
+          '<div class="dash-strip">' + (filingChips || '<span class="muted">None</span>') + '</div>' +
+        '</div>' +
+      '</div>'
     );
   }
 
   function renderCompanies() {
-    var rows = state.companies.map(function (c) {
+    var cid = state.ui.engagementsCompanyId;
+    var co = cid ? companyById(cid) : null;
+    var opts = state.companies.map(function (c) {
+      return '<option value="' + escapeHtml(c.id) + '"' + (cid === c.id ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
+    }).join('');
+    var list = cid ? engagementsForCompany(cid) : [];
+    var rows = list.map(engagementPortfolioRow).join('');
+    var dirRows = state.companies.map(function (c) {
       var risk = (c.riskTier || 'medium').toLowerCase();
-      return '<tr>' +
-        '<td><strong>' + escapeHtml(c.name) + '</strong><div class="muted">' + escapeHtml(c.industry || '') + '</div></td>' +
+      return '<tr><td><strong>' + escapeHtml(c.name) + '</strong><div class="muted">' + escapeHtml(c.industry || '') + '</div></td>' +
         '<td><span class="pill ' + escapeHtml(risk) + '">' + escapeHtml(c.riskTier || '') + '</span></td>' +
         '<td>' + engagementsForCompany(c.id).length + '</td>' +
         '<td style="white-space:nowrap">' +
-          '<button type="button" class="small ghost" data-action="company-open" data-id="' + escapeHtml(c.id) + '">Open</button> ' +
-          '<button type="button" class="small danger" data-action="company-delete" data-id="' + escapeHtml(c.id) + '">Delete</button>' +
-        '</td>' +
-      '</tr>';
+        '<button type="button" class="small ghost" data-action="company-open" data-id="' + escapeHtml(c.id) + '">Profile</button> ' +
+        '<button type="button" class="small ghost" data-action="pick-client-for-grid" data-id="' + escapeHtml(c.id) + '">Show jobs</button> ' +
+        '<button type="button" class="small danger" data-action="company-delete" data-id="' + escapeHtml(c.id) + '">Del</button>' +
+        '</td></tr>';
     }).join('');
+
+    if (!state.companies.length) {
+      return (
+        '<div class="dash-top"><h1 class="dash-title">Clients & engagements</h1>' +
+        '<button type="button" class="primary" data-action="company-add">+ Client</button></div>' +
+        '<div class="viz-card"><p class="muted">No clients yet.</p></div>'
+      );
+    }
+
     return (
-      '<div class="page-head">' +
-        '<div><h1>Companies</h1><p class="muted">Client records — drill into independence, fees, and regulator context.</p></div>' +
-        '<button type="button" class="primary" data-action="company-add">Add company</button>' +
+      '<div class="dash-top">' +
+        '<h1 class="dash-title">Clients & engagements</h1>' +
+        '<div class="toolbar">' +
+          '<button type="button" class="primary" data-action="company-add">+ Client</button>' +
+          '<button type="button" class="ghost" data-action="company-picker-new-eng">+ Job</button>' +
+        '</div>' +
       '</div>' +
-      '<table class="data"><thead><tr><th>Company</th><th>Risk</th><th>Engagements</th><th></th></tr></thead><tbody>' +
-      (rows || '<tr><td colspan="4" class="muted">No companies yet.</td></tr>') +
-      '</tbody></table>'
+      '<div class="portfolio-bar">' +
+        '<div class="field">' +
+          '<label>Select company — engagements listed below</label>' +
+          '<select class="select-xl" data-bind="eng-company-filter">' + opts + '</select>' +
+        '</div>' +
+        '<div class="toolbar" style="margin:0">' +
+        (co ? '<button type="button" class="ghost" data-action="company-open" data-id="' + escapeHtml(co.id) + '">Company profile</button>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="viz-card" style="margin-bottom:14px">' +
+        '<div class="viz-title">Engagements</div>' +
+        '<div class="table-scroll">' +
+        '<table class="data"><thead><tr><th>Job</th><th>Phase</th><th>Deadline</th><th>Team</th><th>Grp</th><th>FY1</th><th>ML</th><th>≤30d</th><th>Cli</th><th>Risk</th><th></th></tr></thead><tbody>' +
+        (rows || '<tr><td colspan="11" class="muted">No engagements — use Profile or + Job.</td></tr>') +
+        '</tbody></table></div></div>' +
+      '<details open class="company-directory section-panel">' +
+        '<summary>Client directory</summary>' +
+        '<div class="table-scroll" style="margin-top:12px">' +
+        '<table class="data"><thead><tr><th>Client</th><th>Risk</th><th>Jobs</th><th></th></tr></thead><tbody>' +
+        dirRows +
+        '</tbody></table></div>' +
+      '</details>'
     );
   }
 
@@ -871,14 +1043,14 @@
         '<div class="toolbar">' +
         '<button type="button" class="primary small" data-action="eng-add" data-company="' + escapeHtml(id) + '">New engagement</button>' +
         '</div>' +
-        '<div class="table-scroll"><table class="data"><thead><tr><th>Engagement</th><th>Phase / status</th><th>Deadline</th><th>Team</th><th>Client users</th><th></th></tr></thead><tbody>' +
-        (engagementsForCompany(id).map(engagementCompanyScopedRow).join('') || '<tr><td colspan="6" class="muted">No engagements for this company yet.</td></tr>') +
+        '<div class="table-scroll"><table class="data"><thead><tr><th>Job</th><th>Phase</th><th>Deadline</th><th>Team</th><th>Grp</th><th>FY1</th><th>ML</th><th>Due≤30d</th><th>Cli</th><th>Risk</th><th></th></tr></thead><tbody>' +
+        (engagementsForCompany(id).map(engagementPortfolioRow).join('') || '<tr><td colspan="11" class="muted">No engagements yet.</td></tr>') +
         '</tbody></table></div>';
     }
 
     return (
       '<div class="breadcrumb">' +
-      '<button type="button" class="crumb" data-action="goto-companies">Companies</button><span aria-hidden="true">·</span><strong>' + escapeHtml(c.name) + '</strong>' +
+      '<button type="button" class="crumb" data-action="goto-companies">Clients</button><span aria-hidden="true">·</span><strong>' + escapeHtml(c.name) + '</strong>' +
       '</div>' +
       '<div class="page-head"><div><h1>' + escapeHtml(c.name) + '</h1><p class="muted">Company hub — regulatory context and recurring-client intelligence.</p></div>' +
       '<button type="button" class="ghost" data-action="goto-companies">Back to list</button></div>' +
@@ -890,76 +1062,9 @@
     return '<button type="button" class="tab' + (cur === key ? ' active' : '') + '" data-engagement-tab="' + escapeHtml(key) + '">' + escapeHtml(label) + '</button>';
   }
 
-  function engagementCompanyScopedRow(e) {
-    return '<tr>' +
-      '<td><strong>' + escapeHtml(e.code) + '</strong><div class="muted">' + escapeHtml(e.title || '') + '</div></td>' +
-      '<td>' + escapeHtml(e.phase || '') + '<span class="muted"> · </span>' + escapeHtml(e.status || 'active') + '</td>' +
-      '<td>' + engagementDeadlineHtml(e) + '</td>' +
-      '<td>' + formatTeamHtml(e.teamMemberIds) + '</td>' +
-      '<td>' + (e.clientUsers || []).length + '</td>' +
-      '<td style="white-space:nowrap">' +
-      '<button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Workspace</button> ' +
-      '<button type="button" class="small ghost" data-action="eng-manage-team" data-id="' + escapeHtml(e.id) + '">Team</button> ' +
-      '<button type="button" class="small ghost" data-action="eng-manage-clients" data-id="' + escapeHtml(e.id) + '">Client users</button>' +
-      '</td></tr>';
-  }
-
-  function engagementHubRow(e) {
-    var co = companyById(e.companyId);
-    var clients = (e.clientUsers || []).length;
-    var clientPreview = (e.clientUsers || []).slice(0, 2).map(function (u) { return escapeHtml(u.name || u.email || ''); }).join(', ');
-    if ((e.clientUsers || []).length > 2) clientPreview += ' <span class="muted">+' + ((e.clientUsers || []).length - 2) + '</span>';
-    if (!clients) clientPreview = '<span class="muted">—</span>';
-    return '<tr>' +
-      '<td><strong>' + escapeHtml(e.code) + '</strong><div class="muted">' + escapeHtml(e.title || '') + '</div></td>' +
-      '<td>' + escapeHtml(co ? co.name : '') + '</td>' +
-      '<td>' + escapeHtml(e.phase || '') + '<span class="muted"> · </span>' + escapeHtml(e.status || 'active') + '</td>' +
-      '<td>' + engagementDeadlineHtml(e) + '</td>' +
-      '<td>' + formatTeamHtml(e.teamMemberIds) + '</td>' +
-      '<td>' + clients + ' · ' + clientPreview + '</td>' +
-      '<td style="white-space:nowrap">' +
-      '<button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Workspace</button> ' +
-      '<button type="button" class="small ghost" data-action="eng-manage-team" data-id="' + escapeHtml(e.id) + '">Team</button> ' +
-      '<button type="button" class="small ghost" data-action="eng-manage-clients" data-id="' + escapeHtml(e.id) + '">Client users</button> ' +
-      '<button type="button" class="small danger" data-action="eng-delete" data-id="' + escapeHtml(e.id) + '">Delete</button>' +
-      '</td></tr>';
-  }
-
-  function renderEngagementsList() {
-    var filterId = state.ui.engagementsCompanyId || '';
-    var opts = '<option value="">All companies</option>' +
-      state.companies.map(function (c) {
-        return '<option value="' + escapeHtml(c.id) + '"' + (filterId === c.id ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
-      }).join('');
-    var list = state.engagements.filter(function (e) {
-      return !filterId || e.companyId === filterId;
-    });
-    var rows = list.map(engagementHubRow).join('');
-    var selCo = filterId ? companyById(filterId) : null;
-    return (
-      '<div class="page-head">' +
-        '<div><h1>Engagements hub</h1><p class="muted">' +
-        (selCo ? 'Filtered to <strong>' + escapeHtml(selCo.name) + '</strong> — deadlines, staffing, and client portal contacts.' : 'Pick a company to focus the portfolio, or leave “All companies”.') +
-        '</p></div>' +
-        '<button type="button" class="primary" data-action="company-picker-new-eng" title="Choose company in modal">New engagement…</button>' +
-      '</div>' +
-      '<div class="toolbar" style="align-items:flex-end">' +
-        '<div class="field" style="margin:0;min-width:260px"><label>Company scope</label>' +
-        '<select data-bind="eng-company-filter">' + opts + '</select></div>' +
-        '<button type="button" class="ghost" data-action="goto-companies">Companies</button>' +
-        '<button type="button" class="ghost" data-action="goto-universe">Audit universe</button>' +
-      '</div>' +
-      '<p class="muted" style="margin:0 0 12px;font-size:12px;">Columns: delivery deadline (target completion), assigned audit team (directory-linked), and client users available for collaboration tracking.</p>' +
-      '<div class="table-scroll">' +
-      '<table class="data"><thead><tr><th>Engagement</th><th>Company</th><th>Phase / status</th><th>Deadline</th><th>Audit team</th><th>Client users</th><th></th></tr></thead><tbody>' +
-      (rows || '<tr><td colspan="7" class="muted">No engagements for this filter.</td></tr>') +
-      '</tbody></table></div>'
-    );
-  }
-
-  function renderUniverse() {
+  function renderUniverseTablePanel() {
     var rows = (state.firm.auditUniverse || []).map(function (u) {
-      var cn = u.companyId ? (companyById(u.companyId) || {}).name || 'Unknown' : '— Firm-wide / methodology';
+      var cn = u.companyId ? (companyById(u.companyId) || {}).name || 'Unknown' : '— Firm-wide';
       return '<tr><td>' + escapeHtml(u.area || '') + '</td><td>' + escapeHtml(cn) + '</td><td>' + escapeHtml(u.owner || '') + '</td>' +
         '<td>' + escapeHtml(u.frequency || '') + '</td><td>' + escapeHtml(u.lastAuditDate || '—') + '</td><td>' + escapeHtml(u.nextDue || '—') + '</td><td>' + escapeHtml(u.status || '') + '</td>' +
         '<td style="white-space:nowrap">' +
@@ -967,17 +1072,15 @@
         '<button type="button" class="small danger" data-action="uni-del" data-row="' + escapeHtml(u.id) + '">Delete</button></td></tr>';
     }).join('');
     return (
-      '<div class="page-head">' +
-        '<div><h1>Audit universe</h1><p class="muted">Auditable processes / entities — feeds coverage discussions and annual planning.</p></div>' +
-        '<button type="button" class="primary" data-action="uni-add">Add universe row</button>' +
-      '</div>' +
-      '<div class="section-panel"><h2>Universe register</h2>' +
-      '<div class="table-scroll"><table class="data"><thead><tr><th>Area / process</th><th>Company</th><th>Owner</th><th>Frequency</th><th>Last covered</th><th>Next due</th><th>Status</th><th></th></tr></thead><tbody>' +
-      (rows || '<tr><td colspan="8" class="muted">No rows yet — build your universe.</td></tr>') +
-      '</tbody></table></div></div>' +
-      '<div class="section-panel"><h2>Link to engagements</h2>' +
-      '<p class="muted" style="margin:0">Operational engagements live under each company; use the universe above for portfolio-level visibility and planning gates.</p></div>'
+      '<div class="toolbar"><button type="button" class="primary small" data-action="uni-add">Add row</button></div>' +
+      '<div class="table-scroll"><table class="data"><thead><tr><th>Area</th><th>Scope</th><th>Owner</th><th>Cycle</th><th>Last</th><th>Next</th><th>Status</th><th></th></tr></thead><tbody>' +
+      (rows || '<tr><td colspan="8" class="muted">No universe rows.</td></tr>') +
+      '</tbody></table></div>'
     );
+  }
+
+  function renderEngagementsList() {
+    return renderCompanies();
   }
 
   function renderEngagementDetail(id) {
@@ -1146,12 +1249,12 @@
 
     return (
       '<div class="breadcrumb">' +
-      '<button type="button" class="crumb" data-action="goto-companies">Companies</button><span aria-hidden="true">·</span>' +
+      '<button type="button" class="crumb" data-action="goto-companies">Clients</button><span aria-hidden="true">·</span>' +
       '<button type="button" class="crumb" data-action="company-open" data-id="' + escapeHtml(e.companyId) + '">' + escapeHtml(co ? co.name : 'Company') + '</button><span aria-hidden="true">·</span><strong>' + escapeHtml(e.code) + '</strong>' +
       '</div>' +
       '<div class="page-head"><div><h1>' + escapeHtml(e.title) + '</h1><p class="muted">' + escapeHtml(e.code) + ' · ' + escapeHtml(co ? co.name : '') +
       ' · Deadline <strong>' + escapeHtml(e.targetCompletionDate || '—') + '</strong></p></div>' +
-      '<button type="button" class="ghost" data-action="goto-engagements">Engagements hub</button></div>' +
+      '<button type="button" class="ghost" data-action="goto-companies">← Jobs grid</button></div>' +
       tabs + body
     );
   }
@@ -1162,23 +1265,64 @@
 
   function renderFirmSettings() {
     var fs = state.firm;
-    var sec = state.ui.route.firmSection || 'security';
+    var sec = state.ui.route.firmSection || 'universe';
     var rail =
       '<div class="rail">' +
-      railBtn('security', 'Password & session', sec) +
-      railBtn('retention', 'Retention & purge', sec) +
-      railBtn('archiving', 'Archiving rules', sec) +
-      railBtn('custom', 'Custom fields', sec) +
-      railBtn('methodology', 'Methodology library', sec) +
+      '<div class="rail-group-label">Internal audit</div>' +
+      railBtn('universe', 'Audit universe', sec) +
       railBtn('riskplanning', 'Risk planning', sec) +
       railBtn('aptemplates', 'Audit plan templates', sec) +
       railBtn('reportformats', 'Report formats', sec) +
+      railBtn('methodology', 'Methodology library', sec) +
       railBtn('remediation', 'Remediation policy', sec) +
+      '<div class="rail-group-label">Firm administration</div>' +
+      railBtn('profile', 'Firm profile', sec) +
+      railBtn('rbac', 'Roles (RBAC)', sec) +
+      railBtn('activitylog', 'Activity log', sec) +
+      railBtn('security', 'Security & access', sec) +
+      railBtn('retention', 'Retention & purge', sec) +
+      railBtn('archiving', 'Archiving rules', sec) +
+      railBtn('custom', 'Custom fields', sec) +
       railBtn('staff', 'Staff directory', sec) +
       '</div>';
 
     var panel = '';
-    if (sec === 'security') {
+    if (sec === 'universe') {
+      panel =
+        '<div class="section-panel"><h2>Audit universe</h2>' +
+        renderUniverseTablePanel() +
+        '</div>';
+    } else if (sec === 'profile') {
+      var pr = fs.profile || {};
+      panel =
+        '<div class="section-panel"><h2>Firm profile</h2>' +
+        '<div class="grid2">' +
+        '<div class="field"><label>Legal name</label><input data-bind="firm-legal" value="' + escapeHtml(pr.legalName || '') + '" /></div>' +
+        '<div class="field"><label>Trading / display name</label><input data-bind="firm-trade" value="' + escapeHtml(pr.tradingName || '') + '" /></div>' +
+        '</div>' +
+        '<div class="field"><label>Letterhead & footer text</label><textarea data-bind="firm-letter" rows="8">' + escapeHtml(pr.letterheadNotes || '') + '</textarea></div>' +
+        '<button type="button" class="primary small" data-action="firm-save-profile">Save profile</button>' +
+        '</div>';
+    } else if (sec === 'rbac') {
+      panel =
+        '<div class="toolbar"><button type="button" class="primary small" data-action="rbac-add">Add role</button></div>' +
+        '<table class="data"><thead><tr><th>Role</th><th>Scope summary</th><th></th></tr></thead><tbody>' +
+        (fs.rbacRoles || []).map(function (r) {
+          return '<tr><td>' + escapeHtml(r.name || '') + '</td><td>' + escapeHtml(r.scope || '') + '</td>' +
+            '<td style="white-space:nowrap"><button type="button" class="small ghost" data-action="rbac-edit" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
+            '<button type="button" class="small danger" data-action="rbac-del" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
+        }).join('') +
+        '</tbody></table>';
+    } else if (sec === 'activitylog') {
+      var logs = (fs.activityLog || []).slice(0, 80);
+      panel =
+        '<div class="toolbar"><button type="button" class="primary small" data-action="log-add">Log note</button></div>' +
+        '<div class="table-scroll"><table class="data"><thead><tr><th>When</th><th>Actor</th><th>Event</th></tr></thead><tbody>' +
+        logs.map(function (l) {
+          return '<tr><td style="white-space:nowrap">' + escapeHtml((l.at || '').slice(0, 19).replace('T', ' ')) + '</td><td>' + escapeHtml(l.actor || '') + '</td><td>' + escapeHtml(l.message || '') + '</td></tr>';
+        }).join('') +
+        '</tbody></table></div>';
+    } else if (sec === 'security') {
       var pp = fs.passwordPolicy || {};
       var wl = (pp.ipWhitelist || []).join('\n');
       panel =
@@ -1239,7 +1383,7 @@
       var rp = fs.riskPlanning || {};
       panel =
         '<div class="section-panel"><h2>Risk planning framework</h2>' +
-        '<p class="muted" style="margin:0 0 12px">Engagements maintain their own risk register under each workspace — this section documents firm-wide scales and expectations.</p>' +
+        '<p class="muted" style="margin:0 0 12px;font-size:12px">Firm defaults — engagement registers live per job.</p>' +
         '<div class="field"><label>Inherent risk scale & thresholds</label><textarea data-bind="fp-inherent" rows="4">' + escapeHtml(rp.inherentScale || '') + '</textarea></div>' +
         '<div class="field"><label>Control assessment approach</label><textarea data-bind="fp-control" rows="4">' + escapeHtml(rp.controlAssessment || '') + '</textarea></div>' +
         '<div class="field"><label>Materiality & benchmarking notes</label><textarea data-bind="fp-mat" rows="3">' + escapeHtml(rp.materialityNotes || '') + '</textarea></div>' +
@@ -1291,7 +1435,7 @@
 
     return (
       '<div class="page-head">' +
-        '<div><h1>Firm settings</h1><p class="muted">Security, retention, methodology, <strong>risk planning framework</strong>, audit plan & report templates, remediation SLAs, plus staff and audit universe registers.</p></div>' +
+        '<div><h1>Firm settings</h1><p class="muted">Internal audit programme · administration · access</p></div>' +
       '</div>' +
       '<div class="rail-layout">' + rail + '<div>' + panel + '</div></div>'
     );
@@ -1302,10 +1446,10 @@
     if (r.view === 'dashboard') return renderDashboard();
     if (r.view === 'companies') return renderCompanies();
     if (r.view === 'company') return r.id ? renderCompanyDetail(r.id) : renderCompanies();
-    if (r.view === 'engagements') return renderEngagementsList();
-    if (r.view === 'engagement') return r.id ? renderEngagementDetail(r.id) : renderEngagementsList();
+    if (r.view === 'engagements') return renderCompanies();
+    if (r.view === 'engagement') return r.id ? renderEngagementDetail(r.id) : renderCompanies();
     if (r.view === 'firm-settings') return renderFirmSettings();
-    if (r.view === 'universe') return renderUniverse();
+    if (r.view === 'universe') return renderFirmSettings();
     return renderDashboard();
   }
 
@@ -1313,6 +1457,11 @@
     renderSidebar();
     document.getElementById('spa-root').innerHTML = renderMain();
     bindSpaEvents();
+    var bn = document.getElementById('brand-firm-name');
+    if (bn) {
+      var pr = state.firm.profile || {};
+      bn.textContent = (pr.tradingName || pr.legalName) ? (' · ' + (pr.tradingName || pr.legalName)) : '';
+    }
   }
 
   function val(root, sel) {
@@ -1359,11 +1508,14 @@
 
   function handleAction(action, el, root) {
     if (action === 'goto-companies') navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-    else if (action === 'goto-engagements') navigate({ view: 'engagements', id: null, firmSection: state.ui.route.firmSection });
-    else if (action === 'goto-firm') navigate({ view: 'firm-settings', id: null, firmSection: state.ui.route.firmSection || 'security' });
-    else if (action === 'goto-universe') navigate({ view: 'universe', id: null, firmSection: state.ui.route.firmSection });
+    else if (action === 'goto-engagements') navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
+    else if (action === 'goto-firm') navigate({ view: 'firm-settings', id: null, firmSection: state.ui.route.firmSection || 'universe' });
+    else if (action === 'goto-universe') navigate({ view: 'firm-settings', id: null, firmSection: 'universe' });
     else if (action === 'goto-firm-risk') navigate({ view: 'firm-settings', id: null, firmSection: 'riskplanning' });
-    else if (action === 'company-open') navigate({ view: 'company', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
+    else if (action === 'pick-client-for-grid') {
+      state.ui.engagementsCompanyId = el.getAttribute('data-id');
+      navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
+    } else if (action === 'company-open') navigate({ view: 'company', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
     else if (action === 'company-delete') {
       var cid = el.getAttribute('data-id');
       if (!confirm('Delete company and its engagements from this workspace?')) return;
@@ -1919,7 +2071,7 @@
       if (!confirm('Delete engagement?')) return;
       state.engagements = state.engagements.filter(function (e) { return e.id !== eid; });
       toast('Engagement deleted');
-      navigate({ view: 'engagements', id: null, firmSection: state.ui.route.firmSection });
+      navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
       saveState(state);
     } else if (action === 'eng-save-overview') {
       var e = engagementById(el.getAttribute('data-id'));
@@ -2190,6 +2342,56 @@
       e.regulatorySubmissions = (e.regulatorySubmissions || []).filter(function (x) { return x.id !== rid; });
       toast('Removed');
       saveState(state); renderAll();
+    } else if (action === 'firm-save-profile') {
+      var fp = state.firm.profile || (state.firm.profile = {});
+      fp.legalName = val(root, '[data-bind="firm-legal"]');
+      fp.tradingName = val(root, '[data-bind="firm-trade"]');
+      fp.letterheadNotes = val(root, '[data-bind="firm-letter"]');
+      appendActivityLog('Admin', 'Firm profile / letterhead saved');
+      toast('Profile saved');
+      saveState(state); renderAll();
+    } else if (action === 'rbac-add' || action === 'rbac-edit') {
+      var rowId = action === 'rbac-edit' ? el.getAttribute('data-row') : null;
+      var existing = rowId ? state.firm.rbacRoles.find(function (x) { return x.id === rowId; }) : null;
+      openModal({
+        title: existing ? 'Edit role' : 'Add role',
+        bodyHtml:
+          '<div class="field"><label>Role name</label><input id="rb_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
+          '<div class="field"><label>Permissions summary</label><textarea id="rb_scope" rows="4">' + escapeHtml(existing ? existing.scope || '' : '') + '</textarea></div>',
+        onOk: function () {
+          var rec = {
+            id: existing ? existing.id : uid(),
+            name: document.getElementById('rb_name').value.trim() || 'Role',
+            scope: document.getElementById('rb_scope').value
+          };
+          state.firm.rbacRoles = state.firm.rbacRoles || [];
+          if (existing) {
+            var ix = state.firm.rbacRoles.findIndex(function (x) { return x.id === rec.id; });
+            if (ix >= 0) state.firm.rbacRoles[ix] = rec;
+          } else state.firm.rbacRoles.push(rec);
+          appendActivityLog('Admin', 'RBAC role saved: ' + rec.name);
+          toast('Role saved');
+          saveState(state); renderAll();
+        }
+      });
+    } else if (action === 'rbac-del') {
+      var rid = el.getAttribute('data-row');
+      state.firm.rbacRoles = (state.firm.rbacRoles || []).filter(function (x) { return x.id !== rid; });
+      appendActivityLog('Admin', 'RBAC role removed');
+      toast('Removed');
+      saveState(state); renderAll();
+    } else if (action === 'log-add') {
+      openModal({
+        title: 'Log activity',
+        okLabel: 'Append',
+        bodyHtml: '<div class="field"><label>Note</label><textarea id="log_msg" rows="5"></textarea></div>',
+        onOk: function () {
+          var t = document.getElementById('log_msg').value.trim();
+          if (t) appendActivityLog('User', t);
+          toast('Logged');
+          saveState(state); renderAll();
+        }
+      });
     } else if (action === 'firm-save-security') {
       var pp = state.firm.passwordPolicy || (state.firm.passwordPolicy = {});
       pp.sessionExpiryMinutes = parseInt(val(root, '[data-bind="sess-min"]'), 10) || 0;
@@ -2322,12 +2524,12 @@
     normalizeState(state);
     saveState(state);
     toast('Demo data restored');
-    navigate({ view: 'dashboard', id: null, firmSection: 'security' });
+    navigate({ view: 'dashboard', id: null, firmSection: 'universe' });
   };
 
   var bootRoute = state.ui.route && state.ui.route.view
-    ? Object.assign({ firmSection: 'security' }, state.ui.route)
-    : { view: 'dashboard', id: null, firmSection: 'security' };
+    ? Object.assign({ firmSection: 'universe' }, state.ui.route)
+    : { view: 'dashboard', id: null, firmSection: 'universe' };
   navigate(bootRoute);
 })();
   </script>
