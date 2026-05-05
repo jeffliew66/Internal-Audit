@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Aura Audit · Master</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --surface: #ffffff;
+      --surface-2: #fbfbfc;
+      --border: #e4e7ec;
+      --border-strong: #cdd3dd;
+      --text: #101828;
+      --muted: #667085;
+      --muted-2: #98a2b3;
+      --brand: #0f766e;
+      --brand-faint: #ccfbf4;
+      --brand-hover: #115e59;
+      --accent: #1d4ed8;
+      --accent-faint: #dbeafe;
+      --danger: #b42318;
+      --danger-faint: #fee4e2;
+      --warn: #b54708;
+      --warn-faint: #fef0c7;
+      --ok: #067647;
+      --ok-faint: #d1fadf;
+      --purple: #5925dc;
+      --purple-faint: #ebe9fe;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 8px 28px rgba(16, 24, 40, 0.06);
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      --mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+      --sidebar-w: 268px;
+      --top-h: 56px;
+      --layer-h: 44px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Shell */
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      grid-template-rows: var(--top-h) var(--layer-h) 1fr;
+      min-height: 100%;
+    }
+
+    .topbar {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #14b8a6, var(--brand-hover));
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: -0.04em;
+      flex-shrink: 0;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text span {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .search-pill {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      min-width: 220px;
+      max-width: 360px;
+    }
+
+    @media (min-width: 960px) {
+      .search-pill { display: flex; flex: 1; margin: 0 24px; max-width: 420px; }
+    }
+
+    .search-pill input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font: inherit;
+      outline: none;
+      min-width: 0;
+      color: var(--text);
+    }
+
+    .search-pill kbd {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 6px;
+      background: var(--surface);
+    }
+
+    .btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover:not(:disabled) { background: var(--surface-2); }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) { background: var(--brand-hover); }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+
+    /* Data layer strip */
+    .layer-strip {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 20px;
+      background: linear-gradient(180deg, #ecfdf5 0%, #f0fdf9 100%);
+      border-bottom: 1px solid #a7f3d0;
+      font-size: 13px;
+    }
+
+    .layer-strip-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .layer-label {
+      font-weight: 700;
+      color: var(--brand-hover);
+      letter-spacing: -0.01em;
+    }
+
+    .layer-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .layer-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 12px;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.65);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .layer-pill.active {
+      background: #fff;
+      border-color: var(--brand);
+      color: var(--brand-hover);
+      box-shadow: 0 1px 2px rgba(15, 118, 110, 0.12);
+    }
+
+    .layer-pill.locked {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .layer-hint {
+      color: var(--muted);
+      font-size: 12px;
+      max-width: 520px;
+      text-align: right;
+    }
+
+    @media (max-width: 900px) {
+      .layer-hint { display: none; }
+    }
+
+    /* Sidebar */
+    .sidebar {
+      grid-row: 3;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 16px 12px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .nav-section {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      padding: 16px 12px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.12s, color 0.12s;
+    }
+
+    .nav-item:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: var(--brand-faint);
+      color: var(--brand-hover);
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: 0.92;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 14px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border: 1px dashed var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .sidebar-footer strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    /* Main */
+    main {
+      grid-row: 3;
+      padding: 24px 28px 40px;
+      overflow-x: hidden;
+      max-width: 1400px;
+    }
+
+    .view { display: none; animation: fade 0.22s ease; }
+
+    .view.active { display: block; }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .crumb {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .crumb strong { color: var(--text); font-weight: 600; }
+
+    .page-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .page-head h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      font-weight: 750;
+      letter-spacing: -0.03em;
+    }
+
+    .page-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 62ch;
+    }
+
+    .page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Cards & grids */
+    .grid-kpi {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi dt {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .kpi dd {
+      margin: 8px 0 0;
+      font-size: 26px;
+      font-weight: 750;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .kpi .sub {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .sub.warn { color: var(--warn); }
+    .sub.ok { color: var(--ok); }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    .panel-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #fff, #fafafa);
+    }
+
+    .panel-h h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .link {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .link:hover { text-decoration: underline; }
+
+    .panel-body { padding: 18px; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) {
+      .two-col { grid-template-columns: 1fr; }
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        grid-column: 1;
+        flex-direction: row;
+        flex-wrap: wrap;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        max-height: none;
+      }
+      .nav-section { flex-basis: 100%; }
+      .sidebar-footer { flex-basis: 100%; }
+      main { grid-column: 1; }
+    }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; }
+
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .data th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: #fafafa;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    .data td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .data tr:last-child td { border-bottom: none; }
+
+    .data tbody tr:hover td { background: #fcfcfd; }
+
+    .data strong {
+      font-weight: 650;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .code {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tag-teal { background: var(--brand-faint); color: var(--brand-hover); }
+    .tag-blue { background: var(--accent-faint); color: #1e40af; }
+    .tag-warn { background: var(--warn-faint); color: var(--warn); }
+    .tag-danger { background: var(--danger-faint); color: var(--danger); }
+    .tag-purple { background: var(--purple-faint); color: var(--purple); }
+    .tag-ok { background: var(--ok-faint); color: var(--ok); }
+
+    /* Risk matrix */
+    .matrix-wrap {
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 72px repeat(5, 1fr);
+      grid-template-rows: 36px repeat(5, 44px);
+      gap: 4px;
+      min-width: 480px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .matrix .corner {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .matrix .col-h {
+      display: grid;
+      place-items: center;
+      background: #f3f4f6;
+      border-radius: 6px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 10px;
+    }
+
+    .matrix .row-h {
+      display: grid;
+      place-items: center;
+      background: #f3f4f6;
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 10px;
+      text-align: center;
+      padding: 4px;
+      line-height: 1.25;
+    }
+
+    .matrix .cell {
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 12px;
+      color: #fff;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+    }
+
+    .cell-l { background: #86efac; color: #14532d !important; text-shadow: none; }
+
+    .cell-m {
+      background: linear-gradient(145deg, #fbbf24, #f59e0b);
+      color: #422006 !important;
+      text-shadow: none;
+    }
+
+    .cell-h {
+      background: linear-gradient(145deg, #fb923c, #ea580c);
+    }
+
+    .cell-c {
+      background: linear-gradient(145deg, #f87171, #dc2626);
+    }
+
+    .formula-box {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .formula-box .cmt { color: #94a3b8; }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding: 4px;
+      background: var(--surface-2);
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .tab:hover { color: var(--text); }
+
+    .tab.active {
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+    }
+
+    .tab-panel { display: none; }
+
+    .tab-panel.active { display: block; }
+
+    /* Flow diagram (residual) */
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .flow-step {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+
+    .flow-step.em {
+      border-color: var(--brand);
+      background: var(--brand-faint);
+      color: var(--brand-hover);
+    }
+
+    .flow-arr {
+      color: var(--muted-2);
+      font-size: 18px;
+      font-weight: 400;
+    }
+
+    /* Lists */
+    .dl-inline {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 8px 16px;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .dl-inline dt {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .dl-inline dd { margin: 0; }
+
+    .note {
+      font-size: 12px;
+      color: var(--muted);
+      border-left: 3px solid var(--border-strong);
+      padding: 10px 14px;
+      background: var(--surface-2);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 0;
+    }
+
+    .mobile-toggle {
+      display: none;
+      margin-right: 8px;
+    }
+
+    @media (max-width: 960px) {
+      .mobile-toggle {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface);
+      }
+      .sidebar.collapsed { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <button type="button" class="mobile-toggle" id="navToggle" aria-label="Toggle navigation">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="logo" aria-hidden="true">A</div>
+        <div class="brand-text">
+          <strong>Aura Audit</strong>
+          <span>Internal audit platform · prototype</span>
+        </div>
+      </div>
+      <label class="search-pill" aria-label="Master search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/></svg>
+        <input type="search" placeholder="Search master catalogue (risks, processes, codes…)" />
+        <kbd>⌘K</kbd>
+      </label>
+      <div class="top-actions">
+        <button type="button" class="btn btn-ghost">Release notes</button>
+        <button type="button" class="btn btn-primary">New master record</button>
+        <button type="button" class="icon-btn" aria-label="Help">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 9a3 3 0 115 2c0 2-3 2-3 4M12 17h.01"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="layer-strip" role="region" aria-label="Data layer">
+      <div class="layer-strip-left">
+        <span class="layer-label">Data layer</span>
+        <div class="layer-pills" role="tablist" aria-label="Switch data layer">
+          <button type="button" class="layer-pill active" role="tab" aria-selected="true" data-layer="master">Master</button>
+          <button type="button" class="layer-pill locked" role="tab" aria-selected="false" disabled title="Company layer — roll out after master sign-off">Company</button>
+          <button type="button" class="layer-pill locked" role="tab" aria-selected="false" disabled title="Engagement layer — created per audit">Engagement</button>
+        </div>
+      </div>
+      <p class="layer-hint">Master holds methodology, scales, and catalogues. Company inherits and tailors; Engagement executes tests and captures evidence.</p>
+    </div>
+
+    <nav class="sidebar" id="sidebar" aria-label="Master modules">
+      <div class="nav-section">Overview</div>
+      <button type="button" class="nav-item active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16v4H4zM4 14h10v4H4zM18 14h2v4h-2z"/></svg>
+        Dashboard
+      </button>
+
+      <div class="nav-section">Core artefacts</div>
+      <button type="button" class="nav-item" data-view="universe">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+        Audit universe
+      </button>
+      <button type="button" class="nav-item" data-view="risk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Risk framework
+      </button>
+      <button type="button" class="nav-item" data-view="plan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Audit plan
+      </button>
+      <button type="button" class="nav-item" data-view="methodology">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v12M6 12h12"/><circle cx="12" cy="12" r="10"/></svg>
+        Methodology
+      </button>
+
+      <div class="nav-section">Outcomes</div>
+      <button type="button" class="nav-item" data-view="findings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg>
+        Findings model
+      </button>
+      <button type="button" class="nav-item" data-view="reports">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        Audit reports
+      </button>
+
+      <div class="nav-section">Governance</div>
+      <button type="button" class="nav-item" data-view="reference">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        Reference data
+      </button>
+
+      <div class="sidebar-footer">
+        <strong>Master freeze</strong>
+        Version MA-2026.04 · Changes require methodology steward approval. Company rollout pending.
+      </div>
+    </nav>
+
+    <main>
+      <!-- Dashboard -->
+      <section id="view-dashboard" class="view active" aria-labelledby="dash-title">
+        <p class="crumb">Master / <strong>Dashboard</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="dash-title">Methodology cockpit</h1>
+            <p>Health of master catalogues: what every company will inherit before engagements begin. Strong master data reduces rework and keeps assurance comparable.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost">Export catalogue</button>
+            <button type="button" class="btn btn-primary">Open change request</button>
+          </div>
+        </div>
+
+        <dl class="grid-kpi">
+          <div class="kpi">
+            <dt>Universe nodes</dt>
+            <dd>186</dd>
+            <div class="sub">Processes &amp; sub-processes in master tree</div>
+          </div>
+          <div class="kpi">
+            <dt>Risk types</dt>
+            <dd>42</dd>
+            <div class="sub">Mapped to COSO &amp; ISO 31000 tags</div>
+          </div>
+          <div class="kpi">
+            <dt>Plan horizons</dt>
+            <dd>3</dd>
+            <div class="sub warn">Tactical template missing FY+3 weights</div>
+          </div>
+          <div class="kpi">
+            <dt>Finding schema</dt>
+            <dd>v4</dd>
+            <div class="sub ok">Aligned to residual risk bands</div>
+          </div>
+        </dl>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-h">
+              <h2>What good IA software does at master layer</h2>
+              <a class="link" href="#">Methodology guide</a>
+            </div>
+            <div class="panel-body">
+              <ul class="note" style="list-style: disc; padding-left: 1.25rem; margin: 0;">
+                <li style="margin-bottom: 8px;"><strong>Single taxonomy</strong> — universe, risks, and findings share IDs so coverage and repeat findings trace across years.</li>
+                <li style="margin-bottom: 8px;"><strong>Explicit risk mechanics</strong> — inherent, control, and residual are defined mathematically and visually, not only as labels.</li>
+                <li style="margin-bottom: 8px;"><strong>Plan linkage</strong> — annual plan slots reference universe nodes and target residual posture, not just audit titles.</li>
+                <li><strong>Controlled evolution</strong> — master changes are versioned; companies inherit deltas intentionally.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-h">
+              <h2>Risk pipeline (conceptual)</h2>
+              <a class="link" href="#" data-jump="risk">Open framework</a>
+            </div>
+            <div class="panel-body">
+              <div class="flow">
+                <span class="flow-step em">Inherent risk</span>
+                <span class="flow-arr">→</span>
+                <span class="flow-step">Control risk</span>
+                <span class="flow-arr">→</span>
+                <span class="flow-step em">Residual risk</span>
+              </div>
+              <p class="note" style="margin-top: 14px;">Master defines scales and combination rules. Company assigns assessments to entities; engagement proves control effectiveness.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Catalogue completeness</h2>
+            <span class="tag tag-teal">Master scope only</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th scope="col">Artefact</th>
+                  <th scope="col">Records</th>
+                  <th scope="col">Quality gate</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Process hierarchy</strong><span class="code">MH-PROC</span></td>
+                  <td>54 L2 · 132 L3</td>
+                  <td>Owner + steward sign-off</td>
+                  <td><span class="tag tag-ok">Approved</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Inherent risk statements</strong><span class="code">MH-IRS</span></td>
+                  <td>128 linked to universe</td>
+                  <td>Heat band calibration</td>
+                  <td><span class="tag tag-ok">Approved</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Control objectives library</strong><span class="code">MH-COBJ</span></td>
+                  <td>210 objectives</td>
+                  <td>Coverage vs. universe ≥ 92%</td>
+                  <td><span class="tag tag-warn">89% · gap review</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Finding &amp; action taxonomy</strong><span class="code">MH-FIND</span></td>
+                  <td>Severity 4 · RCA 12 · themes 9</td>
+                  <td>Maps to residual bands</td>
+                  <td><span class="tag tag-ok">Approved</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Universe -->
+      <section id="view-universe" class="view" aria-labelledby="uni-title">
+        <p class="crumb">Master / <strong>Audit universe</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="uni-title">Audit universe catalogue</h1>
+            <p>Master process tree and auditable units. Companies map legal entities and systems here; engagements pick scoped branches.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost">Import COSO map</button>
+            <button type="button" class="btn btn-primary">Add process node</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Representative master nodes</h2>
+            <a class="link" href="#">Hierarchy diagram</a>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th scope="col">Node</th>
+                  <th scope="col">Level</th>
+                  <th scope="col">Inherent profile (master default)</th>
+                  <th scope="col">Audit relevance</th>
+                  <th scope="col">Linked risk themes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Procure to pay</strong><span class="code">UNI-P2P</span></td>
+                  <td><span class="tag tag-blue">L2</span></td>
+                  <td><span class="tag tag-warn">Medium–high</span> fraud &amp; vendor concentration</td>
+                  <td>Annual assurance candidate</td>
+                  <td><span class="code">TH-FRD · TH-VND · TH-SOX</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Identity &amp; access management</strong><span class="code">UNI-IAM</span></td>
+                  <td><span class="tag tag-blue">L2</span></td>
+                  <td><span class="tag tag-danger">High</span> privileged access</td>
+                  <td>Continuous / ITGC dependency</td>
+                  <td><span class="code">TH-IAM · TH-CYB</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Treasury &amp; liquidity</strong><span class="code">UNI-TRS</span></td>
+                  <td><span class="tag tag-blue">L2</span></td>
+                  <td><span class="tag tag-danger">High</span> market &amp; covenant</td>
+                  <td>Rolling 18m cycle</td>
+                  <td><span class="code">TH-LIQ · TH-MKT</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Third-party / outsourcing</strong><span class="code">UNI-3PR</span></td>
+                  <td><span class="tag tag-purple">L3</span></td>
+                  <td><span class="tag tag-warn">Medium</span> concentration</td>
+                  <td>Issue-led &amp; regulatory hooks</td>
+                  <td><span class="code">TH-VND · TH-REG</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <p class="note">Company layer will attach financial materiality, entity mapping, and “auditable unit” instances. Engagement layer freezes scope boundaries per memo.</p>
+      </section>
+
+      <!-- Risk framework -->
+      <section id="view-risk" class="view" aria-labelledby="risk-title">
+        <p class="crumb">Master / <strong>Risk framework</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="risk-title">Inherent, control, and residual risk</h1>
+            <p>Master publishes rating scales, matrices, and combination logic. This is how teams align on “why” an engagement targets a process and how findings escalate.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost">Download policy PDF</button>
+            <button type="button" class="btn btn-primary">Edit scales (steward)</button>
+          </div>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Risk dimensions">
+          <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="inherent">Inherent risk</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="control">Control risk</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="residual">Residual risk</button>
+        </div>
+
+        <div id="tab-inherent" class="tab-panel active">
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-h">
+                <h2>Likelihood × impact matrix</h2>
+                <span class="tag tag-teal">Heat band → rating</span>
+              </div>
+              <div class="panel-body">
+                <p class="note" style="margin-bottom: 14px;">Cells show <strong>inherent risk score</strong> used before controls are considered. Company layer stores assessments per auditable unit.</p>
+                <div class="matrix-wrap">
+                  <div class="matrix" role="img" aria-label="5 by 5 inherent risk heat matrix">
+                    <div class="corner"></div>
+                    <div class="col-h">Impact 1</div>
+                    <div class="col-h">Impact 2</div>
+                    <div class="col-h">Impact 3</div>
+                    <div class="col-h">Impact 4</div>
+                    <div class="col-h">Impact 5</div>
+
+                    <div class="row-h">Likelihood<br/>5</div>
+                    <div class="cell cell-m">12</div>
+                    <div class="cell cell-h">15</div>
+                    <div class="cell cell-h">18</div>
+                    <div class="cell cell-c">21</div>
+                    <div class="cell cell-c">23</div>
+
+                    <div class="row-h">Likelihood<br/>4</div>
+                    <div class="cell cell-l">10</div>
+                    <div class="cell cell-m">12</div>
+                    <div class="cell cell-h">15</div>
+                    <div class="cell cell-h">18</div>
+                    <div class="cell cell-c">21</div>
+
+                    <div class="row-h">Likelihood<br/>3</div>
+                    <div class="cell cell-l">8</div>
+                    <div class="cell cell-l">10</div>
+                    <div class="cell cell-m">12</div>
+                    <div class="cell cell-h">15</div>
+                    <div class="cell cell-h">18</div>
+
+                    <div class="row-h">Likelihood<br/>2</div>
+                    <div class="cell cell-l">6</div>
+                    <div class="cell cell-l">8</div>
+                    <div class="cell cell-l">10</div>
+                    <div class="cell cell-m">12</div>
+                    <div class="cell cell-h">15</div>
+
+                    <div class="row-h">Likelihood<br/>1</div>
+                    <div class="cell cell-l">4</div>
+                    <div class="cell cell-l">6</div>
+                    <div class="cell cell-l">8</div>
+                    <div class="cell cell-l">10</div>
+                    <div class="cell cell-m">12</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-h">
+                <h2>Band definitions</h2>
+              </div>
+              <div class="panel-body">
+                <dl class="dl-inline">
+                  <dt>Low (4–8)</dt>
+                  <dd>Routine monitoring; may rotate beyond 36 months if residual stays green.</dd>
+                  <dt>Medium (9–14)</dt>
+                  <dd>Standard cycle within rolling plan; thematic review every 24 months.</dd>
+                  <dt>High (15–19)</dt>
+                  <dd>Near-mandatory annual coverage; escalation if control degradation detected.</dd>
+                  <dt>Critical (20–25)</dt>
+                  <dd>Board-visible inherent exposure; continuous assurance hook or dedicated programme.</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-control" class="tab-panel">
+          <div class="panel">
+            <div class="panel-h">
+              <h2>Control risk (design &amp; operating)</h2>
+              <span class="tag tag-blue">Engagement proves · Master defines</span>
+            </div>
+            <div class="panel-body">
+              <p class="note" style="margin-bottom: 16px;">Control risk reflects how much reliance can be placed on controls to mitigate inherent exposure. Master defines how testers score design vs. operating effectiveness and how deficiencies roll up.</p>
+              <div class="table-wrap">
+                <table class="data">
+                  <thead>
+                    <tr>
+                      <th scope="col">Rating</th>
+                      <th scope="col">Design</th>
+                      <th scope="col">Operating</th>
+                      <th scope="col">Master interpretation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="tag tag-ok">Effective</span></td>
+                      <td>Fit-for-purpose, addresses risk</td>
+                      <td>Consistently applied</td>
+                      <td>Supports substantive reduction / reliance per policy matrix</td>
+                    </tr>
+                    <tr>
+                      <td><span class="tag tag-warn">Needs improvement</span></td>
+                      <td>Gaps in precision / coverage</td>
+                      <td>Exceptions within tolerance</td>
+                      <td>Residual capped one band above inherent-minus-controls estimate</td>
+                    </tr>
+                    <tr>
+                      <td><span class="tag tag-danger">Ineffective</span></td>
+                      <td>Missing / poorly designed</td>
+                      <td>Material failures observed</td>
+                      <td>Treat as failed mitigation — escalate residual to inherent corridor unless compensating controls evidenced</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-residual" class="tab-panel">
+          <div class="two-col">
+            <div class="panel">
+              <div class="panel-h">
+                <h2>Residual risk computation</h2>
+              </div>
+              <div class="panel-body">
+                <p style="margin-top: 0; color: var(--muted); font-size: 13px;">Illustrative master formula — implement your actuarial / qualitative blend in policy.</p>
+                <div class="formula-box">
+                  <span class="cmt">// After controls considered</span><br/>
+                  residual_score = clamp(<br/>
+                  &nbsp;&nbsp;inherent_score × control_factor × detection_factor,<br/>
+                  &nbsp;&nbsp;min_band, max_band<br/>
+                  );<br/><br/>
+                  <span class="cmt">// control_factor: 1.0 ineffective → 0.35 highly effective</span><br/>
+                  <span class="cmt">// detection_factor: supervisory / analytics uplift</span>
+                </div>
+                <p class="note" style="margin-top: 14px;">Findings reference <strong>residual band movement</strong> (worse / unchanged / improved) where possible, not only narrative severity.</p>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-h">
+                <h2>Residual outcome bands</h2>
+              </div>
+              <div class="panel-body">
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead>
+                      <tr>
+                        <th scope="col">Band</th>
+                        <th scope="col">Score range</th>
+                        <th scope="col">Reporting posture</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="tag tag-ok">Within appetite</span></td>
+                        <td>1–5</td>
+                        <td>Monitor; optional thematic follow-up</td>
+                      </tr>
+                      <tr>
+                        <td><span class="tag tag-teal">Elevated</span></td>
+                        <td>6–10</td>
+                        <td>Management action plan · IA validates closures</td>
+                      </tr>
+                      <tr>
+                        <td><span class="tag tag-warn">Above appetite</span></td>
+                        <td>11–16</td>
+                        <td>Audit committee visibility · timeline commitments</td>
+                      </tr>
+                      <tr>
+                        <td><span class="tag tag-danger">Critical exposure</span></td>
+                        <td>17+</td>
+                        <td>Executive response · possible restriction / redesign</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Audit plan -->
+      <section id="view-plan" class="view" aria-labelledby="plan-title">
+        <p class="crumb">Master / <strong>Audit plan</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="plan-title">Rolling audit plan framework</h1>
+            <p>Master defines horizons, coverage rules, and how universe risk feeds prioritisation. Companies instantiate calendars and budgets.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost">Scenario model</button>
+            <button type="button" class="btn btn-primary">Publish plan template</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-h">
+              <h2>Coverage rules (master)</h2>
+            </div>
+            <div class="panel-body">
+              <dl class="dl-inline">
+                <dt>Mandatory cycles</dt>
+                <dd>All <span class="tag tag-danger">Critical</span> inherent nodes every 12 months unless residual proves sustained reduction for 2 cycles.</dd>
+                <dt>High-risk slots</dt>
+                <dd>≥ 45% of annual hours on inherent high/critical universe branches.</dd>
+                <dt>Cross-audit</dt>
+                <dd>Shared themes (cyber, third-party) coordinated via master theme IDs.</dd>
+                <dt>Co-source</dt>
+                <dd>External reliance allowed only where methodology pack marks procedure as “eligible.”</dd>
+              </dl>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-h">
+              <h2>FY planning lanes (template)</h2>
+            </div>
+            <div class="table-wrap">
+              <table class="data">
+                <thead>
+                  <tr>
+                    <th scope="col">Lane</th>
+                    <th scope="col">Typical focus</th>
+                    <th scope="col">Feeds</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Assurance</strong></td>
+                    <td>Controls &amp; substantive outcomes</td>
+                    <td>Universe + residual targets</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Advisory</strong></td>
+                    <td>Design-phase reviews</td>
+                    <td>Linked risks only · no opinion unless framed</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Investigations</strong></td>
+                    <td>Issue-triggered</td>
+                    <td>Independent routing · ethics overlay</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Plan intake queue (illustrative)</h2>
+            <span class="tag tag-teal">Prioritisation weights from master</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th scope="col">Candidate topic</th>
+                  <th scope="col">Universe anchor</th>
+                  <th scope="col">Driver</th>
+                  <th scope="col">Master score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>AI use in financial models</strong></td>
+                  <td><span class="code">UNI-RPT · UNI-FPA</span></td>
+                  <td>New regulation + inherent uplift</td>
+                  <td><span class="tag tag-danger">94</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Payroll continuity</strong></td>
+                  <td><span class="code">UNI-HCM</span></td>
+                  <td>BCP test gaps</td>
+                  <td><span class="tag tag-warn">71</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Intercompany recharge</strong></td>
+                  <td><span class="code">UNI-TAX</span></td>
+                  <td>Repeat finding theme</td>
+                  <td><span class="tag tag-warn">68</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Methodology -->
+      <section id="view-methodology" class="view" aria-labelledby="meth-title">
+        <p class="crumb">Master / <strong>Methodology</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="meth-title">Engagement methodology packs</h1>
+            <p>Standards for planning memos, sampling, evidence grading, and review points — shared across all companies unless locally waived with governance.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-primary">Upload pack revision</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Master procedures catalogue</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th scope="col">Pack</th>
+                  <th scope="col">Use when</th>
+                  <th scope="col">Mandatory artefacts</th>
+                  <th scope="col">Risk linkage</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Operational audit</strong><span class="code">MP-OPS</span></td>
+                  <td>Process / control testing</td>
+                  <td>RCM, walkthrough, sample sheet, issue draft</td>
+                  <td>Inherent + control + residual</td>
+                </tr>
+                <tr>
+                  <td><strong>IT general controls</strong><span class="code">MP-ITGC</span></td>
+                  <td>SOX / reliance programmes</td>
+                  <td>Entity-level, access, change, ops docs</td>
+                  <td>Control risk dominant</td>
+                </tr>
+                <tr>
+                  <td><strong>Data analytics sprint</strong><span class="code">MP-DAS</span></td>
+                  <td>Continuous monitoring hooks</td>
+                  <td>Data lineage, script registry, exception logic</td>
+                  <td>Detection factor uplift</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Findings -->
+      <section id="view-findings" class="view" aria-labelledby="find-title">
+        <p class="crumb">Master / <strong>Findings model</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="find-title">Issue &amp; remediation schema</h1>
+            <p>Severity, root cause, owners, and linkage to residual posture. Master ensures audit committee packs aggregate consistently.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost">Map to COSO</button>
+            <button type="button" class="btn btn-primary">Configure fields</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-h">
+              <h2>Severity ↔ residual movement</h2>
+            </div>
+            <div class="table-wrap">
+              <table class="data">
+                <thead>
+                  <tr>
+                    <th scope="col">Severity</th>
+                    <th scope="col">Typical trigger</th>
+                    <th scope="col">Residual rule</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="tag tag-danger">Critical</span></td>
+                    <td>Breakdown preventing reliable reporting / legal breach path</td>
+                    <td>Forces band ≥ “above appetite” pending remediation evidence</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag tag-warn">High</span></td>
+                    <td>Material gap with credible exposure window</td>
+                    <td>Elevated minimum; committee narrative required</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag tag-teal">Medium</span></td>
+                    <td>Compensated weakness / isolated exceptions</td>
+                    <td>Track closure · may stay within appetite if monitored</td>
+                  </tr>
+                  <tr>
+                    <td><span class="tag tag-ok">Low</span></td>
+                    <td>Efficiency / hygiene</td>
+                    <td>Optional remediation SLA</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-h">
+              <h2>Root cause taxonomy (sample)</h2>
+            </div>
+            <div class="panel-body">
+              <dl class="dl-inline">
+                <dt>People</dt>
+                <dd>Capacity, competence, turnover</dd>
+                <dt>Process</dt>
+                <dd>Design drift, unclear RACI, manual workaround</dd>
+                <dt>Technology</dt>
+                <dd>Config defect, access model, integration gap</dd>
+                <dt>Governance</dt>
+                <dd>Oversight cadence, policy lag, incentive conflict</dd>
+                <dt>External</dt>
+                <dd>Vendor, regulator, supply shock</dd>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Management action template</h2>
+            <span class="tag tag-purple">Required fields at engagement layer</span>
+          </div>
+          <div class="panel-body">
+            <div class="table-wrap">
+              <table class="data">
+                <thead>
+                  <tr>
+                    <th scope="col">Field</th>
+                    <th scope="col">Purpose</th>
+                    <th scope="col">Master validation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Remediation owner</strong></td>
+                    <td>Single accountable executive</td>
+                    <td>Must map to HR directory role code</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Target date</strong></td>
+                    <td>Committee tracking</td>
+                    <td>Cannot precede issue approval timestamp</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Milestone evidence type</strong></td>
+                    <td>Defines IA retest scope</td>
+                    <td>Picked from approved evidence taxonomy</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Expected residual band</strong></td>
+                    <td>Quantifies success</td>
+                    <td>Must align with master bands</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reports -->
+      <section id="view-reports" class="view" aria-labelledby="rep-title">
+        <p class="crumb">Master / <strong>Audit reports</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="rep-title">Reporting &amp; committee packs</h1>
+            <p>Master defines report types, optional assurance language blocks, and pack assembly order. Companies inject branding and jurisdictional addenda.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-primary">Edit pack outline</button>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-h">
+              <h2>Report archetypes</h2>
+            </div>
+            <div class="table-wrap">
+              <table class="data">
+                <thead>
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Audience</th>
+                    <th scope="col">Risk positioning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Final audit report</strong></td>
+                    <td>AC / Board subset</td>
+                    <td>Summarises inherent context, control view, residual conclusion</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Management letter</strong></td>
+                    <td>C-suite owners</td>
+                    <td>Thematic · links findings to universe nodes</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Private oversight memo</strong></td>
+                    <td>Audit committee only</td>
+                    <td>Sensitivity-restricted residual commentary</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-h">
+              <h2>Standard sections</h2>
+            </div>
+            <div class="panel-body">
+              <ol style="margin: 0; padding-left: 1.25rem; font-size: 13px; color: var(--muted); line-height: 1.65;">
+                <li><strong style="color: var(--text);">Scope &amp; objectives</strong> — universe references, criteria, exclusions.</li>
+                <li><strong style="color: var(--text);">Risk profile</strong> — inherent highlights; materiality footnotes reserved for company layer.</li>
+                <li><strong style="color: var(--text);">Approach</strong> — methodology pack IDs used.</li>
+                <li><strong style="color: var(--text);">Observations</strong> — findings grouped by theme &amp; residual impact.</li>
+                <li><strong style="color: var(--text);">Management response</strong> — actions with dates &amp; owners.</li>
+                <li><strong style="color: var(--text);">Opinion / conclusion</strong> — master-controlled wording library.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reference data -->
+      <section id="view-reference" class="view" aria-labelledby="ref-title">
+        <p class="crumb">Master / <strong>Reference data</strong></p>
+        <div class="page-head">
+          <div>
+            <h1 id="ref-title">Codes, lists, and integrations</h1>
+            <p>Shared dictionaries used across universe, risk, plan, and findings so analytics stay stable when organisations change names.</p>
+          </div>
+          <div class="page-actions">
+            <button type="button" class="btn btn-ghost">API schema</button>
+            <button type="button" class="btn btn-primary">Add code list</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <h2>Representative master lists</h2>
+          </div>
+          <div class="table-wrap">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th scope="col">List</th>
+                  <th scope="col">Items</th>
+                  <th scope="col">Consumers</th>
+                  <th scope="col">Change policy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Industry verticals</strong><span class="code">REF-IND</span></td>
+                  <td>27</td>
+                  <td>Universe benchmarking</td>
+                  <td>Quarterly steward review</td>
+                </tr>
+                <tr>
+                  <td><strong>Regulatory themes</strong><span class="code">REF-REG</span></td>
+                  <td>16</td>
+                  <td>Plan intake &amp; findings tags</td>
+                  <td>Ad hoc + annual purge</td>
+                </tr>
+                <tr>
+                  <td><strong>Evidence types</strong><span class="code">REF-EVI</span></td>
+                  <td>38</td>
+                  <td>Workpapers &amp; closure tests</td>
+                  <td>Version locked per methodology release</td>
+                </tr>
+                <tr>
+                  <td><strong>Systems catalogue</strong><span class="code">REF-SYS</span></td>
+                  <td>Placeholder · company extends</td>
+                  <td>RACM linkage at engagement</td>
+                  <td>Master supplies archetypes only</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var sidebar = document.getElementById("sidebar");
+      var toggle = document.getElementById("navToggle");
+
+      if (toggle && sidebar) {
+        toggle.addEventListener("click", function () {
+          sidebar.classList.toggle("collapsed");
+        });
+      }
+
+      function showView(id) {
+        document.querySelectorAll(".view").forEach(function (el) {
+          el.classList.toggle("active", el.id === "view-" + id);
+        });
+        document.querySelectorAll(".nav-item").forEach(function (btn) {
+          btn.classList.toggle("active", btn.getAttribute("data-view") === id);
+        });
+      }
+
+      document.querySelectorAll(".nav-item[data-view]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          showView(btn.getAttribute("data-view"));
+        });
+      });
+
+      document.querySelectorAll("[data-jump]").forEach(function (el) {
+        el.addEventListener("click", function (e) {
+          e.preventDefault();
+          var target = el.getAttribute("data-jump");
+          if (target) showView(target);
+        });
+      });
+
+      document.querySelectorAll(".tab[data-tab]").forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var key = tab.getAttribute("data-tab");
+          document.querySelectorAll(".tab").forEach(function (t) {
+            var on = t.getAttribute("data-tab") === key;
+            t.classList.toggle("active", on);
+            t.setAttribute("aria-selected", on ? "true" : "false");
+          });
+          document.querySelectorAll(".tab-panel").forEach(function (p) {
+            p.classList.toggle("active", p.id === "tab-" + key);
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
