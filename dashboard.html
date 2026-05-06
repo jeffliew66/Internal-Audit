@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aura IA — Firm Dashboard</title>
+  <style>
+    :root{--bg:#0b1220;--panel:#111827;--panel2:#172033;--line:#2b3854;--text:#e5edf8;--muted:#94a3b8;--accent:#38bdf8;--accent2:#818cf8;--radius:14px;--sidebar:260px;--top:60px;--font:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    *{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+    .app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) 1fr;grid-template-rows:var(--top) 1fr}.topbar{grid-column:1/-1;height:var(--top);display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--line);background:rgba(11,18,32,.96)}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800}.brand-mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500;margin-top:1px}.top-actions{display:flex;gap:8px;align-items:center}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:8px 12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}.btn.primary{border-color:transparent;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white}.btn.ghost{background:transparent}.btn.small{font-size:12px;padding:5px 8px;border-radius:8px}
+    .sidebar{grid-row:2;border-right:1px solid var(--line);background:linear-gradient(180deg,#0f172a,#111827);padding:14px 10px;overflow:auto}.nav-section{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.13em;margin:16px 10px 7px}.nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 11px;margin-bottom:5px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--text);text-align:left;text-decoration:none}.nav-btn:hover{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.06)}.nav-btn.active{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.35)}.nav-ico{width:20px;text-align:center}
+    main{grid-row:2;overflow:auto;padding:22px 24px 48px}.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}h1{margin:0;font-size:26px;letter-spacing:-.045em}.subtitle{margin:7px 0 0;color:var(--muted);font-size:14px;max-width:860px;line-height:1.5}
+    .panel{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);box-shadow:0 16px 42px rgba(0,0,0,.12);padding:15px;margin-bottom:14px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.panel-head h2{margin:0;font-size:16px}.panel-head span{color:var(--muted);font-size:12px}
+    .group-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.group-pill{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:7px 12px}.group-pill.active{color:white;border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.12)}
+    .filters{display:grid;grid-template-columns:minmax(260px,2fr) repeat(4,minmax(130px,.75fr));gap:9px;padding:12px;margin-bottom:12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.field input,.field select{width:100%;border:1px solid var(--line);border-radius:10px;background:#0f172a;padding:8px 10px;outline:none}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px;background:var(--panel)}table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;min-width:1040px}th,td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{position:sticky;top:0;z-index:2;color:var(--muted);background:var(--panel2);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:750;white-space:nowrap}tr:last-child td{border-bottom:none}tbody tr:hover td{background:rgba(255,255,255,.025)}td strong{color:white}.client-name-cell{min-width:230px}.team-cell{min-width:210px}.action-cell{white-space:nowrap}.muted{color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:999px;border:1px solid var(--line);font-size:11px;color:var(--text);background:rgba(255,255,255,.025);white-space:nowrap}.pill.high,.pill.overdue,.pill.critical{border-color:rgba(251,113,133,.45);color:#fecdd3;background:rgba(251,113,133,.07)}.pill.medium{border-color:rgba(251,191,36,.45);color:#fde68a;background:rgba(251,191,36,.06)}.pill.low,.pill.on-track,.pill.active{border-color:rgba(52,211,153,.42);color:#bbf7d0;background:rgba(52,211,153,.06)}.pill.blue,.pill.onboarding{border-color:rgba(56,189,248,.45);color:#bae6fd;background:rgba(56,189,248,.08)}.lead-tag{margin-left:6px;border-color:rgba(56,189,248,.45);color:#bae6fd;background:rgba(56,189,248,.08)}.team-lead{color:#bae6fd;font-weight:750}.tiny-list{margin:0;padding:0;list-style:none;display:grid;gap:3px;color:var(--muted);font-size:12px}
+    .empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--radius);background:rgba(255,255,255,.02)}
+    @media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:18px}.filters{grid-template-columns:1fr 1fr}}@media(max-width:650px){.topbar{height:auto;padding:14px 16px;flex-direction:column;align-items:flex-start}.filters{grid-template-columns:1fr}.page-head{flex-direction:column}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">IA</div><div>Aura IA<small>Internal audit firm dashboard</small></div></div>
+    <div class="top-actions"><button class="btn ghost small" id="resetDemoBtn">Reset demo</button><button class="btn primary small" id="addClientBtn">+ Add client</button></div>
+  </header>
+
+  <aside class="sidebar">
+    <div class="nav-section">Workspace</div>
+    <a class="nav-btn active" href="dashboard.html"><span class="nav-ico">⌂</span> Client Workspaces</a>
+    <div class="nav-section">Settings</div>
+    <a class="nav-btn" href="Admin%20master%20settings.html"><span class="nav-ico">⚙</span> Admin Settings</a>
+    <a class="nav-btn" href="IA%20master%20settings.html"><span class="nav-ico">▧</span> Internal Audit Settings</a>
+  </aside>
+
+  <main>
+    <section class="page-head"><div><h1>Client Workspaces</h1><p class="subtitle">Use this row-by-row list to manage hundreds of internal audit clients. Filter by client group, search by team or company, review key status columns, then open the selected client workspace.</p></div><div class="top-actions"><button class="btn primary" id="addClientMainBtn">+ Add client</button></div></section>
+    <div class="group-pills" id="groupPills"></div>
+    <section class="filters">
+      <div class="field"><label>Search</label><input id="searchInput" placeholder="Client, group, industry, team member..."></div>
+      <div class="field"><label>Risk tier</label><select id="riskFilter"><option value="all">All risks</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select></div>
+      <div class="field"><label>Status</label><select id="statusFilter"><option value="all">All statuses</option><option value="Active">Active</option><option value="Onboarding">Onboarding</option><option value="Paused">Paused</option></select></div>
+      <div class="field"><label>Owner</label><select id="ownerFilter"><option value="all">All owners</option></select></div>
+      <div class="field"><label>Outstanding</label><select id="outstandingFilter"><option value="all">All</option><option value="open">Has open findings</option><option value="high">Has high findings</option><option value="overdue">Has overdue</option></select></div>
+    </section>
+    <section class="panel"><div class="panel-head"><div><h2>Internal audit clients</h2><span id="clientCount">0 shown</span></div><button class="btn ghost small" id="clearFiltersBtn">Clear filters</button></div><div id="clientTable"></div></section>
+  </main>
+</div>
+
+<script>
+const clients=[
+  {id:'langit-logistics',name:'Langit Logistics Bhd',group:'Group A',industry:'Transport & Logistics',owner:'Aina Rahman',team:['Aina Rahman','Jason Tan','Priya Dev'],risk:'High',status:'Active',activeAudits:3,openFindings:14,highFindings:4,overdueActions:2,lastUpdated:'2026-05-03',workspace:'company.html?clientId=langit-logistics'},
+  {id:'bay-fintech',name:'Bay Fintech Sdn Bhd',group:'Group A',industry:'Financial Services',owner:'Jason Tan',team:['Jason Tan','Mei Wong'],risk:'High',status:'Active',activeAudits:2,openFindings:9,highFindings:3,overdueActions:1,lastUpdated:'2026-05-01',workspace:'company.html?clientId=bay-fintech'},
+  {id:'meranti-retail',name:'Meranti Retail Group',group:'Group B',industry:'Retail',owner:'Priya Dev',team:['Priya Dev','Daniel Lim'],risk:'Medium',status:'Active',activeAudits:1,openFindings:6,highFindings:1,overdueActions:0,lastUpdated:'2026-04-29',workspace:'company.html?clientId=meranti-retail'},
+  {id:'nusa-healthcare',name:'Nusa Healthcare Network',group:'Group B',industry:'Healthcare',owner:'Aina Rahman',team:['Aina Rahman','Priya Dev'],risk:'Medium',status:'Active',activeAudits:2,openFindings:11,highFindings:2,overdueActions:3,lastUpdated:'2026-05-04',workspace:'company.html?clientId=nusa-healthcare'},
+  {id:'satria-manufacturing',name:'Satria Manufacturing Sdn Bhd',group:'Group C',industry:'Manufacturing',owner:'Jason Tan',team:['Jason Tan'],risk:'Low',status:'Onboarding',activeAudits:0,openFindings:0,highFindings:0,overdueActions:0,lastUpdated:'2026-04-20',workspace:'company.html?clientId=satria-manufacturing'},
+  {id:'tanjung-foods',name:'Tanjung Foods Group',group:'Group C',industry:'FMCG',owner:'Mei Wong',team:['Mei Wong','Daniel Lim','Priya Dev'],risk:'Medium',status:'Active',activeAudits:2,openFindings:8,highFindings:1,overdueActions:0,lastUpdated:'2026-05-02',workspace:'company.html?clientId=tanjung-foods'},
+  {id:'kemuning-energy',name:'Kemuning Energy Berhad',group:'High Priority',industry:'Energy',owner:'Aina Rahman',team:['Aina Rahman','Jason Tan'],risk:'High',status:'Active',activeAudits:4,openFindings:18,highFindings:5,overdueActions:4,lastUpdated:'2026-05-05',workspace:'company.html?clientId=kemuning-energy'}
+];
+let filters={search:'',group:'all',risk:'all',status:'all',owner:'all',outstanding:'all'};
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function slug(v){return String(v||'').toLowerCase().trim().replaceAll(' ','-').replaceAll('/','-')}
+function pill(v){return '<span class="pill '+esc(slug(v))+'">'+esc(v)+'</span>'}
+function groups(){return ['all',...new Set(clients.map(c=>c.group))]}
+function owners(){return [...new Set(clients.map(c=>c.owner))]}
+function renderGroupPills(){document.getElementById('groupPills').innerHTML=groups().map(g=>'<button class="group-pill '+(filters.group===g?'active':'')+'" data-group="'+esc(g)+'">'+(g==='all'?'All groups':esc(g))+'</button>').join('');document.querySelectorAll('[data-group]').forEach(btn=>btn.onclick=()=>{filters.group=btn.dataset.group;renderClients()})}
+function renderOwnerOptions(){document.getElementById('ownerFilter').innerHTML='<option value="all">All owners</option>'+owners().map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('')}
+function filteredClients(){const q=filters.search.toLowerCase().trim();return clients.filter(c=>{const hay=[c.name,c.group,c.industry,c.owner,c.team.join(' '),c.risk,c.status].join(' ').toLowerCase();if(q&&!hay.includes(q))return false;if(filters.group!=='all'&&c.group!==filters.group)return false;if(filters.risk!=='all'&&c.risk!==filters.risk)return false;if(filters.status!=='all'&&c.status!==filters.status)return false;if(filters.owner!=='all'&&c.owner!==filters.owner)return false;if(filters.outstanding==='open'&&!c.openFindings)return false;if(filters.outstanding==='high'&&!c.highFindings)return false;if(filters.outstanding==='overdue'&&!c.overdueActions)return false;return true})}
+function renderTeam(c){return '<ul class="tiny-list">'+c.team.map(n=>'<li class="'+(n===c.owner?'team-lead':'')+'">'+esc(n)+(n===c.owner?'<span class="pill lead-tag">Lead</span>':'')+'</li>').join('')+'</ul>'}
+function renderClients(){renderGroupPills();const list=filteredClients();document.getElementById('clientCount').textContent=list.length+' shown';if(!list.length){document.getElementById('clientTable').innerHTML='<div class="empty">No clients match the current filters.</div>';return}const headers=['Client','Group','Status','Risk','Team','Active audits','Open findings','High-risk','Overdue','Last updated',''];const rows=list.map(c=>'<tr><td class="client-name-cell"><strong>'+esc(c.name)+'</strong><div class="muted">'+esc(c.industry)+'</div></td><td>'+pill(c.group)+'</td><td>'+pill(c.status)+'</td><td>'+pill(c.risk)+'</td><td class="team-cell">'+renderTeam(c)+'</td><td>'+c.activeAudits+'</td><td>'+c.openFindings+'</td><td>'+(c.highFindings?pill(c.highFindings+' high'):'<span class="muted">0</span>')+'</td><td>'+(c.overdueActions?pill(c.overdueActions+' overdue'):pill('On track'))+'</td><td>'+esc(c.lastUpdated)+'</td><td class="action-cell"><a class="btn primary small" href="'+esc(c.workspace)+'">Open</a></td></tr>').join('');document.getElementById('clientTable').innerHTML='<div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+rows+'</tbody></table></div>'}
+function addClient(){const name=prompt('Client company name');if(!name)return;const id=slug(name)||'client-'+Date.now();clients.push({id,name,group:'Group A',industry:'New client',owner:owners()[0]||'Unassigned',team:[],risk:'Medium',status:'Onboarding',activeAudits:0,openFindings:0,highFindings:0,overdueActions:0,lastUpdated:'2026-05-06',workspace:'company.html?clientId='+id});renderOwnerOptions();renderClients()}
+function wire(){document.getElementById('searchInput').oninput=e=>{filters.search=e.target.value;renderClients()};document.getElementById('riskFilter').onchange=e=>{filters.risk=e.target.value;renderClients()};document.getElementById('statusFilter').onchange=e=>{filters.status=e.target.value;renderClients()};document.getElementById('ownerFilter').onchange=e=>{filters.owner=e.target.value;renderClients()};document.getElementById('outstandingFilter').onchange=e=>{filters.outstanding=e.target.value;renderClients()};document.getElementById('clearFiltersBtn').onclick=()=>{filters={search:'',group:'all',risk:'all',status:'all',owner:'all',outstanding:'all'};document.getElementById('searchInput').value='';document.getElementById('riskFilter').value='all';document.getElementById('statusFilter').value='all';document.getElementById('ownerFilter').value='all';document.getElementById('outstandingFilter').value='all';renderClients()};document.getElementById('addClientBtn').onclick=addClient;document.getElementById('addClientMainBtn').onclick=addClient;document.getElementById('resetDemoBtn').onclick=()=>location.reload()}
+renderOwnerOptions();renderClients();wire();
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aura IA — Admin Settings</title>
+  <style>
+:root{--bg:#0b1220;--panel:#111827;--panel2:#172033;--line:#2b3854;--text:#e5edf8;--muted:#94a3b8;--accent:#38bdf8;--accent2:#818cf8;--radius:14px;--sidebar:260px;--top:60px;--font:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+.app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) 1fr;grid-template-rows:var(--top) 1fr}.topbar{grid-column:1/-1;height:var(--top);display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid var(--line);background:rgba(11,18,32,.96)}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800}.brand-mark{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}.brand small{display:block;color:var(--muted);font-size:12px;font-weight:500;margin-top:1px}.top-actions{display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:10px;padding:8px 12px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}.btn.primary{border-color:transparent;background:linear-gradient(135deg,#0ea5e9,#6366f1);color:white}.btn.ghost{background:transparent}.btn.small{font-size:12px;padding:5px 8px;border-radius:8px}
+.sidebar{grid-row:2;border-right:1px solid var(--line);background:linear-gradient(180deg,#0f172a,#111827);padding:14px 10px;overflow:auto}.nav-section{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.13em;margin:16px 10px 7px}.nav-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 11px;margin-bottom:5px;border:1px solid transparent;border-radius:11px;background:transparent;color:var(--text);text-align:left;text-decoration:none}.nav-btn:hover{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.06)}.nav-btn.active{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.35)}.nav-ico{width:20px;text-align:center}
+main{grid-row:2;overflow:auto;padding:22px 24px 48px}.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}h1{margin:0;font-size:26px;letter-spacing:-.045em}.subtitle{margin:7px 0 0;color:var(--muted);font-size:14px;max-width:860px;line-height:1.5}
+.panel,.setting-card{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);box-shadow:0 16px 42px rgba(0,0,0,.12)}.panel{padding:15px;margin-bottom:14px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.panel-head h2{margin:0;font-size:16px}.panel-head span{color:var(--muted);font-size:12px}
+.setting-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.setting-pill{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:7px 12px}.setting-pill.active{color:white;border-color:rgba(56,189,248,.45);background:rgba(56,189,248,.12)}
+.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:10px;background:#0f172a;padding:8px 10px;outline:none}.field textarea{min-height:88px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:12px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px;background:var(--panel)}table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;min-width:900px}th,td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{position:sticky;top:0;z-index:2;color:var(--muted);background:var(--panel2);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:750;white-space:nowrap}tr:last-child td{border-bottom:none}tbody tr:hover td{background:rgba(255,255,255,.025)}td strong{color:white}.muted{color:var(--muted)}
+.settings-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:12px}.setting-card{padding:16px;min-height:150px;display:flex;flex-direction:column;gap:10px}.setting-card h3{margin:0;font-size:16px}.setting-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}.setting-card .btn{margin-top:auto;width:fit-content}
+@media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{display:none}main{padding:18px}.settings-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr 1fr}}@media(max-width:650px){.topbar{height:auto;padding:14px 16px;flex-direction:column;align-items:flex-start}.settings-grid,.form-grid{grid-template-columns:1fr}.page-head{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">IA</div><div>Aura IA<small>Admin settings</small></div></div>
+    <div class="top-actions"><a class="btn ghost small" href="dashboard.html">Client Workspaces</a><a class="btn primary small" href="IA%20master%20settings.html">Internal Audit Settings</a></div>
+  </header>
+  <aside class="sidebar">
+    <div class="nav-section">Workspace</div>
+    <a class="nav-btn" href="dashboard.html"><span class="nav-ico">⌂</span> Client Workspaces</a>
+    <div class="nav-section">Settings</div>
+    <a class="nav-btn active" href="Admin%20master%20settings.html"><span class="nav-ico">⚙</span> Admin Settings</a>
+    <a class="nav-btn" href="IA%20master%20settings.html"><span class="nav-ico">▧</span> Internal Audit Settings</a>
+  </aside>
+  <main>
+    <section class="page-head">
+      <div>
+        <h1>Admin Settings</h1>
+        <p class="subtitle">Administrative configuration for the internal audit firm: firm profile, users, role-based access, client access, preferences, security, notifications, activity log, and retention.</p>
+      </div>
+    </section>
+    <div class="setting-pills" id="adminPills"></div>
+    <div id="adminContent"></div>
+  </main>
+</div>
+
+<script>
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+function tablePanel(title,note,headers,rows){
+  return '<section class="panel"><div class="panel-head"><div><h2>'+esc(title)+'</h2><span>'+esc(note)+'</span></div><button class="btn primary small">+ Add</button></div><div class="table-wrap"><table><thead><tr>'+headers.map(h=>'<th>'+esc(h)+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map((c,i)=>'<td>'+(i===0?'<strong>':'')+esc(c)+(i===0?'</strong>':'')+'</td>').join('')+'</tr>').join('')+'</tbody></table></div></section>'
+}
+function formPanel(title,note,fields){
+  return '<section class="panel"><div class="panel-head"><div><h2>'+esc(title)+'</h2><span>'+esc(note)+'</span></div><button class="btn primary small">Save</button></div><div class="form-grid">'+fields.map(f=>{
+    if(f[1]==='textarea')return '<div class="field"><label>'+esc(f[0])+'</label><textarea>'+esc(f[2])+'</textarea></div>';
+    if(f[1]==='select')return '<div class="field"><label>'+esc(f[0])+'</label><select>'+f[2].map(v=>'<option>'+esc(v)+'</option>').join('')+'</select></div>';
+    return '<div class="field"><label>'+esc(f[0])+'</label><input value="'+esc(f[2])+'"></div>';
+  }).join('')+'</div></section>'
+}
+const AdminSettings = (() => {
+  let activeTab = 'firmProfile';
+  const tabs = [
+    ['firmProfile','Firm Profile'],['roles','Role-Based Control'],['users','Users'],['clientAccess','Client Access'],
+    ['preferences','Preferences'],['security','Security'],['notifications','Notifications'],['activityLog','Activity Log'],['retention','Data Retention']
+  ];
+  function render() {
+    let html = '';
+    if(activeTab==='firmProfile') html = formPanel('Firm profile','Core firm details used in reports and client workspaces.',[
+      ['Firm legal name','input','Aura Internal Audit PLT'],['Trading name','input','Aura IA'],['Registration / license no.','input','IA-2026-001'],
+      ['Registered address','textarea','Level 12, Menara Audit, Kuala Lumpur, Malaysia'],['Default country','select',['Malaysia','Singapore','United Kingdom']],
+      ['Default currency','select',['MYR','SGD','USD']],['Report footer','textarea','Internal audit report prepared for management and audit committee use only.']
+    ]);
+    if(activeTab==='roles') html = tablePanel('Role-based access control','Permission matrix for firm users and client users.',
+      ['Role','Client directory','Client workspace','Settings','Report approval','Follow-up closure'],
+      [['Partner / Director','All clients','Full access','Admin + audit settings','Final approval','Can close / reopen'],
+       ['Engagement Manager','Assigned clients','Planning, review, report draft','No admin settings','Review approval','Can validate closure'],
+       ['Senior Auditor','Assigned clients','Fieldwork, findings, PBC','No','Prepare draft only','Submit validation'],
+       ['Staff Auditor','Assigned tasks','Testing and evidence upload','No','No','No closure rights'],
+       ['Client User','Own company only','PBC and management response','No','No','Upload evidence']]);
+    if(activeTab==='users') html = tablePanel('Users & team management','Manage internal audit staff, reviewers, and client users.',
+      ['Name','Email','Role','Team / group','Assigned clients','Status'],
+      [['Aina Rahman','aina@aura-ia.example','Partner / Director','Leadership','All high-risk clients','Active'],
+       ['Jason Tan','jason@aura-ia.example','Engagement Manager','Group A','Bay Fintech, Satria Manufacturing','Active'],
+       ['Priya Dev','priya@aura-ia.example','Senior Auditor','Group B','Meranti Retail, Nusa Healthcare','Active'],
+       ['Daniel Lim','daniel@aura-ia.example','Staff Auditor','Group C','Meranti Retail, Tanjung Foods','Active']]);
+    if(activeTab==='clientAccess') html = tablePanel('Client access matrix','Control which users can access each company workspace.',
+      ['Client group','Default partner','Default manager','Default audit team','Client user access','Restriction rule'],
+      [['Group A','Aina Rahman','Jason Tan','Jason Tan, Mei Wong','PBC + management response','Manager approval for new users'],
+       ['Group B','Aina Rahman','Priya Dev','Priya Dev, Daniel Lim','PBC + action plan only','No report access unless granted'],
+       ['High Priority','Aina Rahman','Aina Rahman','Partner-assigned only','Restricted','Partner approval required']]);
+    if(activeTab==='preferences') html = formPanel('Firm preferences','Default preferences applied to new client workspaces.',[
+      ['Client code format','input','IA-{CLIENT}-{YYYY}'],['Engagement code format','input','{CLIENT}-{AREA}-{YYYY}-{SEQ}'],
+      ['Date format','select',['DD MMM YYYY','DD/MM/YYYY','YYYY-MM-DD']],
+      ['Default audit status flow','textarea','Draft → Planning → Fieldwork → Reporting → Management Response → Follow-up → Closed']
+    ]);
+    if(activeTab==='security') html = tablePanel('Security settings','Firm-level authentication, session, and access controls.',
+      ['Setting','Current configuration','Applies to','Notes'],
+      [['MFA enforcement','Required','Internal users and client admins','Optional for basic client users'],
+       ['Password expiry','90 days','All password users','SSO users follow provider policy'],
+       ['Session timeout','8 hours','All users','Shorter timeout for restricted clients'],
+       ['IP allowlist','Optional','Internal users','Useful for admin roles']]);
+    if(activeTab==='notifications') html = tablePanel('Notification rules','Default reminders and escalation rules.',
+      ['Trigger','Recipient','Timing','Channel','Escalation'],
+      [['PBC due soon','Client request owner','3 days before due','Email','Notify senior if overdue'],
+       ['Finding response due','Management action owner','5 days before due','Email','Escalate high-risk to partner'],
+       ['High-risk overdue','Manager + partner','Immediately','Email','Audit committee flag after 30 days']]);
+    if(activeTab==='activityLog') html = tablePanel('Activity log','Firm-level audit trail.',
+      ['Date / time','User','Area','Action'],
+      [['2026-05-05 15:20','Aina Rahman','Roles','Updated report approval permission'],
+       ['2026-05-04 11:10','Jason Tan','Client Access','Added Bay Fintech client user'],
+       ['2026-05-03 09:00','System','Notifications','Sent overdue finding reminders']]);
+    if(activeTab==='retention') html = tablePanel('Data retention & archive rules','Retention policies for closed engagements and reports.',
+      ['Data type','Retention period','Archive rule','Deletion approval'],
+      [['Closed client workspace','7 years','Archive 90 days after closure','Partner approval required'],
+       ['Final internal audit report','7 years','Locked immediately after issue','Cannot delete without admin approval'],
+       ['Activity log','10 years','System archive annually','No manual deletion']]);
+    document.getElementById('adminContent').innerHTML = html;
+    document.querySelectorAll('[data-admin-tab]').forEach(btn=>btn.classList.toggle('active', btn.dataset.adminTab===activeTab));
+  }
+  function init(){
+    document.getElementById('adminPills').innerHTML = tabs.map(t=>'<button class="setting-pill '+(activeTab===t[0]?'active':'')+'" data-admin-tab="'+t[0]+'">'+t[1]+'</button>').join('');
+    document.querySelectorAll('[data-admin-tab]').forEach(btn=>btn.onclick=()=>{activeTab=btn.dataset.adminTab;render()});
+    render();
+  }
+  return { init };
+})();
+AdminSettings.init();
+</script>
+</body>
+</html>

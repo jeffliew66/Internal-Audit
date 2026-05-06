@@ -1,34 +1,9 @@
 {
   "redirects": [
-    {
-      "source": "/",
-      "destination": "/company.html",
-      "permanent": false
-    },
-    {
-      "source": "/index.html",
-      "destination": "/company.html",
-      "permanent": false
-    },
-    {
-      "source": "/dashboard",
-      "destination": "/firm.html",
-      "permanent": false
-    },
-    {
-      "source": "/dashboard/",
-      "destination": "/firm.html",
-      "permanent": false
-    },
-    {
-      "source": "/dashboard.html",
-      "destination": "/firm.html",
-      "permanent": false
-    },
-    {
-      "source": "/Dashboard.html",
-      "destination": "/firm.html",
-      "permanent": false
-    }
+    { "source": "/", "destination": "/dashboard.html", "permanent": false },
+    { "source": "/Dashboard.html", "destination": "/dashboard.html", "permanent": false },
+    { "source": "/dashboard", "destination": "/dashboard.html", "permanent": false },
+    { "source": "/admin-settings", "destination": "/Admin%20master%20settings.html", "permanent": false },
+    { "source": "/ia-settings", "destination": "/IA%20master%20settings.html", "permanent": false }
   ]
 }
