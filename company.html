@@ -4,21 +4,1274 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Aura IA — Company Workspace</title>
+
   <style>
-    body{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#0b1220;color:#e5edf8;margin:0;padding:32px}
-    .card{max-width:760px;margin:40px auto;padding:24px;border:1px solid #2b3854;border-radius:14px;background:#111827}
-    a{color:#38bdf8}
+    :root {
+      --bg: #0b1220;
+      --panel: #111827;
+      --panel2: #172033;
+      --panel3: #1f2a44;
+      --line: #2b3854;
+      --text: #e5edf8;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent2: #818cf8;
+      --radius: 14px;
+      --sidebar: 274px;
+      --top: 62px;
+      --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) 1fr;
+      grid-template-rows: var(--top) 1fr;
+    }
+
+    .topbar {
+      grid-column: 1 / -1;
+      height: var(--top);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(11, 18, 32, .96);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 1px;
+      letter-spacing: 0;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--panel2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .btn.primary {
+      border-color: transparent;
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      color: #fff;
+    }
+
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .btn.small {
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 8px;
+    }
+
+    .btn.danger {
+      border-color: rgba(251,113,133,.45);
+      color: #fecdd3;
+      background: rgba(251,113,133,.08);
+    }
+
+    .sidebar {
+      grid-row: 2;
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #0f172a, #111827);
+      padding: 14px 10px;
+      overflow: auto;
+    }
+
+    .company-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+      border-radius: 14px;
+      padding: 13px;
+      margin-bottom: 14px;
+    }
+
+    .company-card h3 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: -.02em;
+    }
+
+    .company-card p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .nav-section {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      margin: 16px 10px 7px;
+    }
+
+    .nav-section:first-of-type {
+      margin-top: 4px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 11px;
+      margin-bottom: 5px;
+      border: 1px solid transparent;
+      border-radius: 11px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,.035);
+      border-color: rgba(255,255,255,.06);
+    }
+
+    .nav-btn.active {
+      background: rgba(56,189,248,.12);
+      border-color: rgba(56,189,248,.35);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .nav-ico {
+      width: 20px;
+      text-align: center;
+    }
+
+    .nav-count {
+      color: var(--muted);
+      font-size: 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 7px;
+      background: rgba(255,255,255,.025);
+    }
+
+    main {
+      grid-row: 2;
+      overflow: auto;
+      padding: 22px 24px 48px;
+    }
+
+    .client-banner {
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, var(--panel2), var(--panel));
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .client-banner h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -.03em;
+    }
+
+    .client-banner p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .page-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 27px;
+      letter-spacing: -.045em;
+    }
+
+    .subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 920px;
+      line-height: 1.5;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .panel,
+    .card,
+    .setting-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: 0 16px 42px rgba(0,0,0,.12);
+    }
+
+    .panel {
+      padding: 15px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .panel-head span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      padding: 14px;
+      min-height: 92px;
+    }
+
+    .card-label {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .card-value {
+      margin-top: 7px;
+      font-size: 25px;
+      font-weight: 850;
+      letter-spacing: -.04em;
+    }
+
+    .card-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+      min-width: 980px;
+    }
+
+    th,
+    td {
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      color: var(--muted);
+      background: var(--panel2);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover td {
+      background: rgba(255,255,255,.025);
+    }
+
+    td strong {
+      color: #fff;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      font-size: 11px;
+      color: var(--text);
+      background: rgba(255,255,255,.025);
+      white-space: nowrap;
+    }
+
+    .pill.high,
+    .pill.overdue,
+    .pill.critical,
+    .pill.unsatisfactory {
+      border-color: rgba(251,113,133,.45);
+      color: #fecdd3;
+      background: rgba(251,113,133,.07);
+    }
+
+    .pill.medium,
+    .pill.in-progress,
+    .pill.fieldwork,
+    .pill.draft,
+    .pill.needs-improvement,
+    .pill.management-response-due,
+    .pill.partial {
+      border-color: rgba(251,191,36,.45);
+      color: #fde68a;
+      background: rgba(251,191,36,.06);
+    }
+
+    .pill.low,
+    .pill.on-track,
+    .pill.active,
+    .pill.closed,
+    .pill.completed,
+    .pill.final-issued,
+    .pill.satisfactory,
+    .pill.done,
+    .pill.received {
+      border-color: rgba(52,211,153,.42);
+      color: #bbf7d0;
+      background: rgba(52,211,153,.06);
+    }
+
+    .pill.blue,
+    .pill.planning,
+    .pill.open,
+    .pill.not-started,
+    .pill.approved,
+    .pill.pending {
+      border-color: rgba(56,189,248,.45);
+      color: #bae6fd;
+      background: rgba(56,189,248,.08);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .setting-card {
+      padding: 16px;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .setting-card h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .setting-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .setting-card .btn {
+      margin-top: auto;
+      width: fit-content;
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #0f172a;
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    .field textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .subtabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .subtab {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 7px 12px;
+    }
+
+    .subtab.active {
+      color: #fff;
+      border-color: rgba(56,189,248,.45);
+      background: rgba(56,189,248,.12);
+    }
+
+    .engagement-header {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 15px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .engagement-header h1 {
+      font-size: 24px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    @media(max-width:1100px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      main {
+        padding: 18px;
+      }
+
+      .cards {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .grid-2,
+      .grid-3,
+      .settings-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .client-banner,
+      .engagement-header {
+        flex-direction: column;
+      }
+
+      .table-wrap {
+        max-height: none;
+      }
+    }
+
+    @media(max-width:650px) {
+      .topbar {
+        height: auto;
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .page-head {
+        flex-direction: column;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <section class="card">
-    <h1>Company Workspace</h1>
-    <p id="clientInfo">Loading client...</p>
-    <p><a href="dashboard.html">Back to Dashboard</a></p>
-  </section>
-  <script>
-    const id = new URLSearchParams(location.search).get('clientId');
-    document.getElementById('clientInfo').textContent = id ? `Opened workspace for: ${id}` : 'No client selected.';
-  </script>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">IA</div>
+      <div>
+        Aura IA
+        <small>Company workspace</small>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <a class="btn ghost small" href="dashboard.html">← Firm Dashboard</a>
+      <button class="btn ghost small">Export</button>
+      <button class="btn primary small" data-action="open-engagement" data-engagement="procurement">+ New audit</button>
+    </div>
+  </header>
+
+  <aside class="sidebar">
+    <div class="company-card">
+      <h3>Langit Logistics Bhd</h3>
+      <p>Group A · High Risk · Active<br>Lead: Aina Rahman</p>
+    </div>
+
+    <div class="nav-section">Execution</div>
+    <button class="nav-btn active" data-view="engagements">
+      <span class="nav-left"><span class="nav-ico">◆</span>Audit Engagements</span>
+      <span class="nav-count">3</span>
+    </button>
+
+    <div class="nav-section">Planning</div>
+    <button class="nav-btn" data-view="universe">
+      <span class="nav-left"><span class="nav-ico">⌂</span>Audit Universe</span>
+    </button>
+    <button class="nav-btn" data-view="risk">
+      <span class="nav-left"><span class="nav-ico">⚠</span>Risk Assessment</span>
+    </button>
+    <button class="nav-btn" data-view="annualPlan">
+      <span class="nav-left"><span class="nav-ico">☷</span>Annual Audit Plan</span>
+    </button>
+
+    <div class="nav-section">Company-wide Registers</div>
+    <button class="nav-btn" data-view="allFindings">
+      <span class="nav-left"><span class="nav-ico">●</span>All Findings</span>
+      <span class="nav-count">14</span>
+    </button>
+    <button class="nav-btn" data-view="allFollowups">
+      <span class="nav-left"><span class="nav-ico">↻</span>All Follow-ups</span>
+      <span class="nav-count">2</span>
+    </button>
+    <button class="nav-btn" data-view="reportArchive">
+      <span class="nav-left"><span class="nav-ico">▣</span>Report Archive</span>
+    </button>
+
+    <div class="nav-section">Settings</div>
+    <button class="nav-btn" data-view="settings">
+      <span class="nav-left"><span class="nav-ico">⚙</span>Company Settings</span>
+    </button>
+  </aside>
+
+  <main>
+    <section class="client-banner" id="companyBanner">
+      <div>
+        <h2>Langit Logistics Bhd</h2>
+        <p>Transport & Logistics · Group A · High Risk · Active · Lead: Aina Rahman</p>
+      </div>
+      <div class="top-actions">
+        <button class="btn small primary" data-action="open-engagement" data-engagement="procurement">Open active audit</button>
+        <button class="btn small ghost" data-view-shortcut="allFindings">All findings</button>
+        <button class="btn small ghost" data-view-shortcut="allFollowups">All follow-ups</button>
+      </div>
+    </section>
+
+    <section id="engagementsView" class="view active"></section>
+    <section id="universeView" class="view"></section>
+    <section id="riskView" class="view"></section>
+    <section id="annualPlanView" class="view"></section>
+    <section id="allFindingsView" class="view"></section>
+    <section id="allFollowupsView" class="view"></section>
+    <section id="reportArchiveView" class="view"></section>
+    <section id="settingsView" class="view"></section>
+    <section id="engagementDetailView" class="view"></section>
+  </main>
+</div>
+
+<script>
+function esc(v){
+  return String(v ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[ch]));
+}
+
+function slug(v){
+  return String(v || '').toLowerCase().trim().replaceAll(' ','-').replaceAll('/','-');
+}
+
+function pill(v){
+  return '<span class="pill ' + esc(slug(v)) + '">' + esc(v) + '</span>';
+}
+
+function pageTitle(title, sub, actions){
+  return `
+    <section class="page-head">
+      <div>
+        <h1>${esc(title)}</h1>
+        <p class="subtitle">${esc(sub)}</p>
+      </div>
+      <div class="top-actions">${actions || ''}</div>
+    </section>
+  `;
+}
+
+function tablePanel(title, note, headers, rows, actions){
+  return `
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>${esc(title)}</h2>
+          <span>${esc(note)}</span>
+        </div>
+        <div class="top-actions">${actions || '<button class="btn primary small">+ Add</button>'}</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>${headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                ${row.map((cell, i) => `
+                  <td>${i === 0 ? '<strong>' : ''}${cell}${i === 0 ? '</strong>' : ''}</td>
+                `).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+function cardRow(items){
+  return `
+    <section class="cards">
+      ${items.map(item => `
+        <div class="card">
+          <div class="card-label">${esc(item[0])}</div>
+          <div class="card-value">${esc(item[1])}</div>
+          <div class="card-note">${esc(item[2])}</div>
+        </div>
+      `).join('')}
+    </section>
+  `;
+}
+
+function formPanel(title, note, fields){
+  return `
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>${esc(title)}</h2>
+          <span>${esc(note)}</span>
+        </div>
+        <button class="btn primary small">Save</button>
+      </div>
+
+      <div class="form-grid">
+        ${fields.map(field => {
+          const [label, type, value] = field;
+
+          if(type === 'textarea'){
+            return `
+              <div class="field">
+                <label>${esc(label)}</label>
+                <textarea>${esc(value)}</textarea>
+              </div>
+            `;
+          }
+
+          if(type === 'select'){
+            return `
+              <div class="field">
+                <label>${esc(label)}</label>
+                <select>
+                  ${value.map(v => `<option>${esc(v)}</option>`).join('')}
+                </select>
+              </div>
+            `;
+          }
+
+          return `
+            <div class="field">
+              <label>${esc(label)}</label>
+              <input value="${esc(value)}">
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function cards(items){
+  return `
+    <section class="settings-grid">
+      ${items.map(item => `
+        <article class="setting-card">
+          <h3>${esc(item[0])}</h3>
+          <p>${esc(item[1])}</p>
+          <button class="btn small ghost">Open</button>
+        </article>
+      `).join('')}
+    </section>
+  `;
+}
+
+const Data = {
+  universe: [
+    ['Procurement','Operations','Head of Procurement','High','Weak','High','Annual','2026 Q1'],
+    ['IT Access Management','Technology','CTO','High','Moderate','High','Annual','2026 Q2'],
+    ['Payroll','HR / Finance','HR Director','Medium','Moderate','Medium','2 years','2026 Q3'],
+    ['Inventory & Warehouse','Operations','Warehouse Manager','Medium','Weak','High','Annual','2026 Q2'],
+    ['Finance Closing','Finance','Finance Controller','Medium','Strong','Low','2 years','2027 Q1']
+  ],
+  risks: [
+    ['Procurement','Fraud','Bribery or kickback in vendor selection','5 × 5','25','Weak','High','Include in annual plan'],
+    ['Procurement','Fraud','Fake vendor created in vendor master','4 × 5','20','Weak','High','Full-cycle testing'],
+    ['IT Access Management','Data','Unauthorized access to finance system','4 × 5','20','Moderate','High','Audit in Q2'],
+    ['Payroll','Financial','Ghost employee or unauthorized salary change','3 × 4','12','Moderate','Medium','Audit every 2 years']
+  ],
+  annualPlan: [
+    ['Procurement Process Audit','Procurement','High','Q1 2026','22 days','Approved','High bribery and fake vendor risk','procurement'],
+    ['IT Access Control Review','IT Access Management','High','Q2 2026','18 days','Approved','Sensitive system access risk','itaccess'],
+    ['Inventory & Warehouse Audit','Inventory & Warehouse','High','Q2 2026','16 days','Proposed','Weak stock controls','inventory'],
+    ['Payroll Control Review','Payroll','Medium','Q3 2026','12 days','Proposed','Medium residual risk','payroll']
+  ],
+  engagements: [
+    {id:'procurement',code:'IA-2026-001',title:'Procurement Process Audit',phase:'Fieldwork',risk:'High',owner:'Aina Rahman',progress:'62%',target:'15 Feb 2026'},
+    {id:'itaccess',code:'IA-2026-002',title:'IT Access Control Review',phase:'Planning',risk:'High',owner:'Jason Tan',progress:'20%',target:'10 May 2026'},
+    {id:'inventory',code:'IA-2026-003',title:'Inventory & Warehouse Audit',phase:'Not started',risk:'High',owner:'Priya Dev',progress:'0%',target:'30 Jun 2026'}
+  ],
+  pbc: [
+    ['Procurement policy','Procurement Manager','Received','Define audit criteria','2026-01-10'],
+    ['Vendor master listing','Finance','Received','Sample selection','2026-01-12'],
+    ['PO listing Jan–Dec 2025','Procurement','Pending','Transaction testing','2026-01-15'],
+    ['Quotation comparison sheets','Procurement','Partial','Tender testing','2026-01-18'],
+    ['Conflict of interest declarations','HR / Procurement','Pending','Related-party check','2026-01-20']
+  ],
+  fieldwork: [
+    ['Vendor onboarding','Select 25 vendors and verify approval, registration, bank verification','In progress','12/25 complete'],
+    ['Quotation control','Test purchases above threshold for quotation comparison','Planned','Sample prepared'],
+    ['Split purchase analysis','Analyze repeated same-vendor purchases below approval threshold','Done','2 exceptions noted'],
+    ['3-way match','Match PO, GRN, invoice and payment approval','In progress','18/35 complete']
+  ],
+  findings: [
+    ['Procurement Process Audit','Vendor onboarding approval not consistently performed','Procurement','High','Open','Head of Procurement','30 Apr 2026'],
+    ['Procurement Process Audit','Potential split purchases below approval threshold','Procurement','Medium','Management response due','Procurement Manager','15 Mar 2026'],
+    ['IT Access Control Review','Privileged access review not evidenced','Technology','High','Not started','CTO','15 Jun 2026'],
+    ['Payroll Control Review','Leaver checklist not completed before payroll cut-off','HR / Finance','Low','Closed','HR Manager','31 Jan 2026']
+  ],
+  reports: [
+    ['Procurement Process Audit Report','Procurement Process Audit','Draft','Needs improvement','—','Audit manager review'],
+    ['IT Access Control Review Report','IT Access Control Review','Not started','—','—','Pending fieldwork'],
+    ['Payroll Control Review Report','Payroll Control Review','Final issued','Satisfactory','08 Feb 2026','Closed']
+  ]
+};
+
+const EngagementTabs = ['overview','planning','rcm','pbc','fieldwork','findings','report','responses','followup','closure'];
+
+const EngagementTabLabels = {
+  overview:'Overview',
+  planning:'Planning Memo',
+  rcm:'Risk Control Matrix',
+  pbc:'PBC Requests',
+  fieldwork:'Fieldwork',
+  findings:'Findings',
+  report:'Report',
+  responses:'Management Responses',
+  followup:'Follow-up',
+  closure:'Closure'
+};
+
+let currentEngagementId = 'procurement';
+let currentEngagementTab = 'overview';
+
+/** Matches demo clients on dashboard.html when opened via company.html?clientId=… */
+const CLIENT_BY_ID = {
+  'langit-logistics': { name: 'Langit Logistics Bhd', group: 'Group A', industry: 'Transport & Logistics', risk: 'High', status: 'Active', lead: 'Aina Rahman' },
+  'bay-fintech': { name: 'Bay Fintech Sdn Bhd', group: 'Group A', industry: 'Financial Services', risk: 'High', status: 'Active', lead: 'Jason Tan' },
+  'meranti-retail': { name: 'Meranti Retail Group', group: 'Group B', industry: 'Retail', risk: 'Medium', status: 'Active', lead: 'Priya Dev' },
+  'nusa-healthcare': { name: 'Nusa Healthcare Network', group: 'Group B', industry: 'Healthcare', risk: 'Medium', status: 'Active', lead: 'Aina Rahman' },
+  'satria-manufacturing': { name: 'Satria Manufacturing Sdn Bhd', group: 'Group C', industry: 'Manufacturing', risk: 'Low', status: 'Onboarding', lead: 'Jason Tan' },
+  'tanjung-foods': { name: 'Tanjung Foods Group', group: 'Group C', industry: 'FMCG', risk: 'Medium', status: 'Active', lead: 'Mei Wong' },
+  'kemuning-energy': { name: 'Kemuning Energy Berhad', group: 'High Priority', industry: 'Energy', risk: 'High', status: 'Active', lead: 'Aina Rahman' }
+};
+
+function applyClientFromUrl(){
+  const id = new URLSearchParams(location.search).get('clientId');
+  if (!id) return;
+  const c = CLIENT_BY_ID[id];
+  const title = c ? c.name : id.replace(/-/g, ' ').replace(/\b\w/g, function (ch) { return ch.toUpperCase(); });
+  document.querySelector('.company-card h3').textContent = title;
+  document.querySelector('.company-card p').innerHTML = c
+    ? (esc(c.group) + ' · ' + esc(c.risk) + ' Risk · ' + esc(c.status) + '<br>Lead: ' + esc(c.lead))
+    : ('New client workspace<br><span class="muted">Id: ' + esc(id) + '</span>');
+  document.querySelector('#companyBanner h2').textContent = title;
+  document.querySelector('#companyBanner p').textContent = c
+    ? (c.industry + ' · ' + c.group + ' · ' + c.risk + ' Risk · ' + c.status + ' · Lead: ' + c.lead)
+    : ('Client id: ' + id);
+  document.title = 'Aura IA — ' + title;
+}
+
+function renderEngagements(){
+  document.getElementById('engagementsView').innerHTML =
+    pageTitle(
+      'Audit Engagements',
+      'This is the default company workspace page. Open an engagement to perform planning, PBC, fieldwork, findings, report, follow-up, and closure.',
+      '<button class="btn primary small" data-action="open-engagement" data-engagement="procurement">+ New engagement</button>'
+    ) +
+    cardRow([
+      ['Active engagements','3','Current audit jobs'],
+      ['In fieldwork','1','Currently testing'],
+      ['High-risk audits','3','Priority audits'],
+      ['Open findings','14','Across engagements']
+    ]) +
+    tablePanel(
+      'Audit engagements',
+      'Open an audit engagement for detailed audit work',
+      ['Code','Audit','Phase','Risk','Owner','Progress','Target',''],
+      Data.engagements.map(e => [
+        e.code,
+        e.title,
+        pill(e.phase),
+        pill(e.risk),
+        e.owner,
+        e.progress,
+        e.target,
+        '<button class="btn primary small" data-action="open-engagement" data-engagement="'+e.id+'">Open</button>'
+      ]),
+      ''
+    );
+}
+
+function renderUniverse(){
+  document.getElementById('universeView').innerHTML =
+    pageTitle('Audit Universe','Company-wide auditable areas. This is not an engagement workpaper.') +
+    tablePanel(
+      'Company audit universe',
+      'Areas to assess and audit',
+      ['Area','Department','Owner','Inherent','Controls','Residual','Frequency','Next audit'],
+      Data.universe.map(r => [r[0],r[1],r[2],pill(r[3]),pill(r[4]),pill(r[5]),r[6],r[7]])
+    );
+}
+
+function renderRisk(){
+  document.getElementById('riskView').innerHTML =
+    pageTitle('Risk Assessment','Company-wide risk assessment used to decide the annual audit plan.') +
+    tablePanel(
+      'Risk and control assessment',
+      'Risk scoring evidence for annual plan',
+      ['Area','Category','Risk','L × I','Inherent','Controls','Residual','Audit response'],
+      Data.risks.map(r => [r[0],r[1],r[2],r[3],r[4],pill(r[5]),pill(r[6]),r[7]])
+    );
+}
+
+function renderAnnualPlan(){
+  document.getElementById('annualPlanView').innerHTML =
+    pageTitle('Annual Audit Plan','Company-level risk-based plan. Opening a planned audit creates/opens the engagement workspace.') +
+    tablePanel(
+      '2026 annual audit plan',
+      'Selected audits, timing, resources and rationale',
+      ['Audit','Area','Priority','Quarter','Days','Status','Reason',''],
+      Data.annualPlan.map(r => [
+        r[0],
+        r[1],
+        pill(r[2]),
+        r[3],
+        r[4],
+        pill(r[5]),
+        r[6],
+        '<button class="btn primary small" data-action="open-engagement" data-engagement="'+r[7]+'">Open</button>'
+      ])
+    );
+}
+
+function renderAllFindings(){
+  document.getElementById('allFindingsView').innerHTML =
+    pageTitle('All Findings','Company-wide register across all engagements. Detailed finding work belongs inside each engagement.') +
+    tablePanel(
+      'All findings',
+      'Summary only. Open the engagement for detailed finding work.',
+      ['Engagement','Finding','Department','Severity','Status','Owner','Due date'],
+      Data.findings.map(r => [r[0],r[1],r[2],pill(r[3]),pill(r[4]),r[5],r[6]])
+    );
+}
+
+function renderAllFollowups(){
+  document.getElementById('allFollowupsView').innerHTML =
+    pageTitle('All Follow-ups','Company-wide follow-up overview across all engagements. Detailed remediation work belongs inside each engagement.') +
+    tablePanel(
+      'Follow-up overview',
+      'Summary of open and overdue action plans',
+      ['Engagement','Finding','Owner','Due date','Status','Evidence','IA validation'],
+      [
+        ['Procurement Process Audit','Vendor onboarding approval not performed','Head of Procurement','30 Apr 2026',pill('Overdue'),'Not submitted','Pending'],
+        ['Procurement Process Audit','Split purchase monitoring weak','Procurement Manager','15 Mar 2026',pill('Overdue'),'Exception report draft uploaded','Reviewing'],
+        ['IT Access Control Review','Privileged access review not evidenced','CTO','15 Jun 2026',pill('Open'),'Not submitted','Pending']
+      ]
+    );
+}
+
+function renderReportArchive(){
+  document.getElementById('reportArchiveView').innerHTML =
+    pageTitle('Report Archive','Company-wide report archive across all engagements. Drafting and approval happen inside each engagement.') +
+    tablePanel(
+      'Reports archive',
+      'Draft and final internal audit reports',
+      ['Report','Audit','Status','Overall rating','Issue date','Notes'],
+      Data.reports.map(r => [r[0],r[1],pill(r[2]),pill(r[3]),r[4],r[5]])
+    );
+}
+
+function renderSettings(){
+  document.getElementById('settingsView').innerHTML =
+    pageTitle('Company Settings','Client-specific profile and workspace defaults.') +
+    formPanel('Company profile','Settings specific to this client workspace',[
+      ['Company legal name','input','Langit Logistics Bhd'],
+      ['Industry','input','Transport & Logistics'],
+      ['Client group','select',['Group A','Group B','Group C','High Priority']],
+      ['Risk tier','select',['High','Medium','Low']],
+      ['Relationship lead','input','Aina Rahman'],
+      ['Financial year end','input','31 Dec']
+    ]) +
+    cards([
+      ['Users & access','Manage client-side users and firm team access.'],
+      ['Imported templates','View templates copied from Internal Audit Settings.'],
+      ['Workspace archive','Archive completed audits and closed findings.']
+    ]);
+}
+
+function renderEngagementDetail(){
+  const e = Data.engagements.find(x => x.id === currentEngagementId) || Data.engagements[0];
+  let content = '';
+
+  if(currentEngagementTab === 'overview'){
+    content =
+      cardRow([
+        ['Phase',e.phase,'Current engagement status'],
+        ['Risk',e.risk,'Engagement priority'],
+        ['Progress',e.progress,'Workpaper completion'],
+        ['Target',e.target,'Planned completion']
+      ]) +
+      formPanel('Engagement summary','Basic engagement information',[
+        ['Audit title','input',e.title],
+        ['Audit code','input',e.code],
+        ['Owner','input',e.owner],
+        ['Risk rating','select',['High','Medium','Low']],
+        ['Objective','textarea','Assess whether procurement activities are properly approved, transparent, competitive, and protected against fraud and conflict of interest.'],
+        ['Scope','textarea','Vendor onboarding, quotation/tender, PO approval, goods received, invoice matching, and payment approval.']
+      ]);
+  }
+
+  if(currentEngagementTab === 'planning'){
+    content = formPanel('Planning memo','Engagement-level planning document',[
+      ['Background','textarea','Procurement was selected due to high residual fraud and bribery risk, high spending volume, many vendors, and weak vendor master controls.'],
+      ['Audit objective','textarea','Assess whether procurement controls are designed and operating effectively.'],
+      ['Scope period','input','1 Jan 2025 to 31 Dec 2025'],
+      ['Out of scope','input','Inventory usage and supplier performance evaluation'],
+      ['Team','input','Audit Manager, Senior Auditor, Data Analyst'],
+      ['Deliverables','input','Draft report, final IA report, follow-up tracker']
+    ]);
+  }
+
+  if(currentEngagementTab === 'rcm'){
+    content = tablePanel(
+      'Risk Control Matrix',
+      'Risk, control, test and conclusion for this engagement',
+      ['Risk','Expected control','Control owner','Test procedure','Result','Conclusion'],
+      [
+        ['Fake vendor created','New vendor must be approved and independently verified','Procurement Manager','Select new vendors and check approval, registration, bank verification','In progress','Pending'],
+        ['Bribery / favoritism','Purchases above threshold require quotation comparison','Tender Committee','Review sample of purchases above threshold','Exception noted','Control ineffective'],
+        ['Split purchase','Detect repeated purchases below threshold','Finance Controller','Run split-purchase data analysis','2 exceptions','Further review'],
+        ['Payment for undelivered goods','3-way match before payment','Accounts Payable','Inspect PO, GRN, invoice and payment approval','In progress','Pending']
+      ]
+    );
+  }
+
+  if(currentEngagementTab === 'pbc'){
+    content = tablePanel(
+      'PBC / Document Requests',
+      'Documents requested from the auditee for this engagement',
+      ['Document','Provided by','Status','Purpose','Due'],
+      Data.pbc.map(r => [r[0],r[1],pill(r[2]),r[3],r[4]])
+    );
+  }
+
+  if(currentEngagementTab === 'fieldwork'){
+    content = tablePanel(
+      'Fieldwork / Workpapers',
+      'Detailed procedures and testing status',
+      ['Area','Procedure','Status','Result'],
+      Data.fieldwork.map(r => [r[0],r[1],pill(r[2]),r[3]])
+    );
+  }
+
+  if(currentEngagementTab === 'findings'){
+    content = tablePanel(
+      'Engagement Findings',
+      'Findings created from this engagement',
+      ['Finding','Department','Severity','Status','Owner','Due date'],
+      Data.findings.filter(r => r[0] === e.title).map(r => [r[1],r[2],pill(r[3]),pill(r[4]),r[5],r[6]])
+    );
+  }
+
+  if(currentEngagementTab === 'report'){
+    content =
+      formPanel('Draft Report','Report drafting belongs inside the engagement',[
+        ['Executive summary','textarea','Procurement controls require improvement. Key issues noted in vendor onboarding approval and split-purchase monitoring.'],
+        ['Overall rating','select',['Needs improvement','Satisfactory','Unsatisfactory']],
+        ['Distribution','input','CEO, CFO, COO, Audit Committee'],
+        ['Report status','select',['Draft','Sent for management response','Final issued']]
+      ]) +
+      tablePanel(
+        'Findings selected for report',
+        'Included in draft report',
+        ['Finding','Rating','Include?'],
+        [
+          ['Vendor onboarding approval not consistently performed',pill('High'),'Yes'],
+          ['Potential split purchases below approval threshold',pill('Medium'),'Yes']
+        ]
+      );
+  }
+
+  if(currentEngagementTab === 'responses'){
+    content = tablePanel(
+      'Management Responses',
+      'Action plans provided by management for this engagement',
+      ['Finding','Management response','Action owner','Due date','Status'],
+      [
+        ['Vendor onboarding approval not performed','Agree. Implement system-enforced approval workflow.','Head of Procurement','30 Apr 2026',pill('Open')],
+        ['Split purchase monitoring weak','Agree. Configure monthly exception report.','Procurement Manager','15 Mar 2026',pill('In progress')]
+      ]
+    );
+  }
+
+  if(currentEngagementTab === 'followup'){
+    content = tablePanel(
+      'Follow-up',
+      'Remediation tracking for this engagement',
+      ['Finding','Owner','Due date','Status','Evidence','IA validation'],
+      [
+        ['Vendor onboarding approval not performed','Head of Procurement','30 Apr 2026',pill('Overdue'),'Not submitted','Pending'],
+        ['Split purchase monitoring weak','Procurement Manager','15 Mar 2026',pill('Overdue'),'Exception report draft uploaded','Reviewing']
+      ]
+    );
+  }
+
+  if(currentEngagementTab === 'closure'){
+    content = tablePanel(
+      'Closure Validation',
+      'Close findings only after evidence is reviewed',
+      ['Finding','Evidence reviewed','Reviewer','Decision','Closure date'],
+      [
+        ['Vendor onboarding approval not performed','Not yet submitted','Aina Rahman',pill('Open'),'—'],
+        ['Split purchase monitoring weak','Exception report draft uploaded','Aina Rahman',pill('In progress'),'—']
+      ]
+    );
+  }
+
+  document.getElementById('engagementDetailView').innerHTML =
+    '<section class="engagement-header">' +
+      '<div>' +
+        '<h1>' + esc(e.title) + '</h1>' +
+        '<p class="subtitle">' + esc(e.code) + ' · ' + esc(e.phase) + ' · ' + esc(e.risk) + ' risk · Owner: ' + esc(e.owner) + '</p>' +
+      '</div>' +
+      '<div class="top-actions">' +
+        '<button class="btn ghost small" data-view-shortcut="engagements">← Back to engagements</button>' +
+        '<button class="btn primary small">+ Add finding</button>' +
+      '</div>' +
+    '</section>' +
+    '<div class="subtabs">' +
+      EngagementTabs.map(t => '<button class="subtab ' + (currentEngagementTab === t ? 'active' : '') + '" data-eng-tab="' + t + '">' + EngagementTabLabels[t] + '</button>').join('') +
+    '</div>' +
+    content;
+}
+
+function showView(view){
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById(view + 'View').classList.add('active');
+
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.view === view);
+  });
+
+  if(view === 'engagementDetail'){
+    document.querySelectorAll('[data-view]').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.view === 'engagements');
+    });
+  }
+}
+
+function openEngagement(id){
+  currentEngagementId = id || 'procurement';
+  currentEngagementTab = 'overview';
+  renderEngagementDetail();
+  showView('engagementDetail');
+}
+
+function wire(){
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.onclick = () => showView(btn.dataset.view);
+  });
+
+  document.body.addEventListener('click', function(e){
+    const openBtn = e.target.closest('[data-action="open-engagement"]');
+    if(openBtn) {
+      openEngagement(openBtn.dataset.engagement);
+    }
+
+    const shortcut = e.target.closest('[data-view-shortcut]');
+    if(shortcut) {
+      showView(shortcut.dataset.viewShortcut);
+    }
+
+    const tab = e.target.closest('[data-eng-tab]');
+    if(tab) {
+      currentEngagementTab = tab.dataset.engTab;
+      renderEngagementDetail();
+    }
+  });
+}
+
+function init(){
+  applyClientFromUrl();
+  renderEngagements();
+  renderUniverse();
+  renderRisk();
+  renderAnnualPlan();
+  renderAllFindings();
+  renderAllFollowups();
+  renderReportArchive();
+  renderSettings();
+  renderEngagementDetail();
+  wire();
+}
+
+init();
+</script>
 </body>
 </html>
