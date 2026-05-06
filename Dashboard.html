@@ -540,6 +540,7 @@
     </div>
     <div class="top-actions">
       <input class="search" id="globalSearch" placeholder="Search client, industry, audit, finding..." />
+      <a class="btn ghost small" href="/" title="Single-client internal audit lifecycle workspace">IA workspace</a>
       <button class="btn ghost small" id="resetDemoBtn">Reset demo</button>
       <button class="btn primary small" id="addClientBtn">+ Add client</button>
     </div>
@@ -564,7 +565,7 @@ function defaultClients() {
       riskTier: 'High',
       status: 'Active',
       contract: 'Retainer',
-      workspaceUrl: 'index.html?clientId=langit-logistics',
+      workspaceUrl: '/index.html?clientId=langit-logistics',
       activeAudits: 3,
       plannedAudits: 5,
       openFindings: 14,
@@ -589,7 +590,7 @@ function defaultClients() {
       riskTier: 'High',
       status: 'Active',
       contract: 'Project-based',
-      workspaceUrl: 'index.html?clientId=bay-fintech',
+      workspaceUrl: '/index.html?clientId=bay-fintech',
       activeAudits: 2,
       plannedAudits: 4,
       openFindings: 9,
@@ -614,7 +615,7 @@ function defaultClients() {
       riskTier: 'Medium',
       status: 'Active',
       contract: 'Retainer',
-      workspaceUrl: 'index.html?clientId=meranti-retail',
+      workspaceUrl: '/index.html?clientId=meranti-retail',
       activeAudits: 1,
       plannedAudits: 3,
       openFindings: 6,
@@ -638,7 +639,7 @@ function defaultClients() {
       riskTier: 'Medium',
       status: 'Active',
       contract: 'Retainer',
-      workspaceUrl: 'index.html?clientId=nusa-healthcare',
+      workspaceUrl: '/index.html?clientId=nusa-healthcare',
       activeAudits: 2,
       plannedAudits: 6,
       openFindings: 11,
@@ -662,7 +663,7 @@ function defaultClients() {
       riskTier: 'Low',
       status: 'Onboarding',
       contract: 'Project-based',
-      workspaceUrl: 'index.html?clientId=satria-manufacturing',
+      workspaceUrl: '/index.html?clientId=satria-manufacturing',
       activeAudits: 0,
       plannedAudits: 2,
       openFindings: 0,
@@ -1091,7 +1092,7 @@ function addClient() {
     riskTier: 'Medium',
     status: 'Onboarding',
     contract: 'Project-based',
-    workspaceUrl: `index.html?clientId=${id}`,
+    workspaceUrl: `/index.html?clientId=${id}`,
     activeAudits: 0,
     plannedAudits: 0,
     openFindings: 0,

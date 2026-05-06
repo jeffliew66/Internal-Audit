@@ -113,6 +113,7 @@
     .btn.primary { border-color: transparent; background: linear-gradient(135deg, #0ea5e9, #6366f1); color: white; }
     .btn.ghost { background: transparent; }
     .btn.small { font-size: 12px; padding: 5px 8px; border-radius: 8px; }
+    a.btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
 
     .kpis { display: grid; grid-template-columns: repeat(6, minmax(130px, 1fr)); gap: 12px; margin-bottom: 18px; }
     @media (max-width: 1180px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
@@ -203,6 +204,7 @@
     <div class="brand"><div class="brand-mark">IA</div><div>Aura IA<small>Internal audit lifecycle workspace</small></div></div>
     <div class="top-actions">
       <input class="search" placeholder="Search audit area, finding, owner, report..." />
+      <a class="btn ghost small" href="/dashboard.html" title="Multi-client portfolio for the IA firm">Firm portfolio</a>
       <button class="btn ghost small">Export</button>
       <button class="btn primary small">+ New audit</button>
     </div>
