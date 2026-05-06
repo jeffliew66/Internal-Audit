@@ -50,6 +50,8 @@
     }
 
     .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.02em; }
+    a.brand-link { text-decoration: none; color: inherit; cursor: pointer; border-radius: 12px; outline-offset: 4px; }
+    a.brand-link:hover .brand-mark { filter: brightness(1.08); }
     .brand-mark {
       width: 34px; height: 34px; border-radius: 10px;
       display: grid; place-items: center;
@@ -201,10 +203,12 @@
 <body>
 <div class="app">
   <header class="topbar">
-    <div class="brand"><div class="brand-mark">IA</div><div>Aura IA<small>Internal audit lifecycle workspace</small></div></div>
+    <a href="/dashboard.html" class="brand brand-link" title="Firm portfolio dashboard">
+      <div class="brand-mark">IA</div>
+      <div>Aura IA<small>Internal audit lifecycle workspace</small></div>
+    </a>
     <div class="top-actions">
       <input class="search" placeholder="Search audit area, finding, owner, report..." />
-      <a class="btn ghost small" href="/dashboard.html" title="Multi-client portfolio for the IA firm">Firm portfolio</a>
       <button class="btn ghost small">Export</button>
       <button class="btn primary small">+ New audit</button>
     </div>
@@ -215,6 +219,11 @@
 </div>
 
 <script>
+try {
+  var __cid = new URLSearchParams(location.search).get('clientId');
+  if (__cid) sessionStorage.setItem('aura_ia_client_id', __cid);
+} catch (e) {}
+
 const state = {
   view: 'dashboard',
   engagementTab: 'overview',
