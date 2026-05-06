@@ -3,2597 +3,443 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aura Audit — Interactive Workspace</title>
+  <title>Aura IA — Internal Audit Workspace</title>
   <style>
     :root {
-      --bg: #0f1419;
-      --panel: #161d26;
-      --panel2: #1c2530;
-      --border: #2a3544;
-      --text: #e8eef6;
+      --bg: #0b1220;
+      --surface: #111827;
+      --surface-2: #172033;
+      --surface-3: #1f2a44;
+      --line: #2b3854;
+      --text: #e5edf8;
       --muted: #94a3b8;
+      --soft: #cbd5e1;
       --accent: #38bdf8;
-      --accent2: #818cf8;
-      --danger: #f87171;
-      --ok: #34d399;
-      --top-h: 52px;
-      --sidebar-w: 240px;
-      --radius: 10px;
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --accent-2: #818cf8;
+      --good: #34d399;
+      --warn: #fbbf24;
+      --bad: #fb7185;
+      --critical: #ef4444;
+      --sidebar: 264px;
+      --top: 56px;
+      --radius: 14px;
+      --font: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; font-family: var(--font); background: var(--bg); color: var(--text); }
-    a { color: var(--accent); text-decoration: none; }
-    button, input, select, textarea { font: inherit; color: inherit; }
-    button {
-      cursor: pointer; border: 1px solid var(--border); background: var(--panel2);
-      border-radius: 8px; padding: 8px 12px;
-    }
-    button.primary { background: linear-gradient(135deg, #0ea5e9, #6366f1); border-color: transparent; color: #fff; }
-    button.ghost { background: transparent; border-color: var(--border); }
-    button.danger { border-color: rgba(248,113,113,.45); color: #fecaca; background: rgba(248,113,113,.08); }
-    button.small { padding: 4px 8px; font-size: 12px; border-radius: 6px; }
-    input, select, textarea {
-      width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border);
-      background: #0b1118; color: var(--text);
-    }
-    textarea { min-height: 88px; resize: vertical; }
-    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    .field { margin-bottom: 12px; }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
 
-    #app {
-      display: grid;
-      grid-template-columns: var(--sidebar-w) 1fr;
-      grid-template-rows: var(--top-h) 1fr;
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+
+    .app {
       height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar) 1fr;
+      grid-template-rows: var(--top) 1fr;
     }
+
     .topbar {
       grid-column: 1 / -1;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; border-bottom: 1px solid var(--border); background: rgba(15,20,25,.92); backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(11,18,32,.94);
+      backdrop-filter: blur(10px);
     }
-    .brand { font-weight: 700; letter-spacing: .02em; }
-    .brand span { color: var(--muted); font-weight: 500; margin-left: 8px; font-size: 13px; }
+
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.02em; }
+    .brand-mark {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 10px 30px rgba(56,189,248,.22);
+    }
+    .brand small { display: block; color: var(--muted); font-weight: 500; font-size: 12px; margin-top: 1px; }
+
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .search {
+      min-width: 280px;
+      border: 1px solid var(--line);
+      background: #0f172a;
+      border-radius: 999px;
+      padding: 9px 12px;
+      color: var(--soft);
+    }
+
     .sidebar {
       grid-row: 2;
-      border-right: 1px solid var(--border);
-      background: var(--panel);
-      padding: 12px;
+      border-right: 1px solid var(--line);
+      background: linear-gradient(180deg, #0f172a, #111827);
+      padding: 16px 12px;
       overflow: auto;
     }
+
+    .nav-section { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .12em; margin: 18px 10px 8px; }
+    .nav-section:first-child { margin-top: 4px; }
     .nav-btn {
-      width: 100%; text-align: left; margin-bottom: 6px;
-      display: flex; align-items: center; gap: 8px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      margin-bottom: 5px;
+      border: 1px solid transparent;
+      border-radius: 10px;
       background: transparent;
+      color: var(--soft);
+      text-align: left;
     }
-    .nav-btn.active { background: rgba(56,189,248,.12); border-color: rgba(56,189,248,.35); }
-    main {
-      grid-row: 2;
-      overflow: auto;
-      padding: 18px 20px 40px;
-    }
-    .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
-    .page-head h1 { margin: 0; font-size: 22px; }
-    .muted { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .nav-btn:hover { background: rgba(255,255,255,.035); border-color: rgba(255,255,255,.06); }
+    .nav-btn.active { background: rgba(56,189,248,.12); border-color: rgba(56,189,248,.3); color: white; }
+    .nav-ico { width: 22px; text-align: center; opacity: .95; }
 
-    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 18px; }
-    .card {
-      background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px;
-    }
-    .card h3 { margin: 0 0 6px; font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
-    .stat { font-size: 26px; font-weight: 700; }
+    main { grid-row: 2; overflow: auto; padding: 22px 26px 48px; }
 
-    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+    .page-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 18px; }
+    .title h1 { margin: 0; font-size: 26px; letter-spacing: -.03em; }
+    .title p { margin: 6px 0 0; color: var(--muted); font-size: 14px; max-width: 800px; }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
-    table.data {
-      width: 100%; border-collapse: collapse; font-size: 13px;
-      background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    .btn {
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 8px 12px;
     }
-    table.data th, table.data td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-    table.data th { text-align: left; color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; background: var(--panel2); }
-    table.data tr:last-child td { border-bottom: none; }
-    table.data tr:hover td { background: rgba(255,255,255,.02); }
+    .btn.primary { border-color: transparent; background: linear-gradient(135deg, #0ea5e9, #6366f1); color: white; }
+    .btn.ghost { background: transparent; }
+    .btn.small { font-size: 12px; padding: 5px 8px; border-radius: 8px; }
 
-    .pill {
-      display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; border: 1px solid var(--border); color: var(--muted);
-    }
-    .pill.high { border-color: rgba(248,113,113,.45); color: #fecaca; }
-    .pill.medium { border-color: rgba(251,191,36,.45); color: #fde68a; }
-    .pill.low { border-color: rgba(52,211,153,.45); color: #a7f3d0; }
+    .kpis { display: grid; grid-template-columns: repeat(6, minmax(130px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    @media (max-width: 1180px) { .kpis { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 680px) { .app { grid-template-columns: 1fr; } .sidebar { display: none; } main { padding: 16px; } .search { display: none; } .kpis { grid-template-columns: 1fr 1fr; } }
 
-    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-    .tab {
-      padding: 8px 12px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--muted);
+    .kpi, .panel, .card {
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: 0 16px 40px rgba(0,0,0,.12);
     }
-    .tab.active { border-color: var(--border); background: var(--panel2); color: var(--text); }
+    .kpi { padding: 15px; min-height: 96px; }
+    .kpi .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+    .kpi .value { margin-top: 8px; font-size: 28px; font-weight: 800; letter-spacing: -.04em; }
+    .kpi .note { margin-top: 4px; color: var(--muted); font-size: 12px; }
 
-    .tabs.client-hub-pills {
-      border-bottom: none; padding-bottom: 0; margin-top: 2px; margin-bottom: 14px; gap: 8px;
-    }
-    .tabs.client-hub-pills .tab {
-      border-radius: 999px; border-color: var(--border); background: var(--panel2); font-size: 12px; padding: 7px 14px;
-    }
-    .tabs.client-hub-pills .tab.active {
-      border-color: rgba(56,189,248,.5); background: rgba(56,189,248,.12); color: var(--text);
-    }
+    .grid-2 { display: grid; grid-template-columns: 1.25fr .75fr; gap: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    @media (max-width: 980px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
-    .rail-layout { display: grid; grid-template-columns: 220px 1fr; gap: 18px; align-items: start; }
-    @media (max-width: 980px) { .rail-layout { grid-template-columns: 1fr; } }
-    .rail {
-      position: sticky; top: 12px;
-      border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); padding: 8px;
-    }
-    .rail button {
-      width: 100%; text-align: left; margin-bottom: 4px; background: transparent;
-    }
-    .rail button.active { background: rgba(129,140,248,.14); border-color: rgba(129,140,248,.35); }
+    .panel { padding: 16px; margin-bottom: 14px; }
+    .panel-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .panel-title h2 { margin: 0; font-size: 15px; letter-spacing: -.01em; }
+    .panel-title span { color: var(--muted); font-size: 12px; }
 
-    .section-panel {
-      border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); padding: 16px; margin-bottom: 14px;
-    }
-    .section-panel h2 { margin: 0 0 12px; font-size: 15px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--muted); background: var(--surface-2); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; white-space: nowrap; }
+    tr:last-child td { border-bottom: none; }
+    td strong { color: white; }
+    .muted { color: var(--muted); }
 
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center;
-      padding: 16px; z-index: 50;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal {
-      width: min(560px, 100%); max-height: 90vh; overflow: auto;
-      background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 16px;
-      box-shadow: 0 24px 80px rgba(0,0,0,.45);
-    }
-    .modal.modal-wide { width: min(840px, 100%); }
-    .table-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
-    .table-scroll table.data { margin: 0; border-radius: 0; border: none; }
-    .pill-warn { border-color: rgba(251,191,36,.55); color: #fde68a; }
-    .pill-urgent { border-color: rgba(248,113,113,.55); color: #fecaca; }
-    .nav-section-label {
-      font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--muted);
-      margin: 14px 8px 6px;
-    }
-    .modal h2 { margin: 0 0 12px; font-size: 18px; }
-    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    .pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); font-size: 11px; color: var(--soft); white-space: nowrap; }
+    .pill.high, .pill.critical { border-color: rgba(251,113,133,.45); color: #fecdd3; background: rgba(251,113,133,.07); }
+    .pill.medium { border-color: rgba(251,191,36,.45); color: #fde68a; background: rgba(251,191,36,.06); }
+    .pill.low { border-color: rgba(52,211,153,.42); color: #bbf7d0; background: rgba(52,211,153,.06); }
+    .pill.blue { border-color: rgba(56,189,248,.45); color: #bae6fd; background: rgba(56,189,248,.08); }
+    .pill.gray { color: var(--muted); }
 
-    .toast-host { position: fixed; right: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; }
-    .toast {
-      min-width: 240px; max-width: 420px; padding: 12px 14px; border-radius: 10px;
-      border: 1px solid var(--border); background: var(--panel2); box-shadow: 0 12px 40px rgba(0,0,0,.35);
-      font-size: 13px;
+    .workflow { display: grid; grid-template-columns: repeat(7, minmax(120px, 1fr)); gap: 8px; margin-bottom: 18px; }
+    @media (max-width: 1180px) { .workflow { grid-template-columns: repeat(3, 1fr); } }
+    .step {
+      position: relative;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(180deg, var(--surface-2), var(--surface));
+      min-height: 88px;
     }
+    .step .num { color: var(--accent); font-weight: 800; font-size: 12px; }
+    .step .name { margin-top: 6px; font-weight: 700; font-size: 13px; }
+    .step .sub { margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 1.35; }
 
-    .kbd { font-size: 11px; padding: 2px 6px; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); }
-    .breadcrumb { font-size: 13px; color: var(--muted); margin-bottom: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-    .crumb {
-      background: none; border: none; padding: 0; margin: 0; font: inherit; color: var(--accent);
-      cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
-    }
-    .crumb:hover { color: #7dd3fc; }
+    .heatmap { display: grid; grid-template-columns: 70px repeat(5, 1fr); gap: 6px; align-items: stretch; }
+    .heatmap div { min-height: 34px; display: grid; place-items: center; border-radius: 8px; font-size: 12px; color: var(--soft); border: 1px solid rgba(255,255,255,.06); }
+    .heatmap .axis { background: transparent; border: none; color: var(--muted); font-size: 11px; }
+    .heat-1 { background: rgba(52,211,153,.16); }
+    .heat-2 { background: rgba(251,191,36,.14); }
+    .heat-3 { background: rgba(251,113,133,.14); }
+    .heat-4 { background: rgba(239,68,68,.26); }
 
-    .rail-group-label {
-      font-size: 10px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted);
-      margin: 12px 6px 6px; padding-top: 8px; border-top: 1px solid var(--border);
-    }
-    .rail-group-label:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 14px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    .tab { border: 1px solid transparent; background: transparent; color: var(--muted); border-radius: 999px; padding: 7px 11px; }
+    .tab.active { color: white; background: var(--surface-2); border-color: var(--line); }
 
-    .portfolio-bar {
-      display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; margin-bottom: 16px;
-      padding: 16px; border-radius: var(--radius); border: 1px solid var(--border);
-      background: linear-gradient(145deg, var(--panel2), var(--panel));
-    }
-    .portfolio-bar .field { margin-bottom: 0; flex: 1; min-width: 240px; }
-    select.select-xl { font-size: 15px; padding: 12px 12px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    @media (max-width: 760px) { .form-grid { grid-template-columns: 1fr; } }
+    .field label { display: block; color: var(--muted); font-size: 12px; margin-bottom: 5px; }
+    .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); border-radius: 10px; background: #0f172a; padding: 9px 10px; }
+    .field textarea { min-height: 92px; resize: vertical; }
 
-    .dash-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
-    .dash-title { font-size: 22px; font-weight: 700; margin: 0; }
-    .kpi-row {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px;
-    }
-    .kpi {
-      display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-radius: var(--radius);
-      border: 1px solid var(--border); background: var(--panel); cursor: default;
-      transition: border-color .15s, background .15s;
-    }
-    .kpi.clickable { cursor: pointer; }
-    .kpi.clickable:hover { border-color: rgba(56,189,248,.4); background: var(--panel2); }
-    .kpi-ico {
-      width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-      font-size: 18px; background: rgba(56,189,248,.12); flex-shrink: 0;
-    }
-    .kpi-val { font-size: 24px; font-weight: 700; line-height: 1.1; }
-    .kpi-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+    .progress { height: 8px; border-radius: 999px; background: #0f172a; border: 1px solid var(--line); overflow: hidden; }
+    .progress > span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
 
-    .dash-panels { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; align-items: start; }
-    @media (max-width: 960px) { .dash-panels { grid-template-columns: 1fr; } }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .card { padding: 15px; }
+    .card h3 { margin: 0; font-size: 16px; letter-spacing: -.02em; }
+    .card p { color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .card-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 
-    .viz-card {
-      border: 1px solid var(--border); border-radius: var(--radius); background: var(--panel); padding: 14px 16px 18px;
-    }
-    .viz-title { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 14px; }
-    .bar-row { display: flex; align-items: flex-end; gap: 8px; height: 132px; padding-top: 8px; }
-    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
-    .bar-fill {
-      width: 100%; max-width: 48px; border-radius: 6px 6px 2px 2px;
-      background: linear-gradient(180deg, var(--accent), var(--accent2)); opacity: .85;
-      min-height: 6px; transition: opacity .15s;
-    }
-    .bar-fill:hover { opacity: 1; }
-    .bar-cap { font-size: 11px; font-weight: 700; }
-    .bar-name { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; text-align: center; }
-
-    .dash-strip {
-      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-    }
-    .strip-chip {
-      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px;
-      border: 1px solid var(--border); background: var(--panel2); font-size: 12px;
-    }
-    .strip-chip button { padding: 2px 8px; font-size: 11px; }
-
+    .empty { padding: 28px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: var(--radius); background: rgba(255,255,255,.02); }
   </style>
 </head>
 <body>
-  <div id="app">
-    <header class="topbar">
-      <div class="brand">Aura Audit<span id="brand-firm-name"></span></div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button type="button" class="ghost small" data-action="reset-demo">Reset demo data</button>
-      </div>
-    </header>
-    <aside class="sidebar" id="sidebar"></aside>
-    <main id="spa-root"></main>
-  </div>
-
-  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h2 id="modalTitle">Modal</h2>
-      <div id="modalBody"></div>
-      <div class="modal-footer">
-        <button type="button" class="ghost" data-modal="cancel">Cancel</button>
-        <button type="button" class="primary" data-modal="ok">Save</button>
-      </div>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">IA</div><div>Aura IA<small>Internal audit lifecycle workspace</small></div></div>
+    <div class="top-actions">
+      <input class="search" placeholder="Search audit area, finding, owner, report..." />
+      <button class="btn ghost small">Export</button>
+      <button class="btn primary small">+ New audit</button>
     </div>
+  </header>
+
+  <aside class="sidebar" id="sidebar"></aside>
+  <main id="root"></main>
+</div>
+
+<script>
+const state = {
+  view: 'dashboard',
+  engagementTab: 'overview',
+  activeEngagement: 'eng-1',
+  nav: [
+    { group: 'Command center', items: [
+      ['dashboard','◈','Dashboard'],
+      ['committee','▣','Audit Committee Pack']
+    ]},
+    { group: 'Risk-based planning', items: [
+      ['universe','⌂','Audit Universe'],
+      ['risk','⚠','Risk Assessment'],
+      ['annualPlan','☷','Annual Audit Plan']
+    ]},
+    { group: 'Execution', items: [
+      ['engagements','◆','Audit Engagements'],
+      ['findings','●','Findings Register'],
+      ['reports','▤','Reports'],
+      ['followup','↻','Follow-up Tracker']
+    ]},
+    { group: 'Libraries & admin', items: [
+      ['methodology','▧','Methodology'],
+      ['admin','⚙','Administration']
+    ]}
+  ],
+  universe: [
+    { id:'u1', area:'Procurement', department:'Operations', owner:'Head of Procurement', inherent:'High', controls:'Weak', residual:'High', frequency:'Annual', last:'2025 Q1', next:'2026 Q1', status:'Planned', risks:'Bribery, fake vendor, split purchases' },
+    { id:'u2', area:'IT Access Management', department:'Technology', owner:'CTO', inherent:'High', controls:'Moderate', residual:'High', frequency:'Annual', last:'2025 Q2', next:'2026 Q2', status:'In plan', risks:'Data leak, excessive access, terminated user access' },
+    { id:'u3', area:'Payroll', department:'HR / Finance', owner:'HR Director', inherent:'Medium', controls:'Moderate', residual:'Medium', frequency:'2 years', last:'2024 Q4', next:'2026 Q3', status:'Proposed', risks:'Ghost employee, salary manipulation, unauthorized changes' },
+    { id:'u4', area:'Inventory & Warehouse', department:'Operations', owner:'Warehouse Manager', inherent:'Medium', controls:'Weak', residual:'High', frequency:'Annual', last:'2024 Q2', next:'2026 Q2', status:'Proposed', risks:'Stock loss, obsolete stock, inaccurate records' },
+    { id:'u5', area:'Training & Competency', department:'HR', owner:'HR Manager', inherent:'Low', controls:'Strong', residual:'Low', frequency:'3 years', last:'2023 Q3', next:'2027 Q1', status:'Deferred', risks:'Incomplete training records' }
+  ],
+  risks: [
+    { area:'Procurement', category:'Fraud', risk:'Bribery or kickback in vendor selection', likelihood:5, impact:5, inherent:25, controls:'Tender committee, vendor due diligence, COI declaration', controlRating:'Weak', residual:'High', response:'Include in annual plan', rationale:'High spend, many vendors, manual approval, prior complaints' },
+    { area:'Procurement', category:'Fraud', risk:'Fake vendor created in vendor master', likelihood:4, impact:5, inherent:20, controls:'New vendor approval, bank account verification', controlRating:'Weak', residual:'High', response:'Full-cycle testing', rationale:'Vendor master changes not independently reviewed' },
+    { area:'IT Access Management', category:'Cyber / Data', risk:'Unauthorized access to finance system', likelihood:4, impact:5, inherent:20, controls:'MFA, access review, joiner-mover-leaver process', controlRating:'Moderate', residual:'High', response:'Audit in Q2', rationale:'Privileged users and sensitive data' },
+    { area:'Payroll', category:'Financial', risk:'Ghost employee or unauthorized salary change', likelihood:3, impact:4, inherent:12, controls:'HR approval, payroll review, bank file approval', controlRating:'Moderate', residual:'Medium', response:'Audit every 2 years', rationale:'Stable process but high sensitivity' }
+  ],
+  annualPlan: [
+    { audit:'Procurement Process Audit', area:'Procurement', priority:'High', quarter:'Q1 2026', days:22, status:'Approved', reason:'High fraud/bribery exposure and weak controls', sponsor:'CAE' },
+    { audit:'IT Access Control Review', area:'IT Access Management', priority:'High', quarter:'Q2 2026', days:18, status:'Approved', reason:'Data leakage and privileged-access risk', sponsor:'Audit Committee' },
+    { audit:'Inventory & Warehouse Audit', area:'Inventory & Warehouse', priority:'High', quarter:'Q2 2026', days:16, status:'Proposed', reason:'Weak stock controls and recurring discrepancies', sponsor:'COO' },
+    { audit:'Payroll Control Review', area:'Payroll', priority:'Medium', quarter:'Q3 2026', days:12, status:'Proposed', reason:'Medium residual risk, last audited in 2024', sponsor:'CFO' }
+  ],
+  engagements: [
+    { id:'eng-1', title:'Procurement Process Audit', code:'IA-2026-001', department:'Operations', phase:'Fieldwork', owner:'Aina Rahman', start:'2026-01-08', end:'2026-02-15', progress:62, rating:'High', scope:'Vendor onboarding, quotation/tender, PO approval, GRN, invoice matching, payment approval', objective:'Assess whether procurement activities are properly approved, transparent, competitive, and protected against fraud and conflict of interest.' },
+    { id:'eng-2', title:'IT Access Control Review', code:'IA-2026-002', department:'Technology', phase:'Planning', owner:'Jason Tan', start:'2026-04-01', end:'2026-05-10', progress:20, rating:'High', scope:'Privileged access, user provisioning, terminated user access, access review, MFA enforcement', objective:'Evaluate whether system access is granted, reviewed, and removed appropriately.' },
+    { id:'eng-3', title:'Payroll Control Review', code:'IA-2026-004', department:'HR / Finance', phase:'Not started', owner:'Priya Dev', start:'2026-08-03', end:'2026-08-28', progress:0, rating:'Medium', scope:'Employee master changes, salary changes, bank file approval, leavers', objective:'Check payroll integrity and authorization controls.' }
+  ],
+  pbc: [
+    ['Procurement policy','Procurement Manager','Received','Used to define audit criteria'],
+    ['Vendor master listing','Finance','Received','Sampling and fake vendor testing'],
+    ['PO listing Jan–Dec 2025','Procurement','Pending','Transaction sample selection'],
+    ['Quotation comparison sheets','Procurement','Partial','Test competitive bidding'],
+    ['Conflict of interest declarations','HR / Procurement','Pending','Related-party and bribery risk']
+  ],
+  workprogram: [
+    ['Vendor onboarding','Select 20 new vendors and verify approval, registration, bank account verification','In progress','12/20 complete'],
+    ['Quotation control','Test purchases above threshold for quotation comparison and evaluation approval','Planned','Sample prepared'],
+    ['Split purchase analysis','Analyze repeated same-vendor purchases below approval threshold','Done','2 exceptions noted'],
+    ['3-way match','Match PO, GRN, invoice and payment approval for selected samples','In progress','18/35 complete']
+  ],
+  findings: [
+    { id:'f1', audit:'Procurement Process Audit', department:'Procurement', title:'Vendor onboarding approval not consistently performed', severity:'High', status:'Open', owner:'Head of Procurement', due:'2026-04-30', criteria:'Procurement policy requires approval before vendor creation.', condition:'8 of 25 sampled vendors had no approval evidence.', cause:'Vendor workflow is manual and not system-enforced.', impact:'Increases fake vendor and unauthorized payment risk.', recommendation:'Implement system-enforced vendor approval and monthly vendor master review.', response:'Management agrees and will implement approval workflow.' },
+    { id:'f2', audit:'Procurement Process Audit', department:'Procurement', title:'Potential split purchases below approval threshold', severity:'Medium', status:'Management response due', owner:'Procurement Manager', due:'2026-03-15', criteria:'Purchases above MYR 20,000 require additional approval.', condition:'Five same-vendor purchases were made within three days below threshold.', cause:'No automated split-purchase detection.', impact:'Approval limits may be bypassed.', recommendation:'Configure exception report for repeated purchases by vendor and requester.', response:'Pending' },
+    { id:'f3', audit:'IT Access Control Review', department:'Technology', title:'Privileged access review not evidenced', severity:'High', status:'Not started', owner:'CTO', due:'2026-06-15', criteria:'Privileged users should be reviewed quarterly.', condition:'No evidence of Q4 privileged access review.', cause:'Access review owner not formally assigned.', impact:'Excessive access may remain undetected.', recommendation:'Assign access review owner and retain review evidence.', response:'Pending' },
+    { id:'f4', audit:'Payroll Control Review', department:'HR / Finance', title:'Leaver checklist not always completed before payroll cut-off', severity:'Low', status:'Closed', owner:'HR Manager', due:'2026-01-31', criteria:'Leavers should be removed before next payroll cycle.', condition:'2 minor delays noted.', cause:'Manual checklist routing.', impact:'Low risk of overpayment.', recommendation:'Automate leaver workflow notification.', response:'Implemented' }
+  ],
+  reports: [
+    { title:'Procurement Process Audit Report', audit:'Procurement Process Audit', status:'Draft with audit manager', rating:'Needs improvement', issueDate:'—', audience:'CEO, CFO, COO, Audit Committee' },
+    { title:'IT Access Control Review Report', audit:'IT Access Control Review', status:'Not started', rating:'—', issueDate:'—', audience:'CIO, CTO, Audit Committee' },
+    { title:'Payroll Control Review Report', audit:'Payroll Control Review', status:'Final issued', rating:'Satisfactory', issueDate:'2026-02-08', audience:'CFO, HR Director' }
+  ],
+  templates: [
+    ['Planning memo','Objective, scope, background, risk rationale, audit team, timeline'],
+    ['Risk Control Matrix','Risk, control, control owner, test procedure, result, conclusion'],
+    ['Internal audit report','Executive summary, scope, rating, detailed findings, management response'],
+    ['Follow-up validation','Action owner, evidence submitted, IA validation, closure decision']
+  ]
+};
+
+const root = document.getElementById('root');
+const sidebar = document.getElementById('sidebar');
+
+function esc(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function pill(v){ const c = String(v).toLowerCase().replace(/\s+/g,'-'); return `<span class="pill ${c}">${esc(v)}</span>`; }
+function setView(v){ state.view = v; render(); }
+function setEngagement(id){ state.activeEngagement = id; state.view = 'engagementDetail'; render(); }
+
+function renderSidebar(){
+  sidebar.innerHTML = state.nav.map(group => `
+    <div class="nav-section">${group.group}</div>
+    ${group.items.map(([key, ico, label]) => `<button class="nav-btn ${state.view===key?'active':''}" onclick="setView('${key}')"><span class="nav-ico">${ico}</span>${label}</button>`).join('')}
+  `).join('');
+}
+
+function header(title, subtitle, actions=''){
+  return `<div class="page-head"><div class="title"><h1>${title}</h1><p>${subtitle}</p></div><div class="toolbar">${actions}</div></div>`;
+}
+
+function table(headers, rows){
+  return `<div class="table-wrap"><table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.join('') || `<tr><td colspan="${headers.length}" class="muted">No records.</td></tr>`}</tbody></table></div>`;
+}
+
+function dashboard(){
+  const openFindings = state.findings.filter(f=>f.status !== 'Closed');
+  const highRiskAreas = state.universe.filter(u=>u.residual === 'High').length;
+  const overdue = state.findings.filter(f=>f.status !== 'Closed' && new Date(f.due) < new Date('2026-05-06')).length;
+  return header('Dashboard','Single command center for the full internal audit lifecycle: risk-based planning, execution, reporting, and follow-up.', `<button class="btn primary">+ New finding</button><button class="btn ghost">Generate committee pack</button>`) +
+  `<div class="workflow">
+    ${['Audit Universe|Define what can be audited','Risk Assessment|Score risks and controls','Annual Plan|Select audits and timing','Engagement Planning|Scope, RCM, PBC, program','Fieldwork|Test controls and evidence','Reporting|Issue IA report','Follow-up|Validate closure'].map((s,i)=>{const [a,b]=s.split('|'); return `<div class="step"><div class="num">${String(i+1).padStart(2,'0')}</div><div class="name">${a}</div><div class="sub">${b}</div></div>`}).join('')}
   </div>
-  <div class="toast-host" id="toastHost"></div>
+  <div class="kpis">
+    <div class="kpi"><div class="label">Auditable areas</div><div class="value">${state.universe.length}</div><div class="note">Across all departments</div></div>
+    <div class="kpi"><div class="label">High-risk areas</div><div class="value">${highRiskAreas}</div><div class="note">Residual risk high</div></div>
+    <div class="kpi"><div class="label">Approved audits</div><div class="value">${state.annualPlan.filter(x=>x.status==='Approved').length}</div><div class="note">2026 plan</div></div>
+    <div class="kpi"><div class="label">Active audits</div><div class="value">${state.engagements.filter(e=>e.phase !== 'Not started').length}</div><div class="note">Planning / fieldwork</div></div>
+    <div class="kpi"><div class="label">Open findings</div><div class="value">${openFindings.length}</div><div class="note">Across all audits</div></div>
+    <div class="kpi"><div class="label">Overdue actions</div><div class="value">${overdue}</div><div class="note">Needs escalation</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-title"><h2>Annual audit plan progress</h2><span>2026</span></div>${planTable(true)}</div>
+    <div class="panel"><div class="panel-title"><h2>Risk heat map</h2><span>Likelihood × Impact</span></div>${heatmap()}</div>
+  </div>
+  <div class="grid-2">
+    <div class="panel"><div class="panel-title"><h2>High-risk findings needing attention</h2><span>${openFindings.length} open</span></div>${findingsTable(state.findings.filter(f=>f.severity==='High'))}</div>
+    <div class="panel"><div class="panel-title"><h2>Reports awaiting action</h2><span>Draft / review / final</span></div>${reportsTable()}</div>
+  </div>`;
+}
 
-  <script>
-(function () {
-  'use strict';
-
-  var STORAGE_KEY = 'aura_audit_interactive_v1';
-
-  function uid() {
-    return 'id_' + Math.random().toString(36).slice(2, 11) + Date.now().toString(36);
-  }
-
-  function escapeHtml(s) {
-    return String(s == null ? '' : s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
-  function defaultState() {
-    var c1 = uid();
-    var c2 = uid();
-    var e1 = uid();
-    var e2 = uid();
-    return {
-      firm: {
-        passwordPolicy: {
-          sessionExpiryMinutes: 480,
-          passwordExpiryDays: 90,
-          mfaEnforcement: 'required',
-          ipWhitelist: ['203.0.113.10', '198.51.100.0/24']
-        },
-        retentionPurging: {
-          completedEngagementYears: 7,
-          regulatoryNote: 'Malaysia — Companies Act: retain completed engagement files for 7 years unless superseded by regulator-specific rules.',
-          purgeProcedure: 'Quarterly purge queue reviewed by Quality & Risk; legal hold overrides retention.'
-        },
-        archiving: {
-          autoArchiveDaysAfterSignoff: 30,
-          notes: 'Archive includes signed PDF reports, final trial balance tie-outs, and closing checklist.'
-        },
-        profile: {
-          legalName: 'Aura Assurance PLT',
-          tradingName: 'Aura Audit',
-          letterheadNotes: 'Registered office line · practising certificate ref · regulatory footer boilerplate.'
-        },
-        rbacRoles: [
-          { id: uid(), name: 'Partner', scope: 'Tenant configuration, EQCR, final issue sign-off' },
-          { id: uid(), name: 'Senior', scope: 'Engagement workspace, review packs, clearance drafting' },
-          { id: uid(), name: 'Staff', scope: 'Fieldwork execution under supervisor' }
-        ],
-        activityLog: [
-          { id: uid(), at: '2025-05-05T08:00:00.000Z', actor: 'System', message: 'Demo workspace loaded.' }
-        ],
-        customFields: [
-          { id: uid(), name: 'Industry code', appliesTo: 'company', fieldType: 'text' },
-          { id: uid(), name: 'BU owner', appliesTo: 'engagement', fieldType: 'text' }
-        ],
-        methodologyLibrary: [
-          { id: uid(), title: 'Firm audit approach overview', category: 'Approach', body: 'Risk-based ISA-aligned methodology; document assertions per cycle.' },
-          { id: uid(), title: 'Sampling guidance', category: 'Execution', body: 'Random for populations >500; judgmental only with documented rationale.' }
-        ],
-        riskPlanning: {
-          inherentScale: 'Map inherent risk (H/M/L) to likelihood × magnitude of misstatement; escalate High to EQCR.',
-          controlAssessment: 'Design vs operating effectiveness; document walkthrough evidence before reliance.',
-          materialityNotes: 'Planning materiality typically 5% PBT unless benchmark rationale approved.',
-          rotationPolicy: 'Engagement quality reviewer rotation; independence cooling-off per institute rules.'
-        },
-        auditPlanTemplates: [
-          { id: uid(), name: 'Statutory audit — planning memo', outline: 'Objectives & scope\nUnderstanding entity\nRisk assessment\nTeam & timeline\nDeliverables' }
-        ],
-        reportFormats: [
-          { id: uid(), name: 'Auditor report & financial statements', structure: 'Title\nTOC\nIndependent auditor report\nStatements\nNotes\nAppendices' }
-        ],
-        remediationPolicy: {
-          slaDays: 90,
-          escalation: 'Partner notified if critical finding remains open >30 days after management response due.'
-        },
-        auditUniverse: [
-          { id: uid(), companyId: c1, area: 'Procurement & payables', owner: 'IA Lead', frequency: 'Annual', lastAuditDate: '2024-08-01', nextDue: '2025-08-01', status: 'scheduled' },
-          { id: uid(), companyId: c2, area: 'Treasury & liquidity', owner: 'IA Lead', frequency: 'Annual', lastAuditDate: '2023-11-15', nextDue: '2025-05-30', status: 'in_progress' },
-          { id: uid(), companyId: '', area: 'ITGC — firm-wide reference', owner: 'IT Audit', frequency: 'Continuous', lastAuditDate: '', nextDue: '', status: 'framework' }
-        ]
-      },
-      staffDirectory: [
-        { id: 'staff_1', name: 'Nur Aina Rahman', role: 'Engagement Manager' },
-        { id: 'staff_2', name: 'Jason Tan', role: 'Senior' },
-        { id: 'staff_3', name: 'Priya Dev', role: 'Staff' }
-      ],
-      companies: [
-        {
-          id: c1,
-          name: 'Langit Logistics Bhd',
-          industry: 'Transport',
-          riskTier: 'medium',
-          notes: 'Listed subsidiary considerations.',
-          entityMeta: { registrationNo: '123456-A', fiscalYearEnd: '31-Mar' },
-          goingConcernHistory: [
-            { id: uid(), asAt: '2024-06-30', flag: 'clear', detail: 'No material uncertainties disclosed.' }
-          ],
-          predecessorAuditor: {
-            firmName: 'Bright & Co.',
-            lastYearEnd: '2023-03-31',
-            clearanceLetter: 'requested',
-            notes: 'Coordination meeting booked.'
-          },
-          feeHistory: [
-            { id: uid(), year: '2024', amount: '185000', currency: 'MYR', scope: 'Statutory audit' },
-            { id: uid(), year: '2023', amount: '172000', currency: 'MYR', scope: 'Statutory audit' }
-          ],
-          regulatoryFlags: [
-            { id: uid(), regulator: 'SC', status: 'none', detail: 'No active queries.' }
-          ],
-          conflictChecks: [
-            { id: uid(), checkedAt: '2025-04-01', declaredBy: 'Partner queue', outcome: 'Clear — no services barred.', independenceNotes: 'Treasury advisory screened.' }
-          ]
-        },
-        {
-          id: c2,
-          name: 'Bay Fintech Sdn Bhd',
-          industry: 'Financial services',
-          riskTier: 'high',
-          notes: 'Licensed entity — heightened scrutiny.',
-          entityMeta: { registrationNo: '987654-T', fiscalYearEnd: '31-Dec' },
-          goingConcernHistory: [
-            { id: uid(), asAt: '2023-12-31', flag: 'emphasis', detail: 'Going concern emphasis — liquidity covenant monitoring.' }
-          ],
-          predecessorAuditor: { firmName: '', lastYearEnd: '', clearanceLetter: '', notes: '' },
-          feeHistory: [],
-          regulatoryFlags: [
-            { id: uid(), regulator: 'BNM', status: 'monitoring', detail: 'Thematic review — AML controls.' }
-          ],
-          conflictChecks: []
-        }
-      ],
-      engagements: [
-        {
-          id: e1,
-          companyId: c1,
-          code: 'FY25-AUD-101',
-          title: 'FY2025 statutory audit',
-          phase: 'fieldwork',
-          status: 'active',
-          independenceConfirmations: [
-            { id: uid(), staffId: 'staff_1', signedAt: '2025-04-28', note: 'No financial interest.' },
-            { id: uid(), staffId: 'staff_2', signedAt: '2025-04-29', note: 'No close family ties.' }
-          ],
-          firstYearWithClient: false,
-          openingBalanceProcedures: 'Roll-forward reliance on PY auditor report + selective retesting of opening TB.',
-          samplingBySection: [
-            { id: uid(), section: 'Revenue', method: 'random', notes: 'n=45 from population of 820 invoices.' },
-            { id: uid(), section: 'PPE additions', method: 'judgmental', notes: 'Top 12 additions by value.' }
-          ],
-          managementLetterItems: [
-            { id: uid(), title: 'Segregation on procurement cards', severity: 'medium', status: 'open', owner: 'CFO' }
-          ],
-          subsequentEventsCutoff: '2025-05-15',
-          groupAuditInstructions: 'Component audit — reporting package due to group auditor by T+10.',
-          regulatorySubmissions: [
-            { id: uid(), filing: 'Annual return & audited FS', regulator: 'SSM', due: '2025-07-31', status: 'not_started' },
-            { id: uid(), filing: 'Related-party disclosure schedule', regulator: 'Listing compliance', due: '2025-06-15', status: 'in_progress' }
-          ],
-          targetCompletionDate: '2025-06-30',
-          teamMemberIds: ['staff_1', 'staff_2'],
-          clientUsers: [
-            { id: uid(), name: 'Ahmad Yusof', email: 'cfo@langit.example', role: 'CFO', status: 'active' },
-            { id: uid(), name: 'Siti Nurhaliza', email: 'controller@langit.example', role: 'Financial controller', status: 'active' }
-          ],
-          riskRegister: [
-            { id: uid(), assertion: 'Occurrence — revenue', description: 'Cut-off around period end', inherent: 'medium', controlReliance: 'moderate', residual: 'medium', response: 'Substantive analytical procedures + detail testing' }
-          ],
-          auditPlan: [
-            { id: uid(), section: 'Planning & risk assessment', procedure: 'Kick-off, inquiries, fraud brainstorming', owner: 'EM', status: 'done' },
-            { id: uid(), section: 'Revenue cycle', procedure: 'Sampling per firm methodology; revenue cutoff tests', owner: 'Senior', status: 'in_progress' }
-          ],
-          remedies: [
-            { id: uid(), title: 'Procurement card segregation', source: 'Management letter', owner: 'CFO', due: '2025-09-30', status: 'open' }
-          ]
-        },
-        {
-          id: e2,
-          companyId: c2,
-          code: 'CY24-AUD-077',
-          title: 'CY2024 first-year statutory audit',
-          phase: 'planning',
-          status: 'active',
-          independenceConfirmations: [],
-          firstYearWithClient: true,
-          openingBalanceProcedures: 'Full predecessor procedures — confirm opening balances and comparative FS.',
-          samplingBySection: [],
-          managementLetterItems: [],
-          subsequentEventsCutoff: '',
-          groupAuditInstructions: '',
-          regulatorySubmissions: [],
-          targetCompletionDate: '2025-09-30',
-          teamMemberIds: ['staff_1'],
-          clientUsers: [],
-          riskRegister: [],
-          auditPlan: [
-            { id: uid(), section: 'First-year opening balances', procedure: 'Predecessor communication & opening TB verification', owner: 'EM', status: 'planned' }
-          ],
-          remedies: []
-        }
-      ],
-      ui: {
-        route: { view: 'dashboard', id: null, tab: null, firmSection: 'universe' },
-        companyTab: 'engagements',
-        engagementTab: 'overview',
-        engagementsCompanyId: ''
-      }
-    };
-  }
-
-  function appendActivityLog(actor, message) {
-    state.firm.activityLog = state.firm.activityLog || [];
-    state.firm.activityLog.unshift({
-      id: uid(),
-      at: new Date().toISOString(),
-      actor: actor || 'User',
-      message: message || ''
-    });
-    if (state.firm.activityLog.length > 200) state.firm.activityLog.length = 200;
-  }
-
-  function loadState() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return defaultState();
-      var parsed = JSON.parse(raw);
-      if (!parsed || typeof parsed !== 'object') return defaultState();
-      return mergeDeep(defaultState(), parsed);
-    } catch (e) {
-      return defaultState();
+function heatmap(){
+  let cells = '<div class="axis"></div>' + [1,2,3,4,5].map(i=>`<div class="axis">Impact ${i}</div>`).join('');
+  for(let l=5;l>=1;l--){
+    cells += `<div class="axis">Likely ${l}</div>`;
+    for(let i=1;i<=5;i++){
+      const score = l*i;
+      const cls = score>=20?'heat-4':score>=12?'heat-3':score>=6?'heat-2':'heat-1';
+      const count = state.risks.filter(r=>r.likelihood===l && r.impact===i).length;
+      cells += `<div class="${cls}">${count?count:''}</div>`;
     }
   }
-
-  function mergeDeep(base, over) {
-    if (!over || typeof over !== 'object') return base;
-    Object.keys(over).forEach(function (k) {
-      var v = over[k];
-      if (v === null || v === undefined) return;
-      if (typeof v === 'object' && !Array.isArray(v) && base[k] && typeof base[k] === 'object' && !Array.isArray(base[k])) {
-        mergeDeep(base[k], v);
-      } else {
-        base[k] = v;
-      }
-    });
-    return base;
-  }
-
-  function saveState(state) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { /* quota */ }
-  }
-
-  var state = loadState();
-
-  function normalizeState(s) {
-    s.companies = Array.isArray(s.companies) ? s.companies : [];
-    s.engagements = Array.isArray(s.engagements) ? s.engagements : [];
-    s.staffDirectory = Array.isArray(s.staffDirectory) ? s.staffDirectory : [];
-    if (!s.firm || typeof s.firm !== 'object') s.firm = defaultState().firm;
-    s.firm.passwordPolicy = s.firm.passwordPolicy || {};
-    s.firm.retentionPurging = s.firm.retentionPurging || {};
-    s.firm.archiving = s.firm.archiving || {};
-    s.firm.customFields = Array.isArray(s.firm.customFields) ? s.firm.customFields : [];
-    s.firm.methodologyLibrary = Array.isArray(s.firm.methodologyLibrary) ? s.firm.methodologyLibrary : [];
-    s.firm.auditUniverse = Array.isArray(s.firm.auditUniverse) ? s.firm.auditUniverse : [];
-    s.firm.auditPlanTemplates = Array.isArray(s.firm.auditPlanTemplates) ? s.firm.auditPlanTemplates : [];
-    s.firm.reportFormats = Array.isArray(s.firm.reportFormats) ? s.firm.reportFormats : [];
-    s.firm.riskPlanning = s.firm.riskPlanning && typeof s.firm.riskPlanning === 'object' ? s.firm.riskPlanning : {};
-    s.firm.remediationPolicy = s.firm.remediationPolicy && typeof s.firm.remediationPolicy === 'object' ? s.firm.remediationPolicy : {};
-    s.firm.profile = s.firm.profile && typeof s.firm.profile === 'object' ? s.firm.profile : {};
-    s.firm.rbacRoles = Array.isArray(s.firm.rbacRoles) ? s.firm.rbacRoles : [];
-    s.firm.activityLog = Array.isArray(s.firm.activityLog) ? s.firm.activityLog : [];
-    s.ui = s.ui && typeof s.ui === 'object' ? s.ui : {};
-    s.ui.route = s.ui.route && typeof s.ui.route === 'object' ? s.ui.route : {};
-    if (!s.ui.route.view) s.ui.route.view = 'dashboard';
-    if (s.ui.route.id === undefined) s.ui.route.id = null;
-    if (!s.ui.route.firmSection) s.ui.route.firmSection = 'universe';
-    if (!s.ui.companyTab) s.ui.companyTab = 'engagements';
-    if (!s.ui.engagementTab) s.ui.engagementTab = 'overview';
-    if (s.ui.engagementsCompanyId === undefined || s.ui.engagementsCompanyId === null) s.ui.engagementsCompanyId = '';
-    var selCo = s.ui.engagementsCompanyId;
-    var validCo = selCo && s.companies.some(function (c) { return c.id === selCo; });
-    if (s.companies.length && !validCo) s.ui.engagementsCompanyId = s.companies[0].id;
-    if (s.ui.route && s.ui.route.view === 'universe') {
-      s.ui.route.view = 'firm-settings';
-      s.ui.route.firmSection = 'universe';
-    }
-    s.engagements.forEach(function (e) {
-      e.teamMemberIds = Array.isArray(e.teamMemberIds) ? e.teamMemberIds : [];
-      e.clientUsers = Array.isArray(e.clientUsers) ? e.clientUsers : [];
-      e.riskRegister = Array.isArray(e.riskRegister) ? e.riskRegister : [];
-      e.auditPlan = Array.isArray(e.auditPlan) ? e.auditPlan : [];
-      e.remedies = Array.isArray(e.remedies) ? e.remedies : [];
-      if (e.targetCompletionDate === undefined) e.targetCompletionDate = '';
-    });
-  }
-
-  normalizeState(state);
-
-  function companyById(id) {
-    return state.companies.find(function (c) { return c.id === id; });
-  }
-
-  function engagementById(id) {
-    return state.engagements.find(function (e) { return e.id === id; });
-  }
-
-  function engagementsForCompany(companyId) {
-    return state.engagements.filter(function (e) { return e.companyId === companyId; });
-  }
-
-  function staffById(id) {
-    return state.staffDirectory.find(function (s) { return s.id === id; });
-  }
-
-  function todayISO() {
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  function parseDay(d) {
-    if (!d) return NaN;
-    return Date.parse(String(d).slice(0, 10) + 'T00:00:00');
-  }
-
-  function engagementDeadlineHtml(e) {
-    if (!e.targetCompletionDate) return '<span class="muted">—</span>';
-    var due = parseDay(e.targetCompletionDate);
-    var label = escapeHtml(e.targetCompletionDate);
-    if (isNaN(due)) return label;
-    if ((e.status || '') === 'closed') return label + ' <span class="muted">(closed)</span>';
-    var diff = Math.ceil((due - parseDay(todayISO())) / 86400000);
-    if (diff < 0) return label + ' <span class="pill pill-urgent">Overdue</span>';
-    if (diff <= 14) return label + ' <span class="pill pill-warn">' + diff + 'd</span>';
-    return label;
-  }
-
-  function formatTeamHtml(ids) {
-    if (!ids || !ids.length) return '<span class="muted">—</span>';
-    var names = ids.map(function (id) {
-      var s = staffById(id);
-      return s ? s.name : id;
-    });
-    var shown = names.slice(0, 3).map(function (n) { return escapeHtml(n); }).join(', ');
-    var more = names.length > 3 ? ' <span class="muted">+' + (names.length - 3) + '</span>' : '';
-    return shown + more;
-  }
-
-  function mlOpenCount(e) {
-    return (e.managementLetterItems || []).filter(function (m) { return (m.status || '') !== 'closed'; }).length;
-  }
-
-  function filingsSoonEngCount(e) {
-    var horizon = parseDay(todayISO()) + 30 * 86400000;
-    return (e.regulatorySubmissions || []).filter(function (f) {
-      var due = parseDay(f.due);
-      if (isNaN(due) || due > horizon) return false;
-      if ((f.status || '') === 'filed' || (f.status || '') === 'waived') return false;
-      return true;
-    }).length;
-  }
-
-  function engagementPortfolioRow(e) {
-    var co = companyById(e.companyId);
-    var riskTier = (co && co.riskTier) ? (co.riskTier || '').toLowerCase() : '';
-    var riskHtml = co && co.riskTier ? '<span class="pill ' + escapeHtml(riskTier) + '">' + escapeHtml(co.riskTier) + '</span>' : '<span class="muted">—</span>';
-    var grp = ((e.groupAuditInstructions || '').trim())
-      ? '<span class="pill pill-warn">Grp</span>'
-      : '<span class="muted">—</span>';
-    var fy = e.firstYearWithClient ? '<span class="pill medium">FY1</span>' : '<span class="muted">—</span>';
-    var mlc = mlOpenCount(e);
-    var fc = filingsSoonEngCount(e);
-    var clients = (e.clientUsers || []).length;
-    return '<tr>' +
-      '<td><strong>' + escapeHtml(e.code) + '</strong><div class="muted">' + escapeHtml(e.title || '') + '</div></td>' +
-      '<td>' + escapeHtml(e.phase || '') + '<div class="muted">' + escapeHtml(e.status || 'active') + '</div></td>' +
-      '<td>' + engagementDeadlineHtml(e) + '</td>' +
-      '<td>' + formatTeamHtml(e.teamMemberIds) + '</td>' +
-      '<td>' + grp + '</td>' +
-      '<td>' + fy + '</td>' +
-      '<td>' + (mlc ? '<strong>' + mlc + '</strong>' : '<span class="muted">0</span>') + '</td>' +
-      '<td>' + (fc ? '<span class="pill pill-warn">' + fc + '</span>' : '<span class="muted">0</span>') + '</td>' +
-      '<td>' + clients + '</td>' +
-      '<td>' + riskHtml + '</td>' +
-      '<td style="white-space:nowrap">' +
-      '<button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">Open</button> ' +
-      '<button type="button" class="small ghost" data-action="eng-manage-team" data-id="' + escapeHtml(e.id) + '">Team</button> ' +
-      '<button type="button" class="small ghost" data-action="eng-manage-clients" data-id="' + escapeHtml(e.id) + '">Clients</button> ' +
-      '<button type="button" class="small danger" data-action="eng-delete" data-id="' + escapeHtml(e.id) + '">Del</button>' +
-      '</td></tr>';
-  }
-
-  function toast(msg) {
-    var host = document.getElementById('toastHost');
-    var el = document.createElement('div');
-    el.className = 'toast';
-    el.textContent = msg;
-    host.appendChild(el);
-    setTimeout(function () {
-      el.style.opacity = '0';
-      el.style.transition = 'opacity .35s';
-      setTimeout(function () { host.removeChild(el); }, 380);
-    }, 2600);
-  }
-
-  function openModal(opts) {
-    var backdrop = document.getElementById('modalBackdrop');
-    document.getElementById('modalTitle').textContent = opts.title || 'Dialog';
-    document.getElementById('modalBody').innerHTML = opts.bodyHtml || '';
-    var okBtn = backdrop.querySelector('[data-modal="ok"]');
-    okBtn.textContent = opts.okLabel || 'Save';
-    backdrop.classList.add('open');
-    backdrop.setAttribute('aria-hidden', 'false');
-
-    var modalEl = backdrop.querySelector('.modal');
-    if (opts.wide) modalEl.classList.add('modal-wide');
-
-    function cleanup() {
-      backdrop.classList.remove('open');
-      backdrop.setAttribute('aria-hidden', 'true');
-      modalEl.classList.remove('modal-wide');
-      okBtn.onclick = null;
-      cancelBtn.onclick = null;
-      backdrop.onclick = null;
-    }
-
-    var cancelBtn = backdrop.querySelector('[data-modal="cancel"]');
-    cancelBtn.onclick = function () { cleanup(); if (opts.onCancel) opts.onCancel(); };
-
-    okBtn.onclick = function () {
-      var result = opts.onOk ? opts.onOk() : true;
-      if (result !== false) cleanup();
-    };
-
-    backdrop.onclick = function (ev) {
-      if (ev.target === backdrop) {
-        cleanup();
-        if (opts.onCancel) opts.onCancel();
-      }
-    };
-
-    var modal = backdrop.querySelector('.modal');
-    modal.onclick = function (ev) { ev.stopPropagation(); };
-  }
-
-  function navigate(next) {
-    var prev = state.ui.route || {};
-    state.ui.route = {
-      view: next.view || 'dashboard',
-      id: next.id !== undefined ? next.id : null,
-      firmSection: next.firmSection !== undefined ? next.firmSection : (prev.firmSection || 'universe')
-    };
-    renderAll();
-    saveState(state);
-  }
-
-  function setCompanyTab(t) {
-    state.ui.companyTab = t;
-    renderAll();
-    saveState(state);
-  }
-
-  function setEngagementTab(t) {
-    state.ui.engagementTab = t;
-    renderAll();
-    saveState(state);
-  }
-
-  function setFirmSection(s) {
-    state.ui.route.firmSection = s;
-    renderAll();
-    saveState(state);
-  }
-
-  function customFieldsHtml(scope, valuesObj) {
-    valuesObj = valuesObj || {};
-    var fields = (state.firm.customFields || []).filter(function (f) {
-      return f.appliesTo === scope || f.appliesTo === 'both';
-    });
-    if (!fields.length) return '';
-    var blocks = fields.map(function (f) {
-      var v = valuesObj[f.id] != null ? String(valuesObj[f.id]) : '';
-      var bind = 'data-custom-field="' + escapeHtml(f.id) + '"';
-      if (f.fieldType === 'long_text') {
-        return '<div class="field"><label>' + escapeHtml(f.name) + '</label><textarea ' + bind + '>' + escapeHtml(v) + '</textarea></div>';
-      }
-      var tp = f.fieldType === 'number' ? 'number' : (f.fieldType === 'date' ? 'date' : 'text');
-      return '<div class="field"><label>' + escapeHtml(f.name) + '</label><input type="' + tp + '" ' + bind + ' value="' + escapeHtml(v) + '" /></div>';
-    }).join('');
-    return '<div class="section-panel" style="margin-top:14px"><h2>Firm custom fields</h2>' + blocks +
-      '<p class="muted" style="margin:8px 0 0;font-size:12px;">Configure definitions under Firm settings → Custom fields.</p></div>';
-  }
-
-  function collectCustomFieldValues(root, scope) {
-    var out = {};
-    (state.firm.customFields || []).filter(function (f) {
-      return f.appliesTo === scope || f.appliesTo === 'both';
-    }).forEach(function (f) {
-      var el = root.querySelector('[data-custom-field="' + f.id + '"]');
-      if (el) out[f.id] = el.value;
-    });
-    return out;
-  }
-
-  function renderSidebar() {
-    var r = state.ui.route;
-    var sb = document.getElementById('sidebar');
-    function btn(view, label, rid) {
-      var active = r.view === view && (!rid || r.id === rid);
-      return '<button type="button" class="nav-btn' + (active ? ' active' : '') + '" data-nav="' + view + '"' +
-        (rid ? ' data-nav-id="' + escapeHtml(rid) + '"' : '') + '>' + escapeHtml(label) + '</button>';
-    }
-    sb.innerHTML =
-      btn('dashboard', 'Dashboard') +
-      btn('companies', 'Clients & engagements') +
-      btn('firm-settings', 'Firm settings');
-    sb.querySelectorAll('[data-nav]').forEach(function (b) {
-      b.onclick = function () {
-        var v = b.getAttribute('data-nav');
-        var id = b.getAttribute('data-nav-id');
-        navigate({ view: v, id: id || null, tab: null, firmSection: state.ui.route.firmSection || 'universe' });
-      };
-    });
-  }
-
-  function renderDashboard() {
-    var comps = state.companies.length;
-    var engs = state.engagements.length;
-    var activeList = state.engagements.filter(function (e) { return (e.status || 'active') === 'active'; });
-    var active = activeList.length;
-    var today = parseDay(todayISO());
-    var overdue = activeList.filter(function (e) {
-      if (!e.targetCompletionDate) return false;
-      var due = parseDay(e.targetCompletionDate);
-      return !isNaN(due) && due < today;
-    });
-    var phaseCount = { planning: 0, fieldwork: 0, completion: 0, archived: 0 };
-    state.engagements.forEach(function (e) {
-      var p = e.phase || 'planning';
-      if (phaseCount[p] !== undefined) phaseCount[p]++;
-    });
-    var maxP = Math.max(phaseCount.planning, phaseCount.fieldwork, phaseCount.completion, phaseCount.archived, 1);
-    function barPx(n) {
-      return Math.max(10, Math.round((n / maxP) * 108));
-    }
-    function barBlock(label, n) {
-      return '<div class="bar-col"><div class="bar-fill" style="height:' + barPx(n) + 'px"></div><div class="bar-cap">' + n + '</div><div class="bar-name">' + label + '</div></div>';
-    }
-    var openMl = 0;
-    var openRem = 0;
-    state.engagements.forEach(function (e) {
-      (e.managementLetterItems || []).forEach(function (m) {
-        if ((m.status || '') !== 'closed') openMl++;
-      });
-      (e.remedies || []).forEach(function (r) {
-        if ((r.status || '') !== 'closed' && (r.status || '') !== 'waived') openRem++;
-      });
-    });
-    var filingsSoon = [];
-    var horizon = today + 30 * 86400000;
-    state.engagements.forEach(function (e) {
-      var co = companyById(e.companyId);
-      (e.regulatorySubmissions || []).forEach(function (f) {
-        var due = parseDay(f.due);
-        if (isNaN(due) || due > horizon) return;
-        if ((f.status || '') === 'filed' || (f.status || '') === 'waived') return;
-        filingsSoon.push({ eng: e, co: co, f: f });
-      });
-    });
-    filingsSoon.sort(function (a, b) { return parseDay(a.f.due) - parseDay(b.f.due); });
-    var regHeat = 0;
-    state.companies.forEach(function (c) {
-      (c.regulatoryFlags || []).forEach(function (r) {
-        if ((r.status || '') === 'investigation' || (r.status || '') === 'monitoring') regHeat++;
-      });
-    });
-    var highRiskClients = state.companies.filter(function (c) { return (c.riskTier || '') === 'high'; }).length;
-
-    var overdueChips = overdue.slice(0, 6).map(function (e) {
-      var co = companyById(e.companyId);
-      return '<span class="strip-chip"><span class="pill pill-urgent">!</span> ' + escapeHtml(e.code) +
-        '<span class="muted">' + escapeHtml(co ? co.name : '') + '</span>' +
-        '<button type="button" class="ghost small" data-action="eng-open" data-id="' + escapeHtml(e.id) + '">→</button></span>';
-    }).join('');
-    var filingChips = filingsSoon.slice(0, 5).map(function (x) {
-      return '<span class="strip-chip">' + escapeHtml(x.f.due || '') + ' · ' + escapeHtml(x.f.filing || '').slice(0, 28) +
-        '<button type="button" class="ghost small" data-action="eng-open" data-id="' + escapeHtml(x.eng.id) + '">→</button></span>';
-    }).join('');
-
-    return (
-      '<div class="dash-top">' +
-        '<h1 class="dash-title">Overview</h1>' +
-        '<div class="toolbar">' +
-          '<button type="button" class="primary" data-action="goto-companies">Clients</button>' +
-          '<button type="button" class="ghost" data-action="goto-firm">Firm</button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="kpi-row">' +
-        '<div class="kpi clickable" data-action="goto-companies" role="button" tabindex="0"><span class="kpi-ico">⌂</span><div><div class="kpi-val">' + comps + '</div><div class="kpi-lbl">Clients</div></div></div>' +
-        '<div class="kpi clickable" data-action="goto-companies" role="button" tabindex="0"><span class="kpi-ico">◆</span><div><div class="kpi-val">' + active + '</div><div class="kpi-lbl">Live jobs</div></div></div>' +
-        '<div class="kpi clickable" data-action="goto-companies" role="button" tabindex="0"><span class="kpi-ico">⏱</span><div><div class="kpi-val">' + overdue.length + '</div><div class="kpi-lbl">Past deadline</div></div></div>' +
-        '<div class="kpi"><span class="kpi-ico">✉</span><div><div class="kpi-val">' + filingsSoon.length + '</div><div class="kpi-lbl">Filings 30d</div></div></div>' +
-        '<div class="kpi"><span class="kpi-ico">⚠</span><div><div class="kpi-val">' + openMl + '</div><div class="kpi-lbl">ML open</div></div></div>' +
-        '<div class="kpi"><span class="kpi-ico">↻</span><div><div class="kpi-val">' + openRem + '</div><div class="kpi-lbl">Remedies</div></div></div>' +
-        '<div class="kpi"><span class="kpi-ico">⌖</span><div><div class="kpi-val">' + highRiskClients + '</div><div class="kpi-lbl">High risk</div></div></div>' +
-        '<div class="kpi"><span class="kpi-ico">⌖</span><div><div class="kpi-val">' + regHeat + '</div><div class="kpi-lbl">Reg flags</div></div></div>' +
-      '</div>' +
-      '<div class="dash-panels">' +
-        '<div class="viz-card">' +
-          '<div class="viz-title">Jobs by phase</div>' +
-          '<div class="bar-row">' +
-          barBlock('Plan', phaseCount.planning) +
-          barBlock('Field', phaseCount.fieldwork) +
-          barBlock('Done', phaseCount.completion) +
-          barBlock('Arch', phaseCount.archived) +
-          '</div>' +
-          '<div class="muted" style="margin-top:12px;font-size:11px">' + engs + ' total · ' + active + ' active</div>' +
-        '</div>' +
-        '<div class="viz-card">' +
-          '<div class="viz-title">Past deadline</div>' +
-          '<div class="dash-strip">' + (overdueChips || '<span class="muted">None</span>') + '</div>' +
-          '<div class="viz-title" style="margin-top:16px">Filings ≤30d</div>' +
-          '<div class="dash-strip">' + (filingChips || '<span class="muted">None</span>') + '</div>' +
-        '</div>' +
-      '</div>'
-    );
-  }
-
-  function renderCompanies() {
-    var cid = state.ui.engagementsCompanyId;
-    var co = cid ? companyById(cid) : null;
-    var opts = state.companies.map(function (c) {
-      return '<option value="' + escapeHtml(c.id) + '"' + (cid === c.id ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
-    }).join('');
-    var hubTab = state.ui.companyTab || 'engagements';
-
-    if (!state.companies.length) {
-      return (
-        '<div class="dash-top"><h1 class="dash-title">Clients & engagements</h1>' +
-        '<button type="button" class="primary" data-action="company-add">+ Client</button></div>' +
-        '<div class="viz-card"><p class="muted">No clients yet.</p></div>'
-      );
-    }
-
-    var hubBody = '';
-    if (co) {
-      hubBody =
-        companyHubTabsHtml(hubTab) +
-        '<div class="viz-card" style="margin-bottom:14px">' +
-        (hubTab === 'engagements' ? '<div class="viz-title">Engagements</div>' : '') +
-        renderCompanyTabBody(co.id, hubTab, { compactEngagements: hubTab === 'engagements' }) +
-        '</div>';
-    }
-
-    return (
-      '<div class="dash-top">' +
-        '<h1 class="dash-title">Clients & engagements</h1>' +
-        '<div class="toolbar">' +
-          '<button type="button" class="primary" data-action="company-add">+ Client</button>' +
-          '<button type="button" class="ghost" data-action="company-picker-new-eng"' + (co ? ' data-company="' + escapeHtml(co.id) + '"' : '') + '>+ Job</button>' +
-          (co ? '<button type="button" class="small danger" data-action="company-delete" data-id="' + escapeHtml(co.id) + '">Remove client</button>' : '') +
-        '</div>' +
-      '</div>' +
-      '<div class="portfolio-bar">' +
-        '<div class="field">' +
-          '<label>Select company — engagements listed below</label>' +
-          '<select class="select-xl" data-bind="eng-company-filter">' + opts + '</select>' +
-        '</div>' +
-      '</div>' +
-      (co ? hubBody : '<div class="viz-card"><p class="muted">Select a client.</p></div>')
-    );
-  }
-
-  function tabButton(key, label, cur) {
-    return '<button type="button" class="tab' + (cur === key ? ' active' : '') + '" data-company-tab="' + escapeHtml(key) + '">' + escapeHtml(label) + '</button>';
-  }
-
-  function companyHubTabsHtml(activeTab) {
-    var t = activeTab || 'engagements';
-    return (
-      '<div class="tabs client-hub-pills">' +
-      tabButton('engagements', 'Engagements', t) +
-      tabButton('overview', 'Profile', t) +
-      tabButton('users', 'Users', t) +
-      tabButton('fees', 'Fee history', t) +
-      tabButton('regulatory', 'Regulatory', t) +
-      tabButton('goingConcern', 'Going concern', t) +
-      tabButton('predecessor', 'Predecessor', t) +
-      tabButton('coi', 'Independence', t) +
-      '</div>'
-    );
-  }
-
-  function renderCompanyTabBody(companyId, tab, opts) {
-    opts = opts || {};
-    var compactEng = opts.compactEngagements;
-    var c = companyById(companyId);
-    if (!c) return '<p class="muted">Company not found.</p>';
-    var id = companyId;
-
-    if (tab === 'engagements') {
-      var engToolbar = compactEng
-        ? ''
-        : (
-          '<div class="toolbar">' +
-          '<button type="button" class="primary small" data-action="eng-add" data-company="' + escapeHtml(id) + '">New engagement</button>' +
-          '</div>'
-        );
-      return (
-        engToolbar +
-        '<div class="table-scroll"><table class="data"><thead><tr><th>Job</th><th>Phase</th><th>Deadline</th><th>Team</th><th>Grp</th><th>FY1</th><th>ML</th><th>Due≤30d</th><th>Cli</th><th>Risk</th><th></th></tr></thead><tbody>' +
-        (engagementsForCompany(id).map(engagementPortfolioRow).join('') || '<tr><td colspan="11" class="muted">No engagements yet.</td></tr>') +
-        '</tbody></table></div>'
-      );
-    }
-
-    if (tab === 'overview') {
-      return (
-        '<div class="section-panel"><h2>Profile</h2>' +
-        '<div class="grid2">' +
-        '<div class="field"><label>Name</label><input data-bind="company-name" value="' + escapeHtml(c.name) + '" /></div>' +
-        '<div class="field"><label>Industry</label><input data-bind="company-industry" value="' + escapeHtml(c.industry || '') + '" /></div>' +
-        '<div class="field"><label>Risk tier</label><select data-bind="company-risk">' +
-        ['low', 'medium', 'high'].map(function (x) {
-          return '<option value="' + x + '"' + ((c.riskTier || 'medium') === x ? ' selected' : '') + '>' + x + '</option>';
-        }).join('') +
-        '</select></div>' +
-        '<div class="field"><label>Registration no.</label><input data-bind="company-reg" value="' + escapeHtml((c.entityMeta || {}).registrationNo || '') + '" /></div>' +
-        '<div class="field"><label>Fiscal year-end</label><input data-bind="company-fye" value="' + escapeHtml((c.entityMeta || {}).fiscalYearEnd || '') + '" /></div>' +
-        '</div>' +
-        '<div class="field"><label>Notes</label><textarea data-bind="company-notes">' + escapeHtml(c.notes || '') + '</textarea></div>' +
-        customFieldsHtml('company', c.customFieldValues) +
-        '<button type="button" class="primary small" data-action="company-save-profile" data-id="' + escapeHtml(id) + '">Save profile</button>' +
-        '</div>'
-      );
-    }
-
-    if (tab === 'users') {
-      var flat = [];
-      engagementsForCompany(id).forEach(function (eng) {
-        (eng.clientUsers || []).forEach(function (u) {
-          flat.push({ eng: eng, u: u });
-        });
-      });
-      return (
-        '<div class="section-panel"><h2>Client users</h2>' +
-        '<p class="muted" style="margin:0 0 12px;font-size:12px">Portal contacts across all jobs for this client. Edit removes the user from that engagement only.</p>' +
-        '<div class="table-scroll"><table class="data"><thead><tr><th>Job</th><th>Name</th><th>Email</th><th>Role</th><th>Access</th><th></th></tr></thead><tbody>' +
-        (flat.length
-          ? flat.map(function (row) {
-            return '<tr><td><button type="button" class="small ghost" data-action="eng-open" data-id="' + escapeHtml(row.eng.id) + '">' + escapeHtml(row.eng.code || '') + '</button></td><td>' + escapeHtml(row.u.name || '') + '</td><td>' + escapeHtml(row.u.email || '') + '</td><td>' + escapeHtml(row.u.role || '') + '</td><td>' + escapeHtml(row.u.status || '') + '</td>' +
-              '<td><button type="button" class="small ghost" data-action="cu-edit" data-eng="' + escapeHtml(row.eng.id) + '" data-row="' + escapeHtml(row.u.id) + '">Edit</button> ' +
-              '<button type="button" class="small danger" data-action="cu-del" data-eng="' + escapeHtml(row.eng.id) + '" data-row="' + escapeHtml(row.u.id) + '">Delete</button></td></tr>';
-          }).join('')
-          : '<tr><td colspan="6" class="muted">No client users — add under each job’s Client users tab.</td></tr>') +
-        '</tbody></table></div></div>'
-      );
-    }
-
-    if (tab === 'goingConcern') {
-      return (
-        '<div class="toolbar"><button type="button" class="primary small" data-action="gc-add" data-id="' + escapeHtml(id) + '">Add entry</button></div>' +
-        '<table class="data"><thead><tr><th>As at</th><th>Flag</th><th>Detail</th><th></th></tr></thead><tbody>' +
-        (c.goingConcernHistory || []).map(function (g) {
-          return '<tr><td>' + escapeHtml(g.asAt || '') + '</td><td>' + escapeHtml(g.flag || '') + '</td><td>' + escapeHtml(g.detail || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="gc-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(g.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="gc-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(g.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>'
-      );
-    }
-
-    if (tab === 'predecessor') {
-      var p = c.predecessorAuditor || {};
-      return (
-        '<div class="section-panel"><h2>Predecessor auditor</h2>' +
-        '<div class="grid2">' +
-        '<div class="field"><label>Firm name</label><input data-bind="pred-name" value="' + escapeHtml(p.firmName || '') + '" /></div>' +
-        '<div class="field"><label>Last year-end audited</label><input data-bind="pred-ye" value="' + escapeHtml(p.lastYearEnd || '') + '" /></div>' +
-        '<div class="field"><label>Clearance letter</label><select data-bind="pred-clear">' +
-        ['', 'requested', 'received', 'declined'].map(function (x) {
-          var sel = (p.clearanceLetter || '') === x ? ' selected' : '';
-          return '<option value="' + escapeHtml(x) + '"' + sel + '>' + (x || '—') + '</option>';
-        }).join('') +
-        '</select></div>' +
-        '</div>' +
-        '<div class="field"><label>Notes</label><textarea data-bind="pred-notes">' + escapeHtml(p.notes || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="pred-save" data-id="' + escapeHtml(id) + '">Save predecessor info</button>' +
-        '</div>'
-      );
-    }
-
-    if (tab === 'fees') {
-      return (
-        '<div class="toolbar"><button type="button" class="primary small" data-action="fee-add" data-id="' + escapeHtml(id) + '">Add fee year</button></div>' +
-        '<table class="data"><thead><tr><th>Year</th><th>Amount</th><th>CCY</th><th>Scope</th><th></th></tr></thead><tbody>' +
-        (c.feeHistory || []).map(function (f) {
-          return '<tr><td>' + escapeHtml(f.year) + '</td><td>' + escapeHtml(f.amount) + '</td><td>' + escapeHtml(f.currency || 'MYR') + '</td><td>' + escapeHtml(f.scope || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="fee-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(f.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="fee-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(f.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>'
-      );
-    }
-
-    if (tab === 'regulatory') {
-      return (
-        '<div class="toolbar"><button type="button" class="primary small" data-action="reg-add" data-id="' + escapeHtml(id) + '">Add flag</button></div>' +
-        '<table class="data"><thead><tr><th>Regulator</th><th>Status</th><th>Detail</th><th></th></tr></thead><tbody>' +
-        (c.regulatoryFlags || []).map(function (r) {
-          return '<tr><td>' + escapeHtml(r.regulator || '') + '</td><td>' + escapeHtml(r.status || '') + '</td><td>' + escapeHtml(r.detail || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="reg-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="reg-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>'
-      );
-    }
-
-    if (tab === 'coi') {
-      return (
-        '<div class="toolbar"><button type="button" class="primary small" data-action="coi-add" data-id="' + escapeHtml(id) + '">Record independence check</button></div>' +
-        '<table class="data"><thead><tr><th>Checked</th><th>Declared by</th><th>Outcome</th><th>Notes</th><th></th></tr></thead><tbody>' +
-        (c.conflictChecks || []).map(function (x) {
-          return '<tr><td>' + escapeHtml(x.checkedAt || '') + '</td><td>' + escapeHtml(x.declaredBy || '') + '</td><td>' + escapeHtml(x.outcome || '') + '</td><td>' + escapeHtml(x.independenceNotes || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="coi-edit" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(x.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="coi-del" data-company="' + escapeHtml(id) + '" data-row="' + escapeHtml(x.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>'
-      );
-    }
-
-    return '<p class="muted">Unknown tab.</p>';
-  }
-
-  function renderCompanyDetail(id) {
-    var c = companyById(id);
-    if (!c) return '<p class="muted">Company not found.</p>';
-    var tab = state.ui.companyTab || 'engagements';
-    var tabs = companyHubTabsHtml(tab);
-    var body = renderCompanyTabBody(id, tab, {});
-
-    return (
-      '<div class="breadcrumb">' +
-      '<button type="button" class="crumb" data-action="goto-companies">Clients</button><span aria-hidden="true">·</span><strong>' + escapeHtml(c.name) + '</strong>' +
-      '</div>' +
-      '<div class="page-head"><div><h1>' + escapeHtml(c.name) + '</h1><p class="muted">Client record — engagements and firm intelligence.</p></div>' +
-      '<button type="button" class="ghost" data-action="goto-companies">← Clients & engagements</button></div>' +
-      tabs + body
-    );
-  }
-
-  function engagementTabButton(key, label, cur) {
-    return '<button type="button" class="tab' + (cur === key ? ' active' : '') + '" data-engagement-tab="' + escapeHtml(key) + '">' + escapeHtml(label) + '</button>';
-  }
-
-  function renderUniverseTablePanel() {
-    var rows = (state.firm.auditUniverse || []).map(function (u) {
-      var cn = u.companyId ? (companyById(u.companyId) || {}).name || 'Unknown' : '— Firm-wide';
-      return '<tr><td>' + escapeHtml(u.area || '') + '</td><td>' + escapeHtml(cn) + '</td><td>' + escapeHtml(u.owner || '') + '</td>' +
-        '<td>' + escapeHtml(u.frequency || '') + '</td><td>' + escapeHtml(u.lastAuditDate || '—') + '</td><td>' + escapeHtml(u.nextDue || '—') + '</td><td>' + escapeHtml(u.status || '') + '</td>' +
-        '<td style="white-space:nowrap">' +
-        '<button type="button" class="small ghost" data-action="uni-edit" data-row="' + escapeHtml(u.id) + '">Edit</button> ' +
-        '<button type="button" class="small danger" data-action="uni-del" data-row="' + escapeHtml(u.id) + '">Delete</button></td></tr>';
-    }).join('');
-    return (
-      '<div class="toolbar"><button type="button" class="primary small" data-action="uni-add">Add row</button></div>' +
-      '<div class="table-scroll"><table class="data"><thead><tr><th>Area</th><th>Scope</th><th>Owner</th><th>Cycle</th><th>Last</th><th>Next</th><th>Status</th><th></th></tr></thead><tbody>' +
-      (rows || '<tr><td colspan="8" class="muted">No universe rows.</td></tr>') +
-      '</tbody></table></div>'
-    );
-  }
-
-  function renderEngagementsList() {
-    return renderCompanies();
-  }
-
-  function renderEngagementDetail(id) {
-    var e = engagementById(id);
-    if (!e) return '<p class="muted">Engagement not found.</p>';
-    var co = companyById(e.companyId);
-    var tab = state.ui.engagementTab || 'overview';
-    var tabs =
-      '<div class="tabs">' +
-      engagementTabButton('overview', 'Overview', tab) +
-      engagementTabButton('team', 'Audit team', tab) +
-      engagementTabButton('clients', 'Client users', tab) +
-      engagementTabButton('independence', 'Independence', tab) +
-      engagementTabButton('risk', 'Risk register', tab) +
-      engagementTabButton('auditplan', 'Audit plan', tab) +
-      engagementTabButton('opening', 'Opening balances', tab) +
-      engagementTabButton('sampling', 'Sampling', tab) +
-      engagementTabButton('mgmt', 'Mgmt letter', tab) +
-      engagementTabButton('subsequent', 'Subsequent events', tab) +
-      engagementTabButton('group', 'Group audit', tab) +
-      engagementTabButton('filings', 'Filings', tab) +
-      engagementTabButton('remedies', 'Remedies', tab) +
-      '</div>';
-
-    var body = '';
-    if (tab === 'overview') {
-      body =
-        '<div class="section-panel"><h2>Engagement summary</h2>' +
-        '<div class="grid2">' +
-        '<div class="field"><label>Code</label><input data-bind="eng-code" value="' + escapeHtml(e.code || '') + '" /></div>' +
-        '<div class="field"><label>Phase</label><select data-bind="eng-phase">' +
-        ['planning', 'fieldwork', 'completion', 'archived'].map(function (p) {
-          return '<option value="' + p + '"' + ((e.phase || '') === p ? ' selected' : '') + '>' + p + '</option>';
-        }).join('') +
-        '</select></div>' +
-        '<div class="field"><label>Status</label><select data-bind="eng-status">' +
-        ['active', 'on_hold', 'closed'].map(function (p) {
-          return '<option value="' + p + '"' + ((e.status || 'active') === p ? ' selected' : '') + '>' + p + '</option>';
-        }).join('') +
-        '</select></div>' +
-        '</div>' +
-        '<div class="field"><label>Title</label><input data-bind="eng-title" value="' + escapeHtml(e.title || '') + '" /></div>' +
-        '<div class="field"><label>Target completion / report deadline</label><input type="date" data-bind="eng-deadline" value="' + escapeHtml(e.targetCompletionDate || '') + '" /></div>' +
-        '<p class="muted" style="margin:0 0 12px;font-size:12px;">Staff assignments and client portal contacts are managed under Audit team and Client users tabs.</p>' +
-        customFieldsHtml('engagement', e.customFieldValues) +
-        '<button type="button" class="primary small" data-action="eng-save-overview" data-id="' + escapeHtml(id) + '">Save overview</button>' +
-        '</div>';
-    } else if (tab === 'team') {
-      var boxes = state.staffDirectory.map(function (s) {
-        var on = (e.teamMemberIds || []).indexOf(s.id) >= 0 ? ' checked' : '';
-        return '<label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" data-team-member="' + escapeHtml(s.id) + '"' + on + ' /> ' + escapeHtml(s.name) + ' <span class="muted">— ' + escapeHtml(s.role || '') + '</span></label>';
-      }).join('');
-      body =
-        '<div class="section-panel"><h2>Audit team roster</h2>' +
-        '<p class="muted" style="margin:0 0 10px;">Mirrors staffing from the firm directory. Independence attestations stay on the Independence tab.</p>' +
-        (boxes || '<p class="muted">No staff in directory — add under Firm settings.</p>') +
-        '<button type="button" class="primary small" style="margin-top:14px" data-action="eng-save-team" data-id="' + escapeHtml(id) + '">Save team roster</button>' +
-        '</div>';
-    } else if (tab === 'clients') {
-      body =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="cu-add" data-eng="' + escapeHtml(id) + '">Add client user</button></div>' +
-        '<table class="data"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Access</th><th></th></tr></thead><tbody>' +
-        (e.clientUsers || []).map(function (u) {
-          return '<tr><td>' + escapeHtml(u.name || '') + '</td><td>' + escapeHtml(u.email || '') + '</td><td>' + escapeHtml(u.role || '') + '</td><td>' + escapeHtml(u.status || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="cu-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(u.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="cu-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(u.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'independence') {
-      body =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="ind-add" data-id="' + escapeHtml(id) + '">Add confirmation</button></div>' +
-        '<table class="data"><thead><tr><th>Staff</th><th>Signed</th><th>Note</th><th></th></tr></thead><tbody>' +
-        (e.independenceConfirmations || []).map(function (row) {
-          var st = staffById(row.staffId);
-          return '<tr><td>' + escapeHtml(st ? st.name : row.staffId) + '</td><td>' + escapeHtml(row.signedAt || '') + '</td><td>' + escapeHtml(row.note || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="ind-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(row.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="ind-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(row.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'risk') {
-      body =
-        '<p class="muted" style="margin:0 0 12px">Engagement-level risk responses — firm methodology sits under <button type="button" class="crumb" data-action="goto-firm-risk">Firm settings → Risk planning</button>.</p>' +
-        '<div class="toolbar"><button type="button" class="primary small" data-action="risk-add" data-id="' + escapeHtml(id) + '">Add risk row</button></div>' +
-        '<div class="table-scroll"><table class="data"><thead><tr><th>Assertion / area</th><th>Risk</th><th>Inherent</th><th>Controls</th><th>Residual</th><th>Response</th><th></th></tr></thead><tbody>' +
-        (e.riskRegister || []).map(function (r) {
-          return '<tr><td>' + escapeHtml(r.assertion || '') + '</td><td>' + escapeHtml(r.description || '') + '</td><td>' + escapeHtml(r.inherent || '') + '</td>' +
-            '<td>' + escapeHtml(r.controlReliance || '') + '</td><td>' + escapeHtml(r.residual || '') + '</td><td>' + escapeHtml(r.response || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="risk-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="risk-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table></div>';
-    } else if (tab === 'auditplan') {
-      body =
-        '<p class="muted" style="margin:0 0 12px">Link to firm audit plan templates under Firm settings. Below is this engagement\'s executed programme.</p>' +
-        '<div class="toolbar"><button type="button" class="primary small" data-action="ap-eng-add" data-id="' + escapeHtml(id) + '">Add audit procedure</button></div>' +
-        '<table class="data"><thead><tr><th>Section</th><th>Procedure</th><th>Owner</th><th>Status</th><th></th></tr></thead><tbody>' +
-        (e.auditPlan || []).map(function (p) {
-          return '<tr><td>' + escapeHtml(p.section || '') + '</td><td>' + escapeHtml(p.procedure || '') + '</td><td>' + escapeHtml(p.owner || '') + '</td><td>' + escapeHtml(p.status || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="ap-eng-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(p.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="ap-eng-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(p.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'opening') {
-      body =
-        '<div class="section-panel"><h2>First year vs recurring</h2>' +
-        '<div class="field"><label><input type="checkbox" data-bind="eng-firstyear" ' + (e.firstYearWithClient ? 'checked' : '') + ' /> First-year audit with client</label></div>' +
-        '<div class="field"><label>Opening balance / predecessor procedures narrative</label>' +
-        '<textarea data-bind="eng-ob">' + escapeHtml(e.openingBalanceProcedures || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="eng-save-opening" data-id="' + escapeHtml(id) + '">Save opening balance procedures</button>' +
-        '</div>';
-    } else if (tab === 'sampling') {
-      body =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="samp-add" data-id="' + escapeHtml(id) + '">Add section plan</button></div>' +
-        '<table class="data"><thead><tr><th>Section</th><th>Method</th><th>Notes</th><th></th></tr></thead><tbody>' +
-        (e.samplingBySection || []).map(function (s) {
-          return '<tr><td>' + escapeHtml(s.section || '') + '</td><td>' + escapeHtml(s.method || '') + '</td><td>' + escapeHtml(s.notes || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="samp-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(s.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="samp-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(s.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'mgmt') {
-      body =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="ml-add" data-id="' + escapeHtml(id) + '">Add management letter item</button></div>' +
-        '<table class="data"><thead><tr><th>Title</th><th>Severity</th><th>Status</th><th>Owner</th><th></th></tr></thead><tbody>' +
-        (e.managementLetterItems || []).map(function (m) {
-          return '<tr><td>' + escapeHtml(m.title || '') + '</td><td>' + escapeHtml(m.severity || '') + '</td><td>' + escapeHtml(m.status || '') + '</td><td>' + escapeHtml(m.owner || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="ml-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(m.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="ml-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(m.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'subsequent') {
-      body =
-        '<div class="section-panel"><h2>Subsequent events cutoff</h2>' +
-        '<div class="field"><label>Cutoff date</label><input type="date" data-bind="eng-subseq" value="' + escapeHtml(e.subsequentEventsCutoff || '') + '" /></div>' +
-        '<button type="button" class="primary small" data-action="eng-save-subseq" data-id="' + escapeHtml(id) + '">Save cutoff</button>' +
-        '</div>';
-    } else if (tab === 'group') {
-      body =
-        '<div class="section-panel"><h2>Group audit instructions</h2>' +
-        '<div class="field"><label>Instructions / reporting package obligations</label>' +
-        '<textarea data-bind="eng-group">' + escapeHtml(e.groupAuditInstructions || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="eng-save-group" data-id="' + escapeHtml(id) + '">Save</button>' +
-        '</div>';
-    } else if (tab === 'filings') {
-      body =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="fil-add" data-id="' + escapeHtml(id) + '">Add filing</button></div>' +
-        '<table class="data"><thead><tr><th>Filing</th><th>Regulator</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>' +
-        (e.regulatorySubmissions || []).map(function (f) {
-          return '<tr><td>' + escapeHtml(f.filing || '') + '</td><td>' + escapeHtml(f.regulator || '') + '</td><td>' + escapeHtml(f.due || '') + '</td><td>' + escapeHtml(f.status || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="fil-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(f.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="fil-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(f.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (tab === 'remedies') {
-      body =
-        '<p class="muted" style="margin:0 0 12px">Corrective actions / remediation tracker — separate from formal findings log if you maintain one elsewhere.</p>' +
-        '<div class="toolbar"><button type="button" class="primary small" data-action="rem-add" data-id="' + escapeHtml(id) + '">Add remedy</button></div>' +
-        '<table class="data"><thead><tr><th>Title</th><th>Source</th><th>Owner</th><th>Due</th><th>Status</th><th></th></tr></thead><tbody>' +
-        (e.remedies || []).map(function (r) {
-          return '<tr><td>' + escapeHtml(r.title || '') + '</td><td>' + escapeHtml(r.source || '') + '</td><td>' + escapeHtml(r.owner || '') + '</td><td>' + escapeHtml(r.due || '') + '</td><td>' + escapeHtml(r.status || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="rem-edit" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="rem-del" data-eng="' + escapeHtml(id) + '" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    }
-
-    return (
-      '<div class="breadcrumb">' +
-      '<button type="button" class="crumb" data-action="goto-companies">Clients</button><span aria-hidden="true">·</span>' +
-      '<button type="button" class="crumb" data-action="company-open" data-id="' + escapeHtml(e.companyId) + '">' + escapeHtml(co ? co.name : 'Company') + '</button><span aria-hidden="true">·</span><strong>' + escapeHtml(e.code) + '</strong>' +
-      '</div>' +
-      '<div class="page-head"><div><h1>' + escapeHtml(e.title) + '</h1><p class="muted">' + escapeHtml(e.code) + ' · ' + escapeHtml(co ? co.name : '') +
-      ' · Deadline <strong>' + escapeHtml(e.targetCompletionDate || '—') + '</strong></p></div>' +
-      '<button type="button" class="ghost" data-action="goto-companies">← Jobs grid</button></div>' +
-      tabs + body
-    );
-  }
-
-  function railBtn(section, label, cur) {
-    return '<button type="button"' + (cur === section ? ' class="active"' : '') + ' data-firm-section="' + escapeHtml(section) + '">' + escapeHtml(label) + '</button>';
-  }
-
-  function renderFirmSettings() {
-    var fs = state.firm;
-    var sec = state.ui.route.firmSection || 'universe';
-    var rail =
-      '<div class="rail">' +
-      '<div class="rail-group-label">Internal audit</div>' +
-      railBtn('universe', 'Audit universe', sec) +
-      railBtn('riskplanning', 'Risk planning', sec) +
-      railBtn('aptemplates', 'Audit plan templates', sec) +
-      railBtn('reportformats', 'Report formats', sec) +
-      railBtn('methodology', 'Methodology library', sec) +
-      railBtn('remediation', 'Remediation policy', sec) +
-      '<div class="rail-group-label">Firm administration</div>' +
-      railBtn('profile', 'Firm profile', sec) +
-      railBtn('rbac', 'Roles (RBAC)', sec) +
-      railBtn('activitylog', 'Activity log', sec) +
-      railBtn('security', 'Security & access', sec) +
-      railBtn('retention', 'Retention & purge', sec) +
-      railBtn('archiving', 'Archiving rules', sec) +
-      railBtn('custom', 'Custom fields', sec) +
-      railBtn('staff', 'Staff directory', sec) +
-      '</div>';
-
-    var panel = '';
-    if (sec === 'universe') {
-      panel =
-        '<div class="section-panel"><h2>Audit universe</h2>' +
-        renderUniverseTablePanel() +
-        '</div>';
-    } else if (sec === 'profile') {
-      var pr = fs.profile || {};
-      panel =
-        '<div class="section-panel"><h2>Firm profile</h2>' +
-        '<div class="grid2">' +
-        '<div class="field"><label>Legal name</label><input data-bind="firm-legal" value="' + escapeHtml(pr.legalName || '') + '" /></div>' +
-        '<div class="field"><label>Trading / display name</label><input data-bind="firm-trade" value="' + escapeHtml(pr.tradingName || '') + '" /></div>' +
-        '</div>' +
-        '<div class="field"><label>Letterhead & footer text</label><textarea data-bind="firm-letter" rows="8">' + escapeHtml(pr.letterheadNotes || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="firm-save-profile">Save profile</button>' +
-        '</div>';
-    } else if (sec === 'rbac') {
-      panel =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="rbac-add">Add role</button></div>' +
-        '<table class="data"><thead><tr><th>Role</th><th>Scope summary</th><th></th></tr></thead><tbody>' +
-        (fs.rbacRoles || []).map(function (r) {
-          return '<tr><td>' + escapeHtml(r.name || '') + '</td><td>' + escapeHtml(r.scope || '') + '</td>' +
-            '<td style="white-space:nowrap"><button type="button" class="small ghost" data-action="rbac-edit" data-row="' + escapeHtml(r.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="rbac-del" data-row="' + escapeHtml(r.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (sec === 'activitylog') {
-      var logs = (fs.activityLog || []).slice(0, 80);
-      panel =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="log-add">Log note</button></div>' +
-        '<div class="table-scroll"><table class="data"><thead><tr><th>When</th><th>Actor</th><th>Event</th></tr></thead><tbody>' +
-        logs.map(function (l) {
-          return '<tr><td style="white-space:nowrap">' + escapeHtml((l.at || '').slice(0, 19).replace('T', ' ')) + '</td><td>' + escapeHtml(l.actor || '') + '</td><td>' + escapeHtml(l.message || '') + '</td></tr>';
-        }).join('') +
-        '</tbody></table></div>';
-    } else if (sec === 'security') {
-      var pp = fs.passwordPolicy || {};
-      var wl = (pp.ipWhitelist || []).join('\n');
-      panel =
-        '<div class="section-panel"><h2>Password & session policy</h2>' +
-        '<div class="grid2">' +
-        '<div class="field"><label>Session idle timeout (minutes)</label><input type="number" data-bind="sess-min" value="' + escapeHtml(String(pp.sessionExpiryMinutes || '')) + '" /></div>' +
-        '<div class="field"><label>Password expiry (days)</label><input type="number" data-bind="pwd-days" value="' + escapeHtml(String(pp.passwordExpiryDays || '')) + '" /></div>' +
-        '<div class="field"><label>MFA enforcement</label><select data-bind="mfa">' +
-        ['optional', 'required', 'privileged_only'].map(function (m) {
-          return '<option value="' + m + '"' + ((pp.mfaEnforcement || '') === m ? ' selected' : '') + '>' + m + '</option>';
-        }).join('') +
-        '</select></div>' +
-        '</div>' +
-        '<div class="field"><label>IP allowlist (one per line)</label><textarea data-bind="ipwl">' + escapeHtml(wl) + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="firm-save-security">Save security policy</button>' +
-        '</div>';
-    } else if (sec === 'retention') {
-      var rp = fs.retentionPurging || {};
-      panel =
-        '<div class="section-panel"><h2>Data retention & purging</h2>' +
-        '<div class="field"><label>Completed engagement retention (years)</label>' +
-        '<input type="number" data-bind="ret-years" value="' + escapeHtml(String(rp.completedEngagementYears || 7)) + '" /></div>' +
-        '<div class="field"><label>Regulatory framing note</label><textarea data-bind="ret-note">' + escapeHtml(rp.regulatoryNote || '') + '</textarea></div>' +
-        '<div class="field"><label>Purge procedure</label><textarea data-bind="ret-purge">' + escapeHtml(rp.purgeProcedure || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="firm-save-retention">Save retention policy</button>' +
-        '</div>';
-    } else if (sec === 'archiving') {
-      var ar = fs.archiving || {};
-      panel =
-        '<div class="section-panel"><h2>Archiving rules</h2>' +
-        '<div class="field"><label>Auto-archive days after sign-off</label>' +
-        '<input type="number" data-bind="arch-days" value="' + escapeHtml(String(ar.autoArchiveDaysAfterSignoff || '')) + '" /></div>' +
-        '<div class="field"><label>Archive scope notes</label><textarea data-bind="arch-notes">' + escapeHtml(ar.notes || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="firm-save-archive">Save archiving rules</button>' +
-        '</div>';
-    } else if (sec === 'custom') {
-      panel =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="cf-add">Add custom field</button></div>' +
-        '<table class="data"><thead><tr><th>Name</th><th>Applies to</th><th>Type</th><th></th></tr></thead><tbody>' +
-        (fs.customFields || []).map(function (f) {
-          return '<tr><td>' + escapeHtml(f.name) + '</td><td>' + escapeHtml(f.appliesTo) + '</td><td>' + escapeHtml(f.fieldType) + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="cf-edit" data-row="' + escapeHtml(f.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="cf-del" data-row="' + escapeHtml(f.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (sec === 'methodology') {
-      panel =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="mlib-add">Add methodology note</button></div>' +
-        '<table class="data"><thead><tr><th>Title</th><th>Category</th><th>Preview</th><th></th></tr></thead><tbody>' +
-        (fs.methodologyLibrary || []).map(function (m) {
-          var prev = (m.body || '').slice(0, 120).replace(/\s+/g, ' ');
-          return '<tr><td>' + escapeHtml(m.title) + '</td><td>' + escapeHtml(m.category || '') + '</td><td class="muted">' + escapeHtml(prev) + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="mlib-edit" data-row="' + escapeHtml(m.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="mlib-del" data-row="' + escapeHtml(m.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (sec === 'riskplanning') {
-      var rp = fs.riskPlanning || {};
-      panel =
-        '<div class="section-panel"><h2>Risk planning framework</h2>' +
-        '<p class="muted" style="margin:0 0 12px;font-size:12px">Firm defaults — engagement registers live per job.</p>' +
-        '<div class="field"><label>Inherent risk scale & thresholds</label><textarea data-bind="fp-inherent" rows="4">' + escapeHtml(rp.inherentScale || '') + '</textarea></div>' +
-        '<div class="field"><label>Control assessment approach</label><textarea data-bind="fp-control" rows="4">' + escapeHtml(rp.controlAssessment || '') + '</textarea></div>' +
-        '<div class="field"><label>Materiality & benchmarking notes</label><textarea data-bind="fp-mat" rows="3">' + escapeHtml(rp.materialityNotes || '') + '</textarea></div>' +
-        '<div class="field"><label>EQCR / rotation policy summary</label><textarea data-bind="fp-rot" rows="3">' + escapeHtml(rp.rotationPolicy || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="firm-save-riskplanning">Save risk planning framework</button>' +
-        '</div>';
-    } else if (sec === 'aptemplates') {
-      panel =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="apt-add">Add audit plan template</button></div>' +
-        '<table class="data"><thead><tr><th>Name</th><th>Outline preview</th><th></th></tr></thead><tbody>' +
-        (fs.auditPlanTemplates || []).map(function (t) {
-          var prev = (t.outline || '').slice(0, 100).replace(/\n/g, ' ');
-          return '<tr><td>' + escapeHtml(t.name || '') + '</td><td class="muted">' + escapeHtml(prev) + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="apt-edit" data-row="' + escapeHtml(t.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="apt-del" data-row="' + escapeHtml(t.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (sec === 'reportformats') {
-      panel =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="rf-add">Add report format</button></div>' +
-        '<table class="data"><thead><tr><th>Name</th><th>Structure preview</th><th></th></tr></thead><tbody>' +
-        (fs.reportFormats || []).map(function (t) {
-          var prev = (t.structure || '').slice(0, 100).replace(/\n/g, ' ');
-          return '<tr><td>' + escapeHtml(t.name || '') + '</td><td class="muted">' + escapeHtml(prev) + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="rf-edit" data-row="' + escapeHtml(t.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="rf-del" data-row="' + escapeHtml(t.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    } else if (sec === 'remediation') {
-      var rem = fs.remediationPolicy || {};
-      panel =
-        '<div class="section-panel"><h2>Remediation & corrective action policy</h2>' +
-        '<div class="field"><label>Default SLA (days to management response)</label><input type="number" data-bind="rem-sla" value="' + escapeHtml(String(rem.slaDays != null ? rem.slaDays : 90)) + '" /></div>' +
-        '<div class="field"><label>Escalation matrix</label><textarea data-bind="rem-esc" rows="5">' + escapeHtml(rem.escalation || '') + '</textarea></div>' +
-        '<button type="button" class="primary small" data-action="firm-save-remediation">Save remediation policy</button>' +
-        '</div>';
-    } else if (sec === 'staff') {
-      panel =
-        '<div class="toolbar"><button type="button" class="primary small" data-action="staff-add">Add team member</button></div>' +
-        '<p class="muted" style="margin:0 0 12px;font-size:13px;">Used for engagement independence confirmations and staffing labels.</p>' +
-        '<table class="data"><thead><tr><th>Name</th><th>Role</th><th></th></tr></thead><tbody>' +
-        (state.staffDirectory || []).map(function (s) {
-          return '<tr><td>' + escapeHtml(s.name) + '</td><td>' + escapeHtml(s.role || '') + '</td>' +
-            '<td><button type="button" class="small ghost" data-action="staff-edit" data-row="' + escapeHtml(s.id) + '">Edit</button> ' +
-            '<button type="button" class="small danger" data-action="staff-del" data-row="' + escapeHtml(s.id) + '">Delete</button></td></tr>';
-        }).join('') +
-        '</tbody></table>';
-    }
-
-    return (
-      '<div class="page-head">' +
-        '<div><h1>Firm settings</h1><p class="muted">Internal audit programme · administration · access</p></div>' +
-      '</div>' +
-      '<div class="rail-layout">' + rail + '<div>' + panel + '</div></div>'
-    );
-  }
-
-  function renderMain() {
-    var r = state.ui.route;
-    if (r.view === 'dashboard') return renderDashboard();
-    if (r.view === 'companies') return renderCompanies();
-    if (r.view === 'company') return r.id ? renderCompanyDetail(r.id) : renderCompanies();
-    if (r.view === 'engagements') return renderCompanies();
-    if (r.view === 'engagement') return r.id ? renderEngagementDetail(r.id) : renderCompanies();
-    if (r.view === 'firm-settings') return renderFirmSettings();
-    if (r.view === 'universe') return renderFirmSettings();
-    return renderDashboard();
-  }
-
-  function renderAll() {
-    renderSidebar();
-    document.getElementById('spa-root').innerHTML = renderMain();
-    bindSpaEvents();
-    var bn = document.getElementById('brand-firm-name');
-    if (bn) {
-      var pr = state.firm.profile || {};
-      bn.textContent = (pr.tradingName || pr.legalName) ? (' · ' + (pr.tradingName || pr.legalName)) : '';
-    }
-  }
-
-  function val(root, sel) {
-    var el = root.querySelector(sel);
-    return el ? el.value : '';
-  }
-
-  function bindSpaEvents() {
-    var root = document.getElementById('spa-root');
-
-    root.querySelectorAll('[data-company-tab]').forEach(function (b) {
-      b.onclick = function () { setCompanyTab(b.getAttribute('data-company-tab')); };
-    });
-    root.querySelectorAll('[data-engagement-tab]').forEach(function (b) {
-      b.onclick = function () { setEngagementTab(b.getAttribute('data-engagement-tab')); };
-    });
-    root.querySelectorAll('[data-firm-section]').forEach(function (b) {
-      b.onclick = function () {
-        setFirmSection(b.getAttribute('data-firm-section'));
-      };
-    });
-
-    root.querySelectorAll('[data-action]').forEach(function (btn) {
-      btn.onclick = null;
-    });
-
-    root.onclick = function (ev) {
-      var t = ev.target.closest('[data-action]');
-      if (!t || !root.contains(t)) return;
-      ev.preventDefault();
-      var action = t.getAttribute('data-action');
-      handleAction(action, t, root);
-    };
-
-    var engFilt = root.querySelector('[data-bind="eng-company-filter"]');
-    if (engFilt) {
-      engFilt.onchange = function () {
-        state.ui.engagementsCompanyId = engFilt.value || '';
-        state.ui.companyTab = 'engagements';
-        saveState(state);
-        renderAll();
-      };
-    }
-  }
-
-  function handleAction(action, el, root) {
-    if (action === 'goto-companies') navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-    else if (action === 'goto-engagements') navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-    else if (action === 'goto-firm') navigate({ view: 'firm-settings', id: null, firmSection: state.ui.route.firmSection || 'universe' });
-    else if (action === 'goto-universe') navigate({ view: 'firm-settings', id: null, firmSection: 'universe' });
-    else if (action === 'goto-firm-risk') navigate({ view: 'firm-settings', id: null, firmSection: 'riskplanning' });
-    else if (action === 'company-open') {
-      var oid = el.getAttribute('data-id');
-      state.ui.engagementsCompanyId = oid;
-      state.ui.companyTab = 'overview';
-      navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-    } else if (action === 'company-delete') {
-      var cid = el.getAttribute('data-id');
-      if (!confirm('Delete company and its engagements from this workspace?')) return;
-      state.companies = state.companies.filter(function (c) { return c.id !== cid; });
-      state.engagements = state.engagements.filter(function (e) { return e.companyId !== cid; });
-      if (state.ui.engagementsCompanyId === cid) {
-        state.ui.engagementsCompanyId = state.companies.length ? state.companies[0].id : '';
-      }
-      toast('Company removed');
-      navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-      saveState(state);
-    } else if (action === 'company-add') {
-      openModal({
-        title: 'Add company',
-        bodyHtml:
-          '<div class="field"><label>Name</label><input id="m_name" /></div>' +
-          '<div class="field"><label>Industry</label><input id="m_ind" /></div>' +
-          '<div class="field"><label>Risk tier</label><select id="m_risk"><option>low</option><option selected>medium</option><option>high</option></select></div>',
-        onOk: function () {
-          var c = {
-            id: uid(),
-            name: document.getElementById('m_name').value.trim() || 'New company',
-            industry: document.getElementById('m_ind').value.trim(),
-            riskTier: document.getElementById('m_risk').value,
-            notes: '',
-            entityMeta: {},
-            goingConcernHistory: [],
-            predecessorAuditor: {},
-            feeHistory: [],
-            regulatoryFlags: [],
-            conflictChecks: [],
-            customFieldValues: {}
-          };
-          state.companies.push(c);
-          state.ui.engagementsCompanyId = c.id;
-          state.ui.companyTab = 'overview';
-          toast('Company added');
-          navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-          saveState(state);
-        }
-      });
-    } else if (action === 'company-save-profile') {
-      var id = el.getAttribute('data-id');
-      var c = companyById(id);
-      if (!c) return;
-      c.name = val(root, '[data-bind="company-name"]').trim() || c.name;
-      c.industry = val(root, '[data-bind="company-industry"]');
-      c.riskTier = val(root, '[data-bind="company-risk"]');
-      c.notes = val(root, '[data-bind="company-notes"]');
-      c.entityMeta = c.entityMeta || {};
-      c.entityMeta.registrationNo = val(root, '[data-bind="company-reg"]');
-      c.entityMeta.fiscalYearEnd = val(root, '[data-bind="company-fye"]');
-      c.customFieldValues = Object.assign({}, c.customFieldValues || {}, collectCustomFieldValues(root, 'company'));
-      toast('Profile saved');
-      saveState(state); renderAll();
-    } else if (action === 'pred-save') {
-      var id = el.getAttribute('data-id');
-      var c = companyById(id);
-      if (!c) return;
-      c.predecessorAuditor = {
-        firmName: val(root, '[data-bind="pred-name"]'),
-        lastYearEnd: val(root, '[data-bind="pred-ye"]'),
-        clearanceLetter: val(root, '[data-bind="pred-clear"]'),
-        notes: val(root, '[data-bind="pred-notes"]')
-      };
-      toast('Predecessor auditor saved');
-      saveState(state); renderAll();
-    } else if (action === 'gc-add' || action === 'gc-edit') {
-      var cid = el.getAttribute('data-id') || el.getAttribute('data-company');
-      var c = companyById(cid);
-      if (!c) return;
-      var rowId = action === 'gc-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (c.goingConcernHistory || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit going concern entry' : 'Add going concern entry',
-        bodyHtml:
-          '<div class="field"><label>As at</label><input type="date" id="gc_asat" value="' + escapeHtml(existing ? existing.asAt || '' : '') + '" /></div>' +
-          '<div class="field"><label>Flag</label><select id="gc_flag">' +
-          ['clear', 'emphasis', 'material_uncertainty'].map(function (f) {
-            return '<option value="' + f + '"' + ((existing && existing.flag === f) ? ' selected' : '') + '>' + f + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '<div class="field"><label>Detail</label><textarea id="gc_detail">' + escapeHtml(existing ? existing.detail || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = { id: existing ? existing.id : uid(), asAt: document.getElementById('gc_asat').value, flag: document.getElementById('gc_flag').value, detail: document.getElementById('gc_detail').value };
-          c.goingConcernHistory = c.goingConcernHistory || [];
-          if (existing) {
-            var ix = c.goingConcernHistory.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) c.goingConcernHistory[ix] = rec;
-          } else c.goingConcernHistory.push(rec);
-          toast('Going concern updated');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'gc-del') {
-      var cid = el.getAttribute('data-company');
-      var rid = el.getAttribute('data-row');
-      var c = companyById(cid);
-      if (!c) return;
-      c.goingConcernHistory = (c.goingConcernHistory || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'fee-add' || action === 'fee-edit') {
-      var cid = el.getAttribute('data-id') || el.getAttribute('data-company');
-      var c = companyById(cid);
-      if (!c) return;
-      var rowId = action === 'fee-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (c.feeHistory || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit fee record' : 'Add fee record',
-        bodyHtml:
-          '<div class="grid2">' +
-          '<div class="field"><label>Fiscal year label</label><input id="fee_year" value="' + escapeHtml(existing ? existing.year || '' : '') + '" /></div>' +
-          '<div class="field"><label>Amount</label><input id="fee_amt" value="' + escapeHtml(existing ? existing.amount || '' : '') + '" /></div>' +
-          '<div class="field"><label>Currency</label><input id="fee_ccy" value="' + escapeHtml(existing ? existing.currency || 'MYR' : 'MYR') + '" /></div>' +
-          '<div class="field"><label>Scope</label><input id="fee_scope" value="' + escapeHtml(existing ? existing.scope || '' : '') + '" /></div>' +
-          '</div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            year: document.getElementById('fee_year').value,
-            amount: document.getElementById('fee_amt').value,
-            currency: document.getElementById('fee_ccy').value || 'MYR',
-            scope: document.getElementById('fee_scope').value
-          };
-          c.feeHistory = c.feeHistory || [];
-          if (existing) {
-            var ix = c.feeHistory.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) c.feeHistory[ix] = rec;
-          } else c.feeHistory.push(rec);
-          toast('Fee history saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'fee-del') {
-      var cid = el.getAttribute('data-company');
-      var rid = el.getAttribute('data-row');
-      var c = companyById(cid);
-      if (!c) return;
-      c.feeHistory = (c.feeHistory || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'reg-add' || action === 'reg-edit') {
-      var cid = el.getAttribute('data-id') || el.getAttribute('data-company');
-      var c = companyById(cid);
-      if (!c) return;
-      var rowId = action === 'reg-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (c.regulatoryFlags || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit regulatory flag' : 'Add regulatory flag',
-        bodyHtml:
-          '<div class="field"><label>Regulator</label><select id="reg_reg">' +
-          ['SC', 'BNM', 'SSM', 'LFSA', 'Other'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.regulator === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '<div class="field"><label>Status</label><select id="reg_stat">' +
-          ['none', 'monitoring', 'investigation', 'resolved'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '<div class="field"><label>Detail</label><textarea id="reg_detail">' + escapeHtml(existing ? existing.detail || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            regulator: document.getElementById('reg_reg').value,
-            status: document.getElementById('reg_stat').value,
-            detail: document.getElementById('reg_detail').value
-          };
-          c.regulatoryFlags = c.regulatoryFlags || [];
-          if (existing) {
-            var ix = c.regulatoryFlags.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) c.regulatoryFlags[ix] = rec;
-          } else c.regulatoryFlags.push(rec);
-          toast('Regulatory flag saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'reg-del') {
-      var cid = el.getAttribute('data-company');
-      var rid = el.getAttribute('data-row');
-      var c = companyById(cid);
-      if (!c) return;
-      c.regulatoryFlags = (c.regulatoryFlags || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'coi-add' || action === 'coi-edit') {
-      var cid = el.getAttribute('data-id') || el.getAttribute('data-company');
-      var c = companyById(cid);
-      if (!c) return;
-      var rowId = action === 'coi-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (c.conflictChecks || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit independence declaration' : 'Record independence check',
-        bodyHtml:
-          '<div class="field"><label>Checked date</label><input type="date" id="coi_date" value="' + escapeHtml(existing ? existing.checkedAt || '' : '') + '" /></div>' +
-          '<div class="field"><label>Declared by</label><input id="coi_by" value="' + escapeHtml(existing ? existing.declaredBy || '' : '') + '" /></div>' +
-          '<div class="field"><label>Outcome</label><input id="coi_out" value="' + escapeHtml(existing ? existing.outcome || '' : '') + '" /></div>' +
-          '<div class="field"><label>Independence notes</label><textarea id="coi_notes">' + escapeHtml(existing ? existing.independenceNotes || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            checkedAt: document.getElementById('coi_date').value,
-            declaredBy: document.getElementById('coi_by').value,
-            outcome: document.getElementById('coi_out').value,
-            independenceNotes: document.getElementById('coi_notes').value
-          };
-          c.conflictChecks = c.conflictChecks || [];
-          if (existing) {
-            var ix = c.conflictChecks.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) c.conflictChecks[ix] = rec;
-          } else c.conflictChecks.push(rec);
-          toast('Independence check saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'coi-del') {
-      var cid = el.getAttribute('data-company');
-      var rid = el.getAttribute('data-row');
-      var c = companyById(cid);
-      if (!c) return;
-      c.conflictChecks = (c.conflictChecks || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'eng-add') {
-      var companyId = el.getAttribute('data-company');
-      openModal({
-        title: 'New engagement',
-        bodyHtml:
-          '<div class="field"><label>Code</label><input id="ne_code" placeholder="FY26-AUD-001" /></div>' +
-          '<div class="field"><label>Title</label><input id="ne_title" /></div>' +
-          '<div class="field"><label>Phase</label><select id="ne_phase"><option>planning</option><option selected>fieldwork</option><option>completion</option></select></div>',
-        onOk: function () {
-          var eng = {
-            id: uid(),
-            companyId: companyId,
-            code: document.getElementById('ne_code').value.trim() || 'ENG-' + uid().slice(-6),
-            title: document.getElementById('ne_title').value.trim() || 'New engagement',
-            phase: document.getElementById('ne_phase').value,
-            status: 'active',
-            independenceConfirmations: [],
-            firstYearWithClient: false,
-            openingBalanceProcedures: '',
-            samplingBySection: [],
-            managementLetterItems: [],
-            subsequentEventsCutoff: '',
-            groupAuditInstructions: '',
-            regulatorySubmissions: [],
-            customFieldValues: {},
-            targetCompletionDate: '',
-            teamMemberIds: [],
-            clientUsers: [],
-            riskRegister: [],
-            auditPlan: [],
-            remedies: []
-          };
-          state.engagements.push(eng);
-          toast('Engagement created');
-          navigate({ view: 'engagement', id: eng.id, firmSection: state.ui.route.firmSection });
-          saveState(state);
-        }
-      });
-    } else if (action === 'uni-add' || action === 'uni-edit') {
-      var rowId = action === 'uni-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? state.firm.auditUniverse.find(function (x) { return x.id === rowId; }) : null;
-      var coSel = '<option value=""' + ((!existing || !existing.companyId) ? ' selected' : '') + '>— Firm-wide / methodology —</option>' +
-        state.companies.map(function (c) {
-          return '<option value="' + escapeHtml(c.id) + '"' + ((existing && existing.companyId === c.id) ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
-        }).join('');
-      openModal({
-        title: existing ? 'Edit universe row' : 'Add universe row',
-        bodyHtml:
-          '<div class="field"><label>Area / process</label><input id="uni_area" value="' + escapeHtml(existing ? existing.area || '' : '') + '" /></div>' +
-          '<div class="field"><label>Company scope</label><select id="uni_coid">' + coSel + '</select></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Owner</label><input id="uni_own" value="' + escapeHtml(existing ? existing.owner || '' : '') + '" /></div>' +
-          '<div class="field"><label>Frequency</label><input id="uni_freq" value="' + escapeHtml(existing ? existing.frequency || '' : '') + '" /></div>' +
-          '<div class="field"><label>Last covered</label><input type="date" id="uni_last" value="' + escapeHtml(existing ? existing.lastAuditDate || '' : '') + '" /></div>' +
-          '<div class="field"><label>Next due</label><input type="date" id="uni_next" value="' + escapeHtml(existing ? existing.nextDue || '' : '') + '" /></div>' +
-          '</div>' +
-          '<div class="field"><label>Status</label><input id="uni_stat" placeholder="scheduled / in_progress / framework..." value="' + escapeHtml(existing ? existing.status || '' : '') + '" /></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            area: document.getElementById('uni_area').value.trim(),
-            companyId: document.getElementById('uni_coid').value,
-            owner: document.getElementById('uni_own').value,
-            frequency: document.getElementById('uni_freq').value,
-            lastAuditDate: document.getElementById('uni_last').value,
-            nextDue: document.getElementById('uni_next').value,
-            status: document.getElementById('uni_stat').value
-          };
-          state.firm.auditUniverse = state.firm.auditUniverse || [];
-          if (existing) {
-            var ix = state.firm.auditUniverse.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) state.firm.auditUniverse[ix] = rec;
-          } else state.firm.auditUniverse.push(rec);
-          toast('Universe updated');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'uni-del') {
-      var uidRow = el.getAttribute('data-row');
-      state.firm.auditUniverse = (state.firm.auditUniverse || []).filter(function (x) { return x.id !== uidRow; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'firm-save-riskplanning') {
-      var rp = state.firm.riskPlanning || (state.firm.riskPlanning = {});
-      rp.inherentScale = val(root, '[data-bind="fp-inherent"]');
-      rp.controlAssessment = val(root, '[data-bind="fp-control"]');
-      rp.materialityNotes = val(root, '[data-bind="fp-mat"]');
-      rp.rotationPolicy = val(root, '[data-bind="fp-rot"]');
-      toast('Risk framework saved');
-      saveState(state); renderAll();
-    } else if (action === 'firm-save-remediation') {
-      var rm = state.firm.remediationPolicy || (state.firm.remediationPolicy = {});
-      rm.slaDays = parseInt(val(root, '[data-bind="rem-sla"]'), 10) || 90;
-      rm.escalation = val(root, '[data-bind="rem-esc"]');
-      toast('Remediation policy saved');
-      saveState(state); renderAll();
-    } else if (action === 'apt-add' || action === 'apt-edit') {
-      var rowId = action === 'apt-edit' ? el.getAttribute('data-row') : null;
-      var fs = state.firm;
-      var existing = rowId ? fs.auditPlanTemplates.find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit audit plan template' : 'Add audit plan template',
-        bodyHtml:
-          '<div class="field"><label>Template name</label><input id="apt_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
-          '<div class="field"><label>Outline / sections</label><textarea id="apt_out" rows="8">' + escapeHtml(existing ? existing.outline || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            name: document.getElementById('apt_name').value.trim() || 'Untitled template',
-            outline: document.getElementById('apt_out').value
-          };
-          fs.auditPlanTemplates = fs.auditPlanTemplates || [];
-          if (existing) {
-            var ix = fs.auditPlanTemplates.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) fs.auditPlanTemplates[ix] = rec;
-          } else fs.auditPlanTemplates.push(rec);
-          toast('Template saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'apt-del') {
-      var aptId = el.getAttribute('data-row');
-      state.firm.auditPlanTemplates = (state.firm.auditPlanTemplates || []).filter(function (x) { return x.id !== aptId; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'rf-add' || action === 'rf-edit') {
-      var rowId = action === 'rf-edit' ? el.getAttribute('data-row') : null;
-      var fs = state.firm;
-      var existing = rowId ? fs.reportFormats.find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit report format' : 'Add report format',
-        bodyHtml:
-          '<div class="field"><label>Report name</label><input id="rf_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
-          '<div class="field"><label>Structure / sections</label><textarea id="rf_struct" rows="8">' + escapeHtml(existing ? existing.structure || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            name: document.getElementById('rf_name').value.trim() || 'Untitled report',
-            structure: document.getElementById('rf_struct').value
-          };
-          fs.reportFormats = fs.reportFormats || [];
-          if (existing) {
-            var ix = fs.reportFormats.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) fs.reportFormats[ix] = rec;
-          } else fs.reportFormats.push(rec);
-          toast('Report format saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'rf-del') {
-      var rfId = el.getAttribute('data-row');
-      state.firm.reportFormats = (state.firm.reportFormats || []).filter(function (x) { return x.id !== rfId; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'risk-add' || action === 'risk-edit') {
-      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      var rowId = action === 'risk-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.riskRegister || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit risk row' : 'Add risk row',
-        bodyHtml:
-          '<div class="field"><label>Assertion / area</label><input id="rk_as" value="' + escapeHtml(existing ? existing.assertion || '' : '') + '" /></div>' +
-          '<div class="field"><label>Risk description</label><textarea id="rk_desc">' + escapeHtml(existing ? existing.description || '' : '') + '</textarea></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Inherent</label><select id="rk_inh">' + ['high', 'medium', 'low'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.inherent === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') + '</select></div>' +
-          '<div class="field"><label>Control reliance</label><input id="rk_cr" value="' + escapeHtml(existing ? existing.controlReliance || '' : '') + '" /></div>' +
-          '<div class="field"><label>Residual</label><select id="rk_res">' + ['high', 'medium', 'low'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.residual === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') + '</select></div>' +
-          '</div>' +
-          '<div class="field"><label>Audit response</label><textarea id="rk_resp">' + escapeHtml(existing ? existing.response || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            assertion: document.getElementById('rk_as').value,
-            description: document.getElementById('rk_desc').value,
-            inherent: document.getElementById('rk_inh').value,
-            controlReliance: document.getElementById('rk_cr').value,
-            residual: document.getElementById('rk_res').value,
-            response: document.getElementById('rk_resp').value
-          };
-          e.riskRegister = e.riskRegister || [];
-          if (existing) {
-            var ix = e.riskRegister.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.riskRegister[ix] = rec;
-          } else e.riskRegister.push(rec);
-          toast('Risk register updated');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'risk-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.riskRegister = (e.riskRegister || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'ap-eng-add' || action === 'ap-eng-edit') {
-      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      var rowId = action === 'ap-eng-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.auditPlan || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit audit procedure' : 'Add audit procedure',
-        bodyHtml:
-          '<div class="field"><label>Section</label><input id="ape_sec" value="' + escapeHtml(existing ? existing.section || '' : '') + '" /></div>' +
-          '<div class="field"><label>Procedure</label><textarea id="ape_proc">' + escapeHtml(existing ? existing.procedure || '' : '') + '</textarea></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Owner</label><input id="ape_own" value="' + escapeHtml(existing ? existing.owner || '' : '') + '" /></div>' +
-          '<div class="field"><label>Status</label><select id="ape_st">' + ['planned', 'in_progress', 'done', 'deferred'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') + '</select></div>' +
-          '</div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            section: document.getElementById('ape_sec').value,
-            procedure: document.getElementById('ape_proc').value,
-            owner: document.getElementById('ape_own').value,
-            status: document.getElementById('ape_st').value
-          };
-          e.auditPlan = e.auditPlan || [];
-          if (existing) {
-            var ix = e.auditPlan.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.auditPlan[ix] = rec;
-          } else e.auditPlan.push(rec);
-          toast('Audit plan updated');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'ap-eng-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.auditPlan = (e.auditPlan || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'rem-add' || action === 'rem-edit') {
-      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      var rowId = action === 'rem-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.remedies || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit remedy' : 'Add remedy',
-        bodyHtml:
-          '<div class="field"><label>Title</label><input id="rm_title" value="' + escapeHtml(existing ? existing.title || '' : '') + '" /></div>' +
-          '<div class="field"><label>Source</label><input id="rm_src" placeholder="Finding ref / ML / regulator" value="' + escapeHtml(existing ? existing.source || '' : '') + '" /></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Owner</label><input id="rm_own" value="' + escapeHtml(existing ? existing.owner || '' : '') + '" /></div>' +
-          '<div class="field"><label>Due</label><input type="date" id="rm_due" value="' + escapeHtml(existing ? existing.due || '' : '') + '" /></div>' +
-          '</div>' +
-          '<div class="field"><label>Status</label><select id="rm_st">' + ['open', 'in_progress', 'closed', 'waived'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') + '</select></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            title: document.getElementById('rm_title').value,
-            source: document.getElementById('rm_src').value,
-            owner: document.getElementById('rm_own').value,
-            due: document.getElementById('rm_due').value,
-            status: document.getElementById('rm_st').value
-          };
-          e.remedies = e.remedies || [];
-          if (existing) {
-            var ix = e.remedies.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.remedies[ix] = rec;
-          } else e.remedies.push(rec);
-          toast('Remedy saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'rem-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.remedies = (e.remedies || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'cu-add' || action === 'cu-edit') {
-      var eid = el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      var rowId = action === 'cu-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.clientUsers || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit client user' : 'Add client user',
-        bodyHtml:
-          '<div class="field"><label>Name</label><input id="cu_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
-          '<div class="field"><label>Email</label><input id="cu_email" type="email" value="' + escapeHtml(existing ? existing.email || '' : '') + '" /></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Role</label><input id="cu_role" value="' + escapeHtml(existing ? existing.role || '' : '') + '" /></div>' +
-          '<div class="field"><label>Access status</label><select id="cu_st">' + ['active', 'invited', 'suspended'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') + '</select></div>' +
-          '</div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            name: document.getElementById('cu_name').value.trim(),
-            email: document.getElementById('cu_email').value.trim(),
-            role: document.getElementById('cu_role').value,
-            status: document.getElementById('cu_st').value
-          };
-          e.clientUsers = e.clientUsers || [];
-          if (existing) {
-            var ix = e.clientUsers.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.clientUsers[ix] = rec;
-          } else e.clientUsers.push(rec);
-          toast('Client user saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'cu-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.clientUsers = (e.clientUsers || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'eng-open') navigate({ view: 'engagement', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
-    else if (action === 'eng-delete') {
-      var eid = el.getAttribute('data-id');
-      if (!confirm('Delete engagement?')) return;
-      state.engagements = state.engagements.filter(function (e) { return e.id !== eid; });
-      toast('Engagement deleted');
-      navigate({ view: 'companies', id: null, firmSection: state.ui.route.firmSection });
-      saveState(state);
-    } else if (action === 'eng-save-overview') {
-      var e = engagementById(el.getAttribute('data-id'));
-      if (!e) return;
-      e.code = val(root, '[data-bind="eng-code"]');
-      e.title = val(root, '[data-bind="eng-title"]');
-      e.phase = val(root, '[data-bind="eng-phase"]');
-      e.status = val(root, '[data-bind="eng-status"]');
-      e.targetCompletionDate = val(root, '[data-bind="eng-deadline"]');
-      e.customFieldValues = Object.assign({}, e.customFieldValues || {}, collectCustomFieldValues(root, 'engagement'));
-      toast('Overview saved');
-      saveState(state); renderAll();
-    } else if (action === 'eng-save-team') {
-      var e = engagementById(el.getAttribute('data-id'));
-      if (!e) return;
-      e.teamMemberIds = [];
-      root.querySelectorAll('input[data-team-member]').forEach(function (cb) {
-        if (cb.checked) e.teamMemberIds.push(cb.getAttribute('data-team-member'));
-      });
-      toast('Audit team saved');
-      saveState(state); renderAll();
-    } else if (action === 'eng-manage-team') {
-      state.ui.engagementTab = 'team';
-      navigate({ view: 'engagement', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
-    } else if (action === 'eng-manage-clients') {
-      state.ui.engagementTab = 'clients';
-      navigate({ view: 'engagement', id: el.getAttribute('data-id'), firmSection: state.ui.route.firmSection });
-    } else if (action === 'company-picker-new-eng') {
-      if (!state.companies.length) {
-        toast('Add a company first.');
-        return;
-      }
-      var preferCo = el.getAttribute('data-company') || state.ui.engagementsCompanyId || state.companies[0].id;
-      var coOpts = state.companies.map(function (c) {
-        return '<option value="' + escapeHtml(c.id) + '"' + (preferCo === c.id ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
-      }).join('');
-      openModal({
-        title: 'Create engagement',
-        bodyHtml:
-          '<div class="field"><label>Company</label><select id="np_co">' + coOpts + '</select></div>' +
-          '<div class="field"><label>Code</label><input id="np_code" placeholder="FY26-AUD-001" /></div>' +
-          '<div class="field"><label>Title</label><input id="np_title" /></div>' +
-          '<div class="field"><label>Report deadline</label><input type="date" id="np_dead" /></div>' +
-          '<div class="field"><label>Phase</label><select id="np_phase"><option>planning</option><option selected>fieldwork</option><option>completion</option></select></div>',
-        onOk: function () {
-          var cid = document.getElementById('np_co').value;
-          var eng = {
-            id: uid(),
-            companyId: cid,
-            code: document.getElementById('np_code').value.trim() || 'ENG-' + uid().slice(-6),
-            title: document.getElementById('np_title').value.trim() || 'New engagement',
-            phase: document.getElementById('np_phase').value,
-            status: 'active',
-            targetCompletionDate: document.getElementById('np_dead').value,
-            teamMemberIds: [],
-            clientUsers: [],
-            independenceConfirmations: [],
-            firstYearWithClient: false,
-            openingBalanceProcedures: '',
-            samplingBySection: [],
-            managementLetterItems: [],
-            subsequentEventsCutoff: '',
-            groupAuditInstructions: '',
-            regulatorySubmissions: [],
-            customFieldValues: {},
-            riskRegister: [],
-            auditPlan: [],
-            remedies: []
-          };
-          state.engagements.push(eng);
-          state.ui.engagementsCompanyId = cid;
-          toast('Engagement created');
-          navigate({ view: 'engagement', id: eng.id, firmSection: state.ui.route.firmSection });
-          saveState(state);
-        }
-      });
-    } else if (action === 'eng-save-opening') {
-      var e = engagementById(el.getAttribute('data-id'));
-      if (!e) return;
-      var cb = root.querySelector('[data-bind="eng-firstyear"]');
-      e.firstYearWithClient = !!(cb && cb.checked);
-      e.openingBalanceProcedures = val(root, '[data-bind="eng-ob"]');
-      toast('Opening procedures saved');
-      saveState(state); renderAll();
-    } else if (action === 'eng-save-subseq') {
-      var e = engagementById(el.getAttribute('data-id'));
-      if (!e) return;
-      e.subsequentEventsCutoff = val(root, '[data-bind="eng-subseq"]');
-      toast('Cutoff saved');
-      saveState(state); renderAll();
-    } else if (action === 'eng-save-group') {
-      var e = engagementById(el.getAttribute('data-id'));
-      if (!e) return;
-      e.groupAuditInstructions = val(root, '[data-bind="eng-group"]');
-      toast('Group instructions saved');
-      saveState(state); renderAll();
-    } else if (action === 'ind-add' || action === 'ind-edit') {
-      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      if (!(state.staffDirectory || []).length) {
-        toast('Add team members under Firm settings → Staff directory first.');
-        return;
-      }
-      var rowId = action === 'ind-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.independenceConfirmations || []).find(function (x) { return x.id === rowId; }) : null;
-      var opts = state.staffDirectory.map(function (s) {
-        return '<option value="' + escapeHtml(s.id) + '"' + ((existing && existing.staffId === s.id) ? ' selected' : '') + '>' + escapeHtml(s.name) + '</option>';
-      }).join('');
-      openModal({
-        title: existing ? 'Edit independence confirmation' : 'Add independence confirmation',
-        bodyHtml:
-          '<div class="field"><label>Team member</label><select id="ind_staff">' + opts + '</select></div>' +
-          '<div class="field"><label>Signed date</label><input type="date" id="ind_dt" value="' + escapeHtml(existing ? existing.signedAt || '' : '') + '" /></div>' +
-          '<div class="field"><label>Note</label><textarea id="ind_note">' + escapeHtml(existing ? existing.note || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            staffId: document.getElementById('ind_staff').value,
-            signedAt: document.getElementById('ind_dt').value,
-            note: document.getElementById('ind_note').value
-          };
-          e.independenceConfirmations = e.independenceConfirmations || [];
-          if (existing) {
-            var ix = e.independenceConfirmations.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.independenceConfirmations[ix] = rec;
-          } else e.independenceConfirmations.push(rec);
-          toast('Independence confirmation saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'ind-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.independenceConfirmations = (e.independenceConfirmations || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'samp-add' || action === 'samp-edit') {
-      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      var rowId = action === 'samp-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.samplingBySection || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit sampling plan' : 'Add sampling plan',
-        bodyHtml:
-          '<div class="field"><label>Section / cycle</label><input id="sp_sec" value="' + escapeHtml(existing ? existing.section || '' : '') + '" /></div>' +
-          '<div class="field"><label>Method</label><select id="sp_method">' +
-          ['random', 'systematic', 'judgmental', 'haphazard', 'monetary_unit'].map(function (m) {
-            return '<option value="' + m + '"' + ((existing && existing.method === m) ? ' selected' : '') + '>' + m + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '<div class="field"><label>Notes</label><textarea id="sp_notes">' + escapeHtml(existing ? existing.notes || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            section: document.getElementById('sp_sec').value,
-            method: document.getElementById('sp_method').value,
-            notes: document.getElementById('sp_notes').value
-          };
-          e.samplingBySection = e.samplingBySection || [];
-          if (existing) {
-            var ix = e.samplingBySection.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.samplingBySection[ix] = rec;
-          } else e.samplingBySection.push(rec);
-          toast('Sampling plan saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'samp-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.samplingBySection = (e.samplingBySection || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'ml-add' || action === 'ml-edit') {
-      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      var rowId = action === 'ml-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.managementLetterItems || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit ML item' : 'Add management letter item',
-        bodyHtml:
-          '<div class="field"><label>Title</label><input id="ml_title" value="' + escapeHtml(existing ? existing.title || '' : '') + '" /></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Severity</label><select id="ml_sev">' +
-          ['low', 'medium', 'high'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.severity === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '<div class="field"><label>Status</label><select id="ml_stat">' +
-          ['open', 'in_progress', 'closed'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '</div>' +
-          '<div class="field"><label>Owner</label><input id="ml_owner" value="' + escapeHtml(existing ? existing.owner || '' : '') + '" /></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            title: document.getElementById('ml_title').value,
-            severity: document.getElementById('ml_sev').value,
-            status: document.getElementById('ml_stat').value,
-            owner: document.getElementById('ml_owner').value
-          };
-          e.managementLetterItems = e.managementLetterItems || [];
-          if (existing) {
-            var ix = e.managementLetterItems.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.managementLetterItems[ix] = rec;
-          } else e.managementLetterItems.push(rec);
-          toast('Management letter item saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'ml-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.managementLetterItems = (e.managementLetterItems || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'fil-add' || action === 'fil-edit') {
-      var eid = el.getAttribute('data-id') || el.getAttribute('data-eng');
-      var e = engagementById(eid);
-      if (!e) return;
-      var rowId = action === 'fil-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? (e.regulatorySubmissions || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit regulatory filing' : 'Add regulatory filing',
-        bodyHtml:
-          '<div class="field"><label>Filing name</label><input id="fil_name" value="' + escapeHtml(existing ? existing.filing || '' : '') + '" /></div>' +
-          '<div class="field"><label>Regulator / recipient</label><input id="fil_reg" value="' + escapeHtml(existing ? existing.regulator || '' : '') + '" /></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Due date</label><input type="date" id="fil_due" value="' + escapeHtml(existing ? existing.due || '' : '') + '" /></div>' +
-          '<div class="field"><label>Status</label><select id="fil_stat">' +
-          ['not_started', 'in_progress', 'filed', 'waived'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.status === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '</div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            filing: document.getElementById('fil_name').value,
-            regulator: document.getElementById('fil_reg').value,
-            due: document.getElementById('fil_due').value,
-            status: document.getElementById('fil_stat').value
-          };
-          e.regulatorySubmissions = e.regulatorySubmissions || [];
-          if (existing) {
-            var ix = e.regulatorySubmissions.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) e.regulatorySubmissions[ix] = rec;
-          } else e.regulatorySubmissions.push(rec);
-          toast('Filing tracker updated');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'fil-del') {
-      var eid = el.getAttribute('data-eng');
-      var rid = el.getAttribute('data-row');
-      var e = engagementById(eid);
-      if (!e) return;
-      e.regulatorySubmissions = (e.regulatorySubmissions || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'firm-save-profile') {
-      var fp = state.firm.profile || (state.firm.profile = {});
-      fp.legalName = val(root, '[data-bind="firm-legal"]');
-      fp.tradingName = val(root, '[data-bind="firm-trade"]');
-      fp.letterheadNotes = val(root, '[data-bind="firm-letter"]');
-      appendActivityLog('Admin', 'Firm profile / letterhead saved');
-      toast('Profile saved');
-      saveState(state); renderAll();
-    } else if (action === 'rbac-add' || action === 'rbac-edit') {
-      var rowId = action === 'rbac-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? state.firm.rbacRoles.find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit role' : 'Add role',
-        bodyHtml:
-          '<div class="field"><label>Role name</label><input id="rb_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
-          '<div class="field"><label>Permissions summary</label><textarea id="rb_scope" rows="4">' + escapeHtml(existing ? existing.scope || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            name: document.getElementById('rb_name').value.trim() || 'Role',
-            scope: document.getElementById('rb_scope').value
-          };
-          state.firm.rbacRoles = state.firm.rbacRoles || [];
-          if (existing) {
-            var ix = state.firm.rbacRoles.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) state.firm.rbacRoles[ix] = rec;
-          } else state.firm.rbacRoles.push(rec);
-          appendActivityLog('Admin', 'RBAC role saved: ' + rec.name);
-          toast('Role saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'rbac-del') {
-      var rid = el.getAttribute('data-row');
-      state.firm.rbacRoles = (state.firm.rbacRoles || []).filter(function (x) { return x.id !== rid; });
-      appendActivityLog('Admin', 'RBAC role removed');
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'log-add') {
-      openModal({
-        title: 'Log activity',
-        okLabel: 'Append',
-        bodyHtml: '<div class="field"><label>Note</label><textarea id="log_msg" rows="5"></textarea></div>',
-        onOk: function () {
-          var t = document.getElementById('log_msg').value.trim();
-          if (t) appendActivityLog('User', t);
-          toast('Logged');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'firm-save-security') {
-      var pp = state.firm.passwordPolicy || (state.firm.passwordPolicy = {});
-      pp.sessionExpiryMinutes = parseInt(val(root, '[data-bind="sess-min"]'), 10) || 0;
-      pp.passwordExpiryDays = parseInt(val(root, '[data-bind="pwd-days"]'), 10) || 0;
-      pp.mfaEnforcement = val(root, '[data-bind="mfa"]');
-      var raw = val(root, '[data-bind="ipwl"]');
-      pp.ipWhitelist = raw.split(/\r?\n/).map(function (s) { return s.trim(); }).filter(Boolean);
-      toast('Security policy saved');
-      saveState(state); renderAll();
-    } else if (action === 'firm-save-retention') {
-      var rp = state.firm.retentionPurging || (state.firm.retentionPurging = {});
-      rp.completedEngagementYears = parseInt(val(root, '[data-bind="ret-years"]'), 10) || 7;
-      rp.regulatoryNote = val(root, '[data-bind="ret-note"]');
-      rp.purgeProcedure = val(root, '[data-bind="ret-purge"]');
-      toast('Retention policy saved');
-      saveState(state); renderAll();
-    } else if (action === 'firm-save-archive') {
-      var ar = state.firm.archiving || (state.firm.archiving = {});
-      ar.autoArchiveDaysAfterSignoff = parseInt(val(root, '[data-bind="arch-days"]'), 10) || 0;
-      ar.notes = val(root, '[data-bind="arch-notes"]');
-      toast('Archiving rules saved');
-      saveState(state); renderAll();
-    } else if (action === 'cf-add' || action === 'cf-edit') {
-      var rowId = action === 'cf-edit' ? el.getAttribute('data-row') : null;
-      var fs = state.firm;
-      var existing = rowId ? (fs.customFields || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit custom field' : 'Add custom field',
-        bodyHtml:
-          '<div class="field"><label>Name</label><input id="cf_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
-          '<div class="grid2">' +
-          '<div class="field"><label>Applies to</label><select id="cf_app">' +
-          ['company', 'engagement', 'both'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.appliesTo === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '<div class="field"><label>Type</label><select id="cf_type">' +
-          ['text', 'number', 'date', 'long_text'].map(function (x) {
-            return '<option value="' + x + '"' + ((existing && existing.fieldType === x) ? ' selected' : '') + '>' + x + '</option>';
-          }).join('') +
-          '</select></div>' +
-          '</div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            name: document.getElementById('cf_name').value.trim() || 'Untitled field',
-            appliesTo: document.getElementById('cf_app').value,
-            fieldType: document.getElementById('cf_type').value
-          };
-          fs.customFields = fs.customFields || [];
-          if (existing) {
-            var ix = fs.customFields.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) fs.customFields[ix] = rec;
-          } else fs.customFields.push(rec);
-          toast('Custom field saved');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'cf-del') {
-      var rid = el.getAttribute('data-row');
-      state.firm.customFields = (state.firm.customFields || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'mlib-add' || action === 'mlib-edit') {
-      var rowId = action === 'mlib-edit' ? el.getAttribute('data-row') : null;
-      var fs = state.firm;
-      var existing = rowId ? (fs.methodologyLibrary || []).find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit methodology note' : 'Add methodology note',
-        bodyHtml:
-          '<div class="field"><label>Title</label><input id="mlib_title" value="' + escapeHtml(existing ? existing.title || '' : '') + '" /></div>' +
-          '<div class="field"><label>Category</label><input id="mlib_cat" placeholder="Approach, Execution, Reporting..." value="' + escapeHtml(existing ? existing.category || '' : '') + '" /></div>' +
-          '<div class="field"><label>Body</label><textarea id="mlib_body">' + escapeHtml(existing ? existing.body || '' : '') + '</textarea></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            title: document.getElementById('mlib_title').value.trim() || 'Untitled',
-            category: document.getElementById('mlib_cat').value,
-            body: document.getElementById('mlib_body').value
-          };
-          fs.methodologyLibrary = fs.methodologyLibrary || [];
-          if (existing) {
-            var ix = fs.methodologyLibrary.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) fs.methodologyLibrary[ix] = rec;
-          } else fs.methodologyLibrary.push(rec);
-          toast('Methodology library updated');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'mlib-del') {
-      var rid = el.getAttribute('data-row');
-      state.firm.methodologyLibrary = (state.firm.methodologyLibrary || []).filter(function (x) { return x.id !== rid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    } else if (action === 'staff-add' || action === 'staff-edit') {
-      var rowId = action === 'staff-edit' ? el.getAttribute('data-row') : null;
-      var existing = rowId ? state.staffDirectory.find(function (x) { return x.id === rowId; }) : null;
-      openModal({
-        title: existing ? 'Edit team member' : 'Add team member',
-        bodyHtml:
-          '<div class="field"><label>Name</label><input id="st_name" value="' + escapeHtml(existing ? existing.name || '' : '') + '" /></div>' +
-          '<div class="field"><label>Role</label><input id="st_role" placeholder="Manager, Senior..." value="' + escapeHtml(existing ? existing.role || '' : '') + '" /></div>',
-        onOk: function () {
-          var rec = {
-            id: existing ? existing.id : uid(),
-            name: document.getElementById('st_name').value.trim() || 'Unnamed',
-            role: document.getElementById('st_role').value.trim()
-          };
-          state.staffDirectory = state.staffDirectory || [];
-          if (existing) {
-            var ix = state.staffDirectory.findIndex(function (x) { return x.id === rec.id; });
-            if (ix >= 0) state.staffDirectory[ix] = rec;
-          } else state.staffDirectory.push(rec);
-          toast('Staff directory updated');
-          saveState(state); renderAll();
-        }
-      });
-    } else if (action === 'staff-del') {
-      var sid = el.getAttribute('data-row');
-      state.staffDirectory = (state.staffDirectory || []).filter(function (x) { return x.id !== sid; });
-      toast('Removed');
-      saveState(state); renderAll();
-    }
-  }
-
-  document.querySelector('[data-action="reset-demo"]').onclick = function () {
-    if (!confirm('Replace workspace data with seeded demo?')) return;
-    localStorage.removeItem(STORAGE_KEY);
-    state = defaultState();
-    normalizeState(state);
-    saveState(state);
-    toast('Demo data restored');
-    navigate({ view: 'dashboard', id: null, firmSection: 'universe' });
-  };
-
-  var bootRoute = state.ui.route && state.ui.route.view
-    ? Object.assign({ firmSection: 'universe' }, state.ui.route)
-    : { view: 'dashboard', id: null, firmSection: 'universe' };
-  navigate(bootRoute);
-})();
-  </script>
+  return `<div class="heatmap">${cells}</div>`;
+}
+
+function universe(){
+  return header('Audit Universe','The full population of auditable areas. This is the foundation for risk assessment and the annual audit plan.', `<button class="btn primary">+ Add area</button><button class="btn ghost">Import departments</button>`) +
+  `<div class="panel"><div class="panel-title"><h2>Auditable areas</h2><span>Sorted by residual risk and next audit cycle</span></div>${universeTable()}</div>`;
+}
+function universeTable(){
+  return table(['Area','Department','Owner','Inherent','Controls','Residual','Frequency','Last / Next','Status','Key risks'], state.universe.map(u=>`<tr><td><strong>${u.area}</strong></td><td>${u.department}</td><td>${u.owner}</td><td>${pill(u.inherent)}</td><td>${pill(u.controls)}</td><td>${pill(u.residual)}</td><td>${u.frequency}</td><td><span class="muted">Last:</span> ${u.last}<br><span class="muted">Next:</span> ${u.next}</td><td>${pill(u.status)}</td><td>${u.risks}</td></tr>`));
+}
+
+function risk(){
+  return header('Risk Assessment','Identify what can go wrong, score likelihood and impact, assess controls, and decide audit response.', `<button class="btn primary">+ Add risk</button><button class="btn ghost">Risk library</button>`) +
+  `<div class="grid-2"><div class="panel"><div class="panel-title"><h2>Risk and control assessment</h2><span>Risk-based planning evidence</span></div>${riskTable()}</div><div class="panel"><div class="panel-title"><h2>Risk heat map</h2><span>Current assessment</span></div>${heatmap()}</div></div>`;
+}
+function riskTable(){
+  return table(['Area','Category','Risk','L × I','Inherent','Controls','Control rating','Residual','Audit response','Rationale'], state.risks.map(r=>`<tr><td><strong>${r.area}</strong></td><td>${r.category}</td><td>${r.risk}</td><td>${r.likelihood} × ${r.impact}</td><td>${r.inherent}</td><td>${r.controls}</td><td>${pill(r.controlRating)}</td><td>${pill(r.residual)}</td><td>${r.response}</td><td>${r.rationale}</td></tr>`));
+}
+
+function annualPlan(){
+  return header('Annual Audit Plan','Translate risk assessment into an approved audit schedule: what to audit, when, why, and how much resource is needed.', `<button class="btn primary">+ Add to plan</button><button class="btn ghost">Submit for approval</button>`) +
+  `<div class="panel"><div class="panel-title"><h2>2026 risk-based audit plan</h2><span>Proposed and approved audits</span></div>${planTable(false)}</div>`;
+}
+function planTable(compact){
+  return table(['Audit','Area','Priority','Quarter','Days','Status','Reason','Sponsor'], state.annualPlan.slice(0, compact ? 4 : 99).map(p=>`<tr><td><strong>${p.audit}</strong></td><td>${p.area}</td><td>${pill(p.priority)}</td><td>${p.quarter}</td><td>${p.days}</td><td>${pill(p.status)}</td><td>${p.reason}</td><td>${p.sponsor}</td></tr>`));
+}
+
+function engagements(){
+  return header('Audit Engagements','Workspace for each selected audit: planning memo, RCM, PBC, fieldwork, findings, report, and follow-up.', `<button class="btn primary">+ Create engagement</button>`) +
+  `<div class="cards">${state.engagements.map(e=>`<div class="card"><h3>${e.title}</h3><p>${e.objective}</p><div class="progress"><span style="width:${e.progress}%"></span></div><div class="card-meta">${pill(e.phase)}${pill(e.rating)}<span class="pill gray">${e.owner}</span><span class="pill gray">${e.start} → ${e.end}</span></div><div style="margin-top:14px"><button class="btn small primary" onclick="setEngagement('${e.id}')">Open workspace</button></div></div>`).join('')}</div>`;
+}
+
+function engagementDetail(){
+  const e = state.engagements.find(x=>x.id===state.activeEngagement) || state.engagements[0];
+  const tabs = ['overview','planning memo','risk & control matrix','pbc','fieldwork','findings','report'];
+  let body = '';
+  if(state.engagementTab === 'overview') body = engagementOverview(e);
+  if(state.engagementTab === 'planning memo') body = planningMemo(e);
+  if(state.engagementTab === 'risk & control matrix') body = riskControlMatrix();
+  if(state.engagementTab === 'pbc') body = pbcTable();
+  if(state.engagementTab === 'fieldwork') body = workprogramTable();
+  if(state.engagementTab === 'findings') body = findingsTable(state.findings.filter(f=>f.audit===e.title));
+  if(state.engagementTab === 'report') body = reportBuilder(e);
+  return `<div class="page-head"><div class="title"><h1>${e.title}</h1><p>${e.code} · ${e.department} · ${e.phase} · Audit owner: ${e.owner}</p></div><div class="toolbar"><button class="btn ghost" onclick="setView('engagements')">← Engagements</button><button class="btn primary">Add finding</button></div></div>
+  <div class="tabs">${tabs.map(t=>`<button class="tab ${state.engagementTab===t?'active':''}" onclick="state.engagementTab='${t}';render()">${t}</button>`).join('')}</div>
+  ${body}`;
+}
+function engagementOverview(e){
+  return `<div class="grid-2"><div class="panel"><div class="panel-title"><h2>Engagement summary</h2><span>${e.progress}% complete</span></div><div class="form-grid"><div class="field"><label>Objective</label><textarea>${e.objective}</textarea></div><div class="field"><label>Scope</label><textarea>${e.scope}</textarea></div><div class="field"><label>Start date</label><input value="${e.start}"></div><div class="field"><label>Target end date</label><input value="${e.end}"></div><div class="field"><label>Phase</label><select><option>${e.phase}</option></select></div><div class="field"><label>Overall risk</label><select><option>${e.rating}</option></select></div></div></div><div class="panel"><div class="panel-title"><h2>Execution status</h2></div><div class="progress"><span style="width:${e.progress}%"></span></div><p class="muted">Use this area for audit manager review, outstanding PBC, open review notes, and next milestone.</p></div></div>`;
+}
+function planningMemo(e){
+  return `<div class="panel"><div class="panel-title"><h2>Planning memo</h2><span>Engagement-level planning</span></div><div class="form-grid"><div class="field"><label>Background</label><textarea>Procurement was selected due to high residual fraud and bribery risk, high spending volume, many vendors, and weak vendor master controls.</textarea></div><div class="field"><label>Audit objective</label><textarea>${e.objective}</textarea></div><div class="field"><label>Scope period</label><input value="1 Jan 2025 to 31 Dec 2025"></div><div class="field"><label>Out of scope</label><input value="Inventory usage and supplier performance evaluation"></div><div class="field"><label>Team</label><input value="Audit Manager, Senior Auditor, IT/Data Analyst"></div><div class="field"><label>Deliverables</label><input value="Draft report, final IA report, follow-up tracker"></div></div></div>`;
+}
+function riskControlMatrix(){
+  return `<div class="panel"><div class="panel-title"><h2>Risk & Control Matrix</h2><span>RCM links risks to controls and audit tests</span></div>${table(['Risk','Expected control','Control owner','Test procedure','Result','Conclusion'], [
+    ['Fake vendor created','New vendor must be approved and independently verified','Procurement Manager','Select new vendors and check approval, registration, bank verification','In progress','Pending'],
+    ['Bribery / favoritism','Purchases above threshold require quotation comparison and evaluation approval','Tender Committee','Review sample of purchases above threshold','Exception noted','Control ineffective'],
+    ['Split purchase','System or management detects repeated purchases below approval threshold','Finance Controller','Run split-purchase data analysis','2 exceptions','Further review'],
+    ['Payment for undelivered goods','3-way match between PO, GRN, and invoice before payment','Accounts Payable','Inspect PO, GRN, invoice and payment approval','In progress','Pending']
+  ].map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`))}</div>`;
+}
+function pbcTable(){ return `<div class="panel"><div class="panel-title"><h2>PBC / Document Requests</h2><span>Documents requested from auditee</span></div>${table(['Document','Provided by','Status','Purpose'], state.pbc.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`))}</div>`; }
+function workprogramTable(){ return `<div class="panel"><div class="panel-title"><h2>Audit Program / Fieldwork</h2><span>Detailed procedures and testing status</span></div>${table(['Area','Procedure','Status','Result'], state.workprogram.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`))}</div>`; }
+function reportBuilder(e){ return `<div class="panel"><div class="panel-title"><h2>Internal audit report builder</h2><span>Draft → management response → final issued</span></div><div class="form-grid"><div class="field"><label>Executive summary</label><textarea>Procurement controls require improvement. Key issues noted in vendor onboarding approval and split-purchase monitoring.</textarea></div><div class="field"><label>Overall audit rating</label><select><option>Needs improvement</option><option>Satisfactory</option><option>Unsatisfactory</option></select></div><div class="field"><label>Distribution</label><input value="CEO, CFO, COO, Audit Committee"></div><div class="field"><label>Report status</label><select><option>Draft with audit manager</option><option>Sent for management response</option><option>Final issued</option></select></div></div>${findingsTable(state.findings.filter(f=>f.audit===e.title))}</div>`; }
+
+function findings(){ return header('Findings Register','Single source of truth for all internal audit findings, risk ratings, management responses, owners, due dates, and closure status.', `<button class="btn primary">+ New finding</button><button class="btn ghost">Bulk update</button>`) + `<div class="panel">${findingsTable(state.findings)}</div>`; }
+function findingsTable(list){
+  return table(['Finding','Audit','Department','Severity','Status','Owner','Due date','Recommendation'], list.map(f=>`<tr><td><strong>${f.title}</strong><div class="muted">${f.condition}</div></td><td>${f.audit}</td><td>${f.department}</td><td>${pill(f.severity)}</td><td>${pill(f.status)}</td><td>${f.owner}</td><td>${f.due}</td><td>${f.recommendation}</td></tr>`));
+}
+
+function reports(){ return header('Reports','Create draft and final internal audit reports from approved findings and management responses.', `<button class="btn primary">+ New report</button>`) + `<div class="panel">${reportsTable()}</div>`; }
+function reportsTable(){ return table(['Report','Audit','Status','Overall rating','Issue date','Audience'], state.reports.map(r=>`<tr><td><strong>${r.title}</strong></td><td>${r.audit}</td><td>${pill(r.status)}</td><td>${r.rating}</td><td>${r.issueDate}</td><td>${r.audience}</td></tr>`)); }
+
+function followup(){ const open = state.findings.filter(f=>f.status !== 'Closed'); return header('Follow-up Tracker','Track management action plans until evidence is submitted, validated by Internal Audit, and formally closed.', `<button class="btn primary">Send reminders</button><button class="btn ghost">Escalate overdue</button>`) + `<div class="panel">${table(['Finding','Severity','Action owner','Due date','Current status','IA validation'], open.map(f=>`<tr><td><strong>${f.title}</strong><div class="muted">${f.audit}</div></td><td>${pill(f.severity)}</td><td>${f.owner}</td><td>${f.due}</td><td>${pill(f.status)}</td><td>Pending evidence review</td></tr>`))}</div>`; }
+
+function committee(){ return header('Audit Committee Pack','High-level reporting for the board/audit committee: audit plan progress, high-risk findings, overdue actions, and unresolved risks.', `<button class="btn primary">Generate PDF pack</button>`) + `<div class="grid-3"><div class="panel"><div class="panel-title"><h2>Plan progress</h2></div><div class="kpi"><div class="label">Completed / approved</div><div class="value">1 / 4</div><div class="note">2026 annual plan</div></div></div><div class="panel"><div class="panel-title"><h2>High-risk findings</h2></div><div class="kpi"><div class="label">Open high</div><div class="value">2</div><div class="note">Requires committee visibility</div></div></div><div class="panel"><div class="panel-title"><h2>Overdue actions</h2></div><div class="kpi"><div class="label">Overdue</div><div class="value">1</div><div class="note">Escalation required</div></div></div></div><div class="panel"><div class="panel-title"><h2>Pack contents</h2><span>Suggested sections</span></div>${table(['Section','Content'], [['Executive summary','Overall IA opinion, key themes, major changes'],['Audit plan status','Completed, in progress, deferred, upcoming audits'],['High-risk findings','Open high/critical findings and management actions'],['Overdue actions','Ageing and escalation'],['Emerging risks','New risks from risk assessment or management input']].map(r=>`<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td></tr>`))}</div>`; }
+
+function methodology(){ return header('Methodology & Templates','Reusable internal audit templates: planning memo, RCM, audit programs, report formats, follow-up validation, and risk libraries.', `<button class="btn primary">+ Template</button>`) + `<div class="panel">${table(['Template','Content'], state.templates.map(t=>`<tr><td><strong>${t[0]}</strong></td><td>${t[1]}</td></tr>`))}</div>`; }
+function admin(){ return header('Administration','Configure users, roles, permissions, departments, audit ratings, retention rules, notifications, and activity logs.', `<button class="btn primary">+ User</button>`) + `<div class="grid-3">${['Roles & permissions','Departments & business units','Risk scoring model','Rating scale','Retention & archive','Activity log'].map(x=>`<div class="card"><h3>${x}</h3><p>Configure ${x.toLowerCase()} for your internal audit methodology and governance model.</p><button class="btn small ghost">Configure</button></div>`).join('')}</div>`; }
+
+function render(){
+  renderSidebar();
+  const routes = { dashboard, universe, risk, annualPlan, engagements, engagementDetail, findings, reports, followup, committee, methodology, admin };
+  root.innerHTML = (routes[state.view] || dashboard)();
+}
+render();
+</script>
 </body>
 </html>
