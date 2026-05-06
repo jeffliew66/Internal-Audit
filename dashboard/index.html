@@ -554,7 +554,7 @@
 <body>
 <div class="app">
   <header class="topbar">
-    <a href="/dashboard.html" class="brand brand-link" title="Firm dashboard home">
+    <a href="/dashboard/" class="brand brand-link" title="Firm dashboard home">
       <div class="brand-mark">IA</div>
       <div>
         Aura IA Firm Dashboard
@@ -591,7 +591,7 @@ function defaultClients() {
       riskTier: 'High',
       status: 'Active',
       contract: 'Retainer',
-      workspaceUrl: '/index.html?clientId=langit-logistics',
+      workspaceUrl: '/?clientId=langit-logistics',
       activeAudits: 3,
       plannedAudits: 5,
       openFindings: 14,
@@ -616,7 +616,7 @@ function defaultClients() {
       riskTier: 'High',
       status: 'Active',
       contract: 'Project-based',
-      workspaceUrl: '/index.html?clientId=bay-fintech',
+      workspaceUrl: '/?clientId=bay-fintech',
       activeAudits: 2,
       plannedAudits: 4,
       openFindings: 9,
@@ -641,7 +641,7 @@ function defaultClients() {
       riskTier: 'Medium',
       status: 'Active',
       contract: 'Retainer',
-      workspaceUrl: '/index.html?clientId=meranti-retail',
+      workspaceUrl: '/?clientId=meranti-retail',
       activeAudits: 1,
       plannedAudits: 3,
       openFindings: 6,
@@ -665,7 +665,7 @@ function defaultClients() {
       riskTier: 'Medium',
       status: 'Active',
       contract: 'Retainer',
-      workspaceUrl: '/index.html?clientId=nusa-healthcare',
+      workspaceUrl: '/?clientId=nusa-healthcare',
       activeAudits: 2,
       plannedAudits: 6,
       openFindings: 11,
@@ -689,7 +689,7 @@ function defaultClients() {
       riskTier: 'Low',
       status: 'Onboarding',
       contract: 'Project-based',
-      workspaceUrl: '/index.html?clientId=satria-manufacturing',
+      workspaceUrl: '/?clientId=satria-manufacturing',
       activeAudits: 0,
       plannedAudits: 2,
       openFindings: 0,
@@ -898,7 +898,7 @@ function attachCompanyJump() {
   sel.onchange = function () {
     const id = sel.value;
     if (!id) return;
-    window.location.href = '/index.html?clientId=' + encodeURIComponent(id);
+    window.location.href = '/?clientId=' + encodeURIComponent(id);
   };
 }
 
@@ -1131,7 +1131,7 @@ function addClient() {
     riskTier: 'Medium',
     status: 'Onboarding',
     contract: 'Project-based',
-    workspaceUrl: `/index.html?clientId=${id}`,
+    workspaceUrl: `/?clientId=${id}`,
     activeAudits: 0,
     plannedAudits: 0,
     openFindings: 0,

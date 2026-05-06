@@ -1,8 +1,13 @@
 {
   "redirects": [
     {
+      "source": "/dashboard.html",
+      "destination": "/dashboard/",
+      "permanent": false
+    },
+    {
       "source": "/Dashboard.html",
-      "destination": "/dashboard.html",
+      "destination": "/dashboard/",
       "permanent": false
     }
   ]
